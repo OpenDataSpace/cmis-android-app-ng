@@ -35,6 +35,10 @@ public class ActivityMain extends ActivityBase {
             nav.openDialog(FragmentAbout.class);
             break;
 
+        case R.id.menu_main_settings:
+            nav.openDialog(FragmentSettings.class);
+            break;
+
         case android.R.id.home:
             onBackPressed();
             break;

@@ -20,4 +20,14 @@
     <!-- dialog -->
     <string name="menu_dialog_close">Close</string>
 
+    <!-- settings -->
+    <string name="text_settings_caption">Settings</string>
+    <string name="text_settings_links">Links</string>
+    <string name="text_settings_web">Open DataSpace</string>
+    <string name="text_settings_web_desc">Visit official Open DataSpace website</string>
+    <string name="text_settings_web_url">https://github.com/OpenDataSpace</string>
+    <string name="text_settings_rating">Write a review</string>
+    <string name="text_settings_rating_desc">Rate Open DataSpace on Google Play</string>
+    <string name="text_settings_rating_url">market://details?id=org.opendataspace.android.app</string>
+
 </resources>
