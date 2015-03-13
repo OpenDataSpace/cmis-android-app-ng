@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ODS</string>
+
+    <string name="app_name">ODS beta</string>
+
+    <!-- main -->
+    <string name="menu_main_settings">Settings</string>
+    <string name="menu_main_about">About</string>
+
+    <!-- navigation -->
+    <string name="nav_text_accounts">Accounts</string>
+
+    <!-- about -->
+    <string name="about_text_info">
+<![CDATA[<p>Version: <b>%1$s</b></p>
+<p>&copy; 2013-%2$s The Open DataSpace project. <a href="mailto:info@opendataspace.org>info@opendataspace.org</a></p>
+<p>This software is licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, version 2.0</a>.</p>]]>
+    </string>
+
+    <!-- dialog -->
+    <string name="menu_dialog_close">Close</string>
+
 </resources>

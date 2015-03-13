@@ -34,7 +34,12 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile 'com.android.support:support-v4:22.0.0'
     compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.google.code.gson:gson:2.3.1'
 }

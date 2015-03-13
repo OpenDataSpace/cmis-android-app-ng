@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <color name="grey_text">#818282</color>
+
+    <dimen name="pad">6dp</dimen>
+    <dimen name="drawer">400dp</dimen>
+
+    <style name="OdsApp" parent="@style/Theme.AppCompat.Light"/>
+
+    <style name="OdsDialog" parent="@style/Theme.AppCompat.Light.DialogWhenLarge"/>
+
+    <style name="OdsSectionHeader">
+        <item name="android:textColor">@color/grey_text</item>
+        <item name="android:textAllCaps" tools:ignore="NewApi">true</item>
+        <item name="android:background">@drawable/underline</item>
+    </style>
+
+    <style name="OdsPanel">
+        <item name="android:background">@android:color/white</item>
+        <item name="android:padding">@dimen/pad</item>
+    </style>
+
+    <style name="OdsText">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+</resources>
