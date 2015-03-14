@@ -1,4 +1,4 @@
-package org.opendataspace.android.app.ui;
+package org.opendataspace.android.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -8,8 +8,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import org.opendataspace.android.app.OdsApplication;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.app.navigation.NavState;
-import org.opendataspace.android.app.navigation.Navigation;
+import org.opendataspace.android.navigation.NavState;
+import org.opendataspace.android.navigation.Navigation;
 
 public class ActivityDialog extends ActivityBase {
 

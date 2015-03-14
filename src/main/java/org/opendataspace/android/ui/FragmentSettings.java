@@ -1,4 +1,4 @@
-package org.opendataspace.android.app.ui;
+package org.opendataspace.android.ui;
 
 import android.os.Bundle;
 import com.github.machinarius.preferencefragment.PreferenceFragment;

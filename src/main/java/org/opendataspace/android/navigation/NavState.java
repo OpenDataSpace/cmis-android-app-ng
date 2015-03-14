@@ -1,4 +1,4 @@
-package org.opendataspace.android.app.navigation;
+package org.opendataspace.android.navigation;
 
 import android.support.v4.app.Fragment;
 import com.google.gson.annotations.SerializedName;

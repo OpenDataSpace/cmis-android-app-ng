@@ -1,4 +1,4 @@
-package org.opendataspace.android.app.navigation;
+package org.opendataspace.android.navigation;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +12,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import org.opendataspace.android.app.OdsApplication;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.app.ui.ActivityDialog;
-import org.opendataspace.android.app.ui.FragmentNavigation;
+import org.opendataspace.android.ui.ActivityDialog;
+import org.opendataspace.android.ui.FragmentNavigation;
 
 import java.util.Collections;
 import java.util.Stack;

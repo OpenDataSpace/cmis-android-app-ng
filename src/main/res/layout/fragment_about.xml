@@ -2,8 +2,10 @@
 <FrameLayout
     style="@style/OdsPanel"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="org.opendataspace.android.ui.FragmentAbout">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -18,7 +20,6 @@
 
         <TextView
             android:id="@+id/text_about_info"
-            style="@style/OdsText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/pad"

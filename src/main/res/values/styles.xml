@@ -21,8 +21,4 @@
         <item name="android:padding">@dimen/pad</item>
     </style>
 
-    <style name="OdsText">
-        <item name="android:textColor">@android:color/black</item>
-    </style>
-
 </resources>

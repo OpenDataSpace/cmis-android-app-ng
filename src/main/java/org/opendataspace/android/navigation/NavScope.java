@@ -1,4 +1,4 @@
-package org.opendataspace.android.app.navigation;
+package org.opendataspace.android.navigation;
 
 import com.google.gson.annotations.SerializedName;
 
