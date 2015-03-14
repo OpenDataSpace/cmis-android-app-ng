@@ -10,7 +10,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import org.opendataspace.android.app.OdsApplication;
+
+import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.ui.ActivityDialog;
 import org.opendataspace.android.ui.FragmentNavigation;
@@ -39,7 +40,7 @@ public class Navigation {
         backstack.clear();
 
         if (state != null) {
-            NavState[] ns = OdsApplication.gson.fromJson(state.getString(ARG_BACKSTACK), NavState[].class);
+            NavState[] ns = OdsApp.gson.fromJson(state.getString(ARG_BACKSTACK), NavState[].class);
 
             if (ns != null) {
                 Collections.addAll(backstack, ns);
@@ -75,14 +76,14 @@ public class Navigation {
         bar.setDisplayHomeAsUpEnabled(canGoBack);
         drawer.setDrawerLockMode(canGoBack ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        if (OdsApplication.get().getPrefs().isTablet()) {
+        if (OdsApp.get().getPrefs().isTablet()) {
             switch (ns.getNavigationScope()) {
             case DETAILS:
                 applyFragment(R.id.main_view_details, fgm, DETAILS_TAG);
                 return;
             case DIALOG:
                 Intent intent = new Intent(context, ActivityDialog.class);
-                intent.putExtra(ActivityDialog.ARG_NAV_STATE, OdsApplication.gson.toJson(ns, NavState.class));
+                intent.putExtra(ActivityDialog.ARG_NAV_STATE, OdsApp.gson.toJson(ns, NavState.class));
                 context.startActivity(intent);
                 return;
             }
@@ -102,7 +103,7 @@ public class Navigation {
     }
 
     public void save(Bundle state) {
-        state.putString(ARG_BACKSTACK, OdsApplication.gson.toJson(backstack));
+        state.putString(ARG_BACKSTACK, OdsApp.gson.toJson(backstack));
     }
 
     public void openDialog(Class<? extends Fragment> cls) {
@@ -112,7 +113,7 @@ public class Navigation {
     }
 
     private void addBackstack(NavState ns) {
-        if (!OdsApplication.get().getPrefs().isTablet() || ns.getNavigationScope() == NavScope.MAIN) {
+        if (!OdsApp.get().getPrefs().isTablet() || ns.getNavigationScope() == NavScope.MAIN) {
             backstack.add(ns);
         }
     }

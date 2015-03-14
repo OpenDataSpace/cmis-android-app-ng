@@ -2,6 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <color name="grey_text">#818282</color>
+    <color name="sliding_account_background">#282828</color>
 
     <dimen name="pad">6dp</dimen>
     <dimen name="drawer">400dp</dimen>

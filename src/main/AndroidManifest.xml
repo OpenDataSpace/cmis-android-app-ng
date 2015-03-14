@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
-        android:name="org.opendataspace.android.app.OdsApplication"
+        android:name="org.opendataspace.android.app.OdsApp"
         android:allowBackup="false"
         android:icon="@drawable/ic_logo"
         android:label="@string/app_name"

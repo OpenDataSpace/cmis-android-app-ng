@@ -3,15 +3,22 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@drawable/bg_gradient"
+              android:orientation="vertical"
               android:padding="@dimen/pad"
               tools:context="org.opendataspace.android.ui.FragmentNavigation"
               tools:ignore="Overdraw">
 
     <TextView
-        android:id="@+id/accounts_label"
         style="@style/OdsSectionHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/nav_text_accounts"/>
+
+    <Spinner
+        android:id="@+id/spin_nav_accounts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:popupBackground="@color/sliding_account_background"
+        android:textColor="@android:color/white"/>
 
 </LinearLayout>

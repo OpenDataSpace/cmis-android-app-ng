@@ -6,7 +6,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import org.opendataspace.android.app.OdsApplication;
+
+import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.NavState;
 import org.opendataspace.android.navigation.Navigation;
@@ -21,7 +22,7 @@ public class ActivityDialog extends ActivityBase {
         setContentView(R.layout.activity_dialog);
 
         try {
-            NavState state = OdsApplication.gson.fromJson(getIntent().getStringExtra(ARG_NAV_STATE), NavState.class);
+            NavState state = OdsApp.gson.fromJson(getIntent().getStringExtra(ARG_NAV_STATE), NavState.class);
             final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.dialog_view_frame, Navigation.createFragment(state));
             ft.commitAllowingStateLoss();

@@ -5,7 +5,8 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import org.opendataspace.android.app.OdsApplication;
+
+import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 
 @SuppressWarnings("WeakerAccess")
@@ -20,7 +21,7 @@ public class ActivityBase extends ActionBarActivity {
         bar.setDisplayShowHomeEnabled(true);
         bar.setIcon(R.drawable.ic_logo);
 
-        setRequestedOrientation(OdsApplication.get().getPrefs().isTablet() ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
+        setRequestedOrientation(OdsApp.get().getPrefs().isTablet() ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 

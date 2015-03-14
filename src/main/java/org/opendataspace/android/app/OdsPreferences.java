@@ -3,13 +3,14 @@ package org.opendataspace.android.app;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.util.Log;
+
 import org.opendataspace.android.app.beta.R;
 
-public class Preferences {
+public class OdsPreferences {
 
     private final Context context;
 
-    public Preferences(Context context) {
+    public OdsPreferences(Context context) {
         this.context = context;
     }
 

@@ -9,7 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import org.opendataspace.android.app.OdsApplication;
+
+import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 
 import java.util.Calendar;
@@ -31,7 +32,7 @@ public class FragmentAbout extends Fragment {
 
         try {
             tva.setText(Html.fromHtml(
-                    String.format(getString(R.string.about_text_info), OdsApplication.get().getPrefs().version(),
+                    String.format(getString(R.string.about_text_info), OdsApp.get().getPrefs().version(),
                             Calendar.getInstance().get(Calendar.YEAR))));
         } catch (Exception ex) {
             Log.w(getClass().getSimpleName(), ex);

@@ -4,7 +4,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import org.opendataspace.android.app.OdsApplication;
+
+import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.Navigation;
 
@@ -15,8 +16,8 @@ public class ActivityMain extends ActivityBase {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(OdsApplication.get().getPrefs().isTablet() ? R.layout.activity_main_tablet :
-                R.layout.activity_main_phone);
+        setContentView(
+                OdsApp.get().getPrefs().isTablet() ? R.layout.activity_main_tablet : R.layout.activity_main_phone);
 
         nav.initialize(this, savedInstanceState);
     }

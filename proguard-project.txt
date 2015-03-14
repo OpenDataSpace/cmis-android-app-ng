@@ -1,5 +1,9 @@
 # ods
 
+-keepclassmembers class * implements com.j256.ormlite.field.DataPersister {
+    public static * getSerializer();
+}
+
 # optimize
 
 -dontobfuscate

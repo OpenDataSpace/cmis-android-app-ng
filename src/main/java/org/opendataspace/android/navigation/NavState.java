@@ -1,14 +1,13 @@
 package org.opendataspace.android.navigation;
 
 import android.support.v4.app.Fragment;
+
 import com.google.gson.annotations.SerializedName;
 
 public class NavState {
 
-    @SuppressWarnings("CanBeFinal")
     @SerializedName("scope")
     private NavScope scope;
-    @SuppressWarnings("CanBeFinal")
     @SerializedName("class")
     private Class<? extends Fragment> cls;
 
@@ -21,7 +20,15 @@ public class NavState {
         return scope;
     }
 
+    public void setNavigationScope(NavScope scope) {
+        this.scope = scope;
+    }
+
     public Class<? extends Fragment> getFragmentClass() {
         return cls;
+    }
+
+    public void setFragmentClass(Class<? extends Fragment> cls) {
+        this.cls = cls;
     }
 }
