@@ -5,8 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class NavState {
 
+    @SuppressWarnings("CanBeFinal")
     @SerializedName("scope")
     private NavScope scope;
+    @SuppressWarnings("CanBeFinal")
     @SerializedName("class")
     private Class<? extends Fragment> cls;
 

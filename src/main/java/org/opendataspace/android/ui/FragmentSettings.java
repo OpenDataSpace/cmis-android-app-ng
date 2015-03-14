@@ -4,6 +4,7 @@ import android.os.Bundle;
 import com.github.machinarius.preferencefragment.PreferenceFragment;
 import org.opendataspace.android.app.beta.R;
 
+@SuppressWarnings("WeakerAccess")
 public class FragmentSettings extends PreferenceFragment {
 
     @Override

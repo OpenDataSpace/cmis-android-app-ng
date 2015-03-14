@@ -1,5 +1,6 @@
 package org.opendataspace.android.ui;
 
+import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -7,6 +8,8 @@ import android.support.v7.app.ActionBarActivity;
 import org.opendataspace.android.app.OdsApplication;
 import org.opendataspace.android.app.beta.R;
 
+@SuppressWarnings("WeakerAccess")
+@SuppressLint("Registered")
 public class ActivityBase extends ActionBarActivity {
 
     @Override

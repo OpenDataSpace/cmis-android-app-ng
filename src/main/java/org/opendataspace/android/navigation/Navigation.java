@@ -29,7 +29,7 @@ public class Navigation {
     private ActionBar bar;
     private DrawerLayout drawer;
     private Context context;
-    private final Stack<NavState> backstack = new Stack<NavState>();
+    private final Stack<NavState> backstack = new Stack<>();
 
     public void initialize(ActionBarActivity activity, Bundle state) {
         fm = activity.getSupportFragmentManager();

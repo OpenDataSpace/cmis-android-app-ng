@@ -4,7 +4,8 @@
               android:layout_height="match_parent"
               android:background="@drawable/bg_gradient"
               android:padding="@dimen/pad"
-              tools:context="org.opendataspace.android.ui.FragmentNavigation">
+              tools:context="org.opendataspace.android.ui.FragmentNavigation"
+              tools:ignore="Overdraw">
 
     <TextView
         android:id="@+id/accounts_label"
