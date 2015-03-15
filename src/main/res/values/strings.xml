@@ -9,7 +9,8 @@
     <string name="menu_main_about">About</string>
 
     <!-- navigation -->
-    <string name="nav_text_accounts">Accounts</string>
+    <string name="text_nav_accounts">Accounts</string>
+    <string name="text_nav_manage">Manage accounts…</string>
 
     <!-- about -->
     <string name="about_text_info">
@@ -30,5 +31,9 @@
     <string name="text_settings_rating">Write a review</string>
     <string name="text_settings_rating_desc">Rate Open DataSpace on Google Play</string>
     <string name="text_settings_rating_url">market://details?id=org.opendataspace.android.app</string>
+
+    <string name="text_preference_back">Back</string>
+    <string name="text_preference_next">Next</string>
+    <string name="text_preference_skip">Skip</string>
 
 </resources>

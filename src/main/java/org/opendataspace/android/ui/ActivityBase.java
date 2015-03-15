@@ -9,9 +9,8 @@ import android.support.v7.app.ActionBarActivity;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 
-@SuppressWarnings("WeakerAccess")
 @SuppressLint("Registered")
-public class ActivityBase extends ActionBarActivity {
+class ActivityBase extends ActionBarActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,6 +20,7 @@ public class ActivityBase extends ActionBarActivity {
         bar.setDisplayShowHomeEnabled(true);
         bar.setIcon(R.drawable.ic_logo);
 
+        getSupportActionBar().setElevation(getResources().getDimensionPixelSize(R.dimen.pad) / 2);
         setRequestedOrientation(OdsApp.get().getPrefs().isTablet() ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }

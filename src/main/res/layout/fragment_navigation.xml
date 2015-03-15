@@ -2,23 +2,19 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@drawable/bg_gradient"
               android:orientation="vertical"
               android:padding="@dimen/pad"
-              tools:context="org.opendataspace.android.ui.FragmentNavigation"
-              tools:ignore="Overdraw">
+              tools:context="org.opendataspace.android.ui.FragmentNavigation">
 
     <TextView
         style="@style/OdsSectionHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/nav_text_accounts"/>
+        android:text="@string/text_nav_accounts"/>
 
     <Spinner
         android:id="@+id/spin_nav_accounts"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:popupBackground="@color/sliding_account_background"
-        android:textColor="@android:color/white"/>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

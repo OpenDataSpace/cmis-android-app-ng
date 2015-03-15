@@ -42,9 +42,13 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
         accounts = null;
     }
 
-    public DaoAccount getAccounts() throws SQLException {
+    public DaoAccount getAccounts() {
         if (accounts == null) {
-            accounts = new DaoAccount(getConnectionSource(), Account.class);
+            try {
+                accounts = new DaoAccount(getConnectionSource(), Account.class);
+            } catch (SQLException ex) {
+                Log.w(getClass().getSimpleName(), ex);
+            }
         }
 
         return accounts;

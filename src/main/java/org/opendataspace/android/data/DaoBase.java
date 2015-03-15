@@ -20,7 +20,7 @@ public abstract class DaoBase<T, ID> extends BaseDaoImpl<T, ID> {
         super(connectionSource, dataClass);
     }
 
-    public DataLoader<T> getSQLCursorLoader(Context context) {
+    public DataLoader<T> getLoader(Context context) {
         DataLoader<T> loader = new DataLoader<>(context, this);
 
         synchronized (loaders) {
