@@ -1,20 +1,20 @@
 package org.opendataspace.android.ui;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.NavState;
 import org.opendataspace.android.navigation.Navigation;
+import org.opendataspace.android.navigation.NavigationCallback;
 
 public class ActivityDialog extends ActivityBase {
 
     public static final String ARG_NAV_STATE = "ods.navstate";
+    public static final String TAG_CONTENT = "content";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,8 +23,14 @@ public class ActivityDialog extends ActivityBase {
 
         try {
             NavState state = OdsApp.gson.fromJson(getIntent().getStringExtra(ARG_NAV_STATE), NavState.class);
-            final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.dialog_view_frame, Navigation.createFragment(state));
+            Fragment fgm = Navigation.createFragment(state);
+
+            if (fgm instanceof NavigationCallback) {
+                getSupportActionBar().setTitle(((NavigationCallback) fgm).getTile(this));
+            }
+
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.dialog_view_frame, fgm, TAG_CONTENT);
             ft.commitAllowingStateLoss();
         } catch (Exception ex) {
             Log.w(getClass().getSimpleName(), ex);
@@ -33,23 +39,17 @@ public class ActivityDialog extends ActivityBase {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_dialog, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+    public void onBackPressed() {
+        Fragment fgm = getFragment();
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.menu_dialog_close:
-            onBackPressed();
-            break;
-
-        default:
-            return super.onOptionsItemSelected(item);
+        if (fgm != null && fgm instanceof NavigationCallback && ((NavigationCallback) fgm).backPressed()) {
+            return;
         }
 
-        return true;
+        super.onBackPressed();
+    }
+
+    private Fragment getFragment() {
+        return getSupportFragmentManager().findFragmentByTag(TAG_CONTENT);
     }
 }

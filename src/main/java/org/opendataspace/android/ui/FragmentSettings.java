@@ -3,10 +3,8 @@ package org.opendataspace.android.ui;
 import android.os.Bundle;
 
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.settings.PreferenceFragment;
 
-@SuppressWarnings("WeakerAccess")
-public class FragmentSettings extends PreferenceFragment {
+public class FragmentSettings extends FragmentBasePreference {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

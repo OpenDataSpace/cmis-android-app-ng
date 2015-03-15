@@ -1,4 +1,4 @@
-package org.opendataspace.android.settings;
+package org.opendataspace.android.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,6 @@ import android.preference.Preference;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +15,11 @@ import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import org.opendataspace.android.app.CompatPreferenceManager;
 import org.opendataspace.android.app.beta.R;
 
-public abstract class PreferenceFragment extends Fragment
-        implements PreferenceManagerCompat.OnPreferenceTreeClickListener {
+public abstract class FragmentBasePreference extends FragmentBase
+        implements CompatPreferenceManager.OnPreferenceTreeClickListener {
 
     private static final String PREFERENCES_TAG = "android:preferences";
 
@@ -64,14 +64,14 @@ public abstract class PreferenceFragment extends Fragment
          * to should instantiate and switch to an instance of the given
          * fragment.
          */
-        boolean onPreferenceStartFragment(PreferenceFragment caller, Preference pref);
+        boolean onPreferenceStartFragment(FragmentBasePreference caller, Preference pref);
     }
 
     @Override
     public void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
-        mPreferenceManager = PreferenceManagerCompat.newInstance(getActivity(), FIRST_REQUEST_CODE);
-        PreferenceManagerCompat.setFragment(mPreferenceManager, this);
+        mPreferenceManager = CompatPreferenceManager.newInstance(getActivity(), FIRST_REQUEST_CODE);
+        CompatPreferenceManager.setFragment(mPreferenceManager, this);
     }
 
     @Override
@@ -103,14 +103,14 @@ public abstract class PreferenceFragment extends Fragment
     @Override
     public void onStart() {
         super.onStart();
-        PreferenceManagerCompat.setOnPreferenceTreeClickListener(mPreferenceManager, this);
+        CompatPreferenceManager.setOnPreferenceTreeClickListener(mPreferenceManager, this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        PreferenceManagerCompat.dispatchActivityStop(mPreferenceManager);
-        PreferenceManagerCompat.setOnPreferenceTreeClickListener(mPreferenceManager, null);
+        CompatPreferenceManager.dispatchActivityStop(mPreferenceManager);
+        CompatPreferenceManager.setOnPreferenceTreeClickListener(mPreferenceManager, null);
     }
 
     @Override
@@ -124,7 +124,7 @@ public abstract class PreferenceFragment extends Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        PreferenceManagerCompat.dispatchActivityDestroy(mPreferenceManager);
+        CompatPreferenceManager.dispatchActivityDestroy(mPreferenceManager);
     }
 
     @Override
@@ -143,7 +143,7 @@ public abstract class PreferenceFragment extends Fragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        PreferenceManagerCompat.dispatchActivityResult(mPreferenceManager, requestCode, resultCode, data);
+        CompatPreferenceManager.dispatchActivityResult(mPreferenceManager, requestCode, resultCode, data);
     }
 
     /**
@@ -161,7 +161,7 @@ public abstract class PreferenceFragment extends Fragment
      * @param preferenceScreen The root {@link PreferenceScreen} of the preference hierarchy.
      */
     public void setPreferenceScreen(PreferenceScreen preferenceScreen) {
-        if (PreferenceManagerCompat.setPreferences(mPreferenceManager, preferenceScreen) && preferenceScreen != null) {
+        if (CompatPreferenceManager.setPreferences(mPreferenceManager, preferenceScreen) && preferenceScreen != null) {
             mHavePrefs = true;
             if (mInitDone) {
                 postBindPreferences();
@@ -176,7 +176,7 @@ public abstract class PreferenceFragment extends Fragment
      * hierarchy.
      */
     public PreferenceScreen getPreferenceScreen() {
-        return PreferenceManagerCompat.getPreferenceScreen(mPreferenceManager);
+        return CompatPreferenceManager.getPreferenceScreen(mPreferenceManager);
     }
 
     /**
@@ -188,7 +188,7 @@ public abstract class PreferenceFragment extends Fragment
         requirePreferenceManager();
 
         setPreferenceScreen(
-                PreferenceManagerCompat.inflateFromIntent(mPreferenceManager, intent, getPreferenceScreen()));
+                CompatPreferenceManager.inflateFromIntent(mPreferenceManager, intent, getPreferenceScreen()));
     }
 
     /**
@@ -200,7 +200,7 @@ public abstract class PreferenceFragment extends Fragment
     public void addPreferencesFromResource(int preferencesResId) {
         requirePreferenceManager();
 
-        setPreferenceScreen(PreferenceManagerCompat
+        setPreferenceScreen(CompatPreferenceManager
                 .inflateFromResource(mPreferenceManager, getActivity(), preferencesResId, getPreferenceScreen()));
     }
 

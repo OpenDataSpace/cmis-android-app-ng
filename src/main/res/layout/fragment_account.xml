@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:padding="@dimen/pad"
+             android:shrinkColumns="1"
+             android:stretchColumns="1">
+
+    <TextView
+        style="@style/OdsSectionHeader"
+        android:text="@string/account_general"/>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/account_hostname"/>
+
+        <EditText
+            android:id="@+id/edit_account_host"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/account_hostname_hint"
+            android:inputType="textNoSuggestions"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/account_username"/>
+
+        <EditText
+            android:id="@+id/edit_account_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/account_required"
+            android:inputType="textNoSuggestions"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/account_password"/>
+
+        <EditText
+            android:id="@+id/edit_account_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/account_required"
+            android:inputType="textPassword"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/account_description"/>
+
+        <EditText
+            android:id="@+id/edit_account_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/account_optional"
+            android:inputType="textNoSuggestions|textCapSentences"/>
+    </TableRow>
+
+    <TextView
+        style="@style/OdsSectionHeader"
+        android:text="@string/account_advanced"/>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/account_usejson"/>
+
+        <CheckBox
+            android:id="@+id/check_account_atom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </TableRow>
+
+</TableLayout>

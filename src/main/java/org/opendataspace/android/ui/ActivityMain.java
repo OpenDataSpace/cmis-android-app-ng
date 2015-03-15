@@ -1,8 +1,6 @@
 package org.opendataspace.android.ui;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import org.opendataspace.android.app.OdsApp;
@@ -23,25 +21,10 @@ public class ActivityMain extends ActivityBase {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.menu_main_about:
-            nav.openDialog(FragmentAbout.class);
-            break;
-
-        case R.id.menu_main_settings:
-            nav.openDialog(FragmentSettings.class);
-            break;
-
         case android.R.id.home:
-            onBackPressed();
+            nav.openDrawer();
             break;
 
         default:
@@ -62,5 +45,9 @@ public class ActivityMain extends ActivityBase {
         if (!nav.backPressed()) {
             super.onBackPressed();
         }
+    }
+
+    public Navigation getNavigation() {
+        return nav;
     }
 }

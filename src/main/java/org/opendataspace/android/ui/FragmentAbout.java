@@ -1,7 +1,6 @@
 package org.opendataspace.android.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -15,8 +14,7 @@ import org.opendataspace.android.app.beta.R;
 
 import java.util.Calendar;
 
-@SuppressWarnings("WeakerAccess")
-public class FragmentAbout extends Fragment {
+public class FragmentAbout extends FragmentBase {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -31,9 +29,8 @@ public class FragmentAbout extends Fragment {
         tva.setMovementMethod(new LinkMovementMethod());
 
         try {
-            tva.setText(Html.fromHtml(
-                    String.format(getString(R.string.about_text_info), OdsApp.get().getPrefs().version(),
-                            Calendar.getInstance().get(Calendar.YEAR))));
+            tva.setText(Html.fromHtml(String.format(getString(R.string.about_info), OdsApp.get().getPrefs().version(),
+                    Calendar.getInstance().get(Calendar.YEAR), getString(R.string.app_mailto))));
         } catch (Exception ex) {
             Log.w(getClass().getSimpleName(), ex);
         }
