@@ -1,8 +1,10 @@
 # ods
 
 -keepclassmembers class * implements com.j256.ormlite.field.DataPersister {
-    public static * getSerializer();
+    public static ** getSerializer();
 }
+
+-dontwarn java.lang.invoke.*
 
 # optimize
 
@@ -10,7 +12,7 @@
 -allowaccessmodification
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile,LineNumberTable
--optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
+-optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*,!code/allocation/variable
 -optimizationpasses 5
 
 #android

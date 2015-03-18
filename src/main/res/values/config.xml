@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <bool name="isTablet">false</bool>
+
+    <item name="internal_empty" type="id"/>
+    <item name="internal_progress" type="id"/>
+    <item name="internal_listcontainer" type="id"/>
+
 </resources>

@@ -12,7 +12,6 @@ import org.opendataspace.android.ui.FragmentBasePreference;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
@@ -71,14 +70,11 @@ public class CompatPreferenceManager {
             onPreferenceTreeClickListener.setAccessible(true);
             if (listener != null) {
                 Object proxy = Proxy.newProxyInstance(onPreferenceTreeClickListener.getType().getClassLoader(),
-                        new Class[]{onPreferenceTreeClickListener.getType()}, new InvocationHandler() {
-                            public Object invoke(Object proxy, Method method, Object[] args) {
-                                if (method.getName().equals("onPreferenceTreeClick")) {
-                                    return listener
-                                            .onPreferenceTreeClick((PreferenceScreen) args[0], (Preference) args[1]);
-                                } else {
-                                    return null;
-                                }
+                        new Class[] {onPreferenceTreeClickListener.getType()}, (proxy1, method, args) -> {
+                            if (method.getName().equals("onPreferenceTreeClick")) {
+                                return listener.onPreferenceTreeClick((PreferenceScreen) args[0], (Preference) args[1]);
+                            } else {
+                                return null;
                             }
                         });
                 onPreferenceTreeClickListener.set(manager, proxy);
@@ -95,14 +91,15 @@ public class CompatPreferenceManager {
      * {@link Activity Activities} that match the given {@link Intent}. An
      * {@link Activity} defines its preference hierarchy with meta-data using
      * the METADATA_KEY_PREFERENCES key.
-     * <p/>
+     * <p>
      * If a preference hierarchy is given, the new preference hierarchies will
      * be merged in.
      *
      * @return The root hierarchy (if one was not provided, the new hierarchy's
      * root).
      */
-    public static PreferenceScreen inflateFromIntent(PreferenceManager manager, Intent intent, PreferenceScreen screen) {
+    public static PreferenceScreen inflateFromIntent(PreferenceManager manager, Intent intent,
+                                                     PreferenceScreen screen) {
         try {
             Method m = PreferenceManager.class
                     .getDeclaredMethod("inflateFromIntent", Intent.class, PreferenceScreen.class);

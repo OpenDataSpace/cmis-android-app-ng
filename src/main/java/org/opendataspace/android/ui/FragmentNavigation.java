@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,15 +39,12 @@ public class FragmentNavigation extends FragmentBase
 
         DataAdapterMerge merge = new DataAdapterMerge();
         merge.addAdapter(accounts);
-
-        if (accounts.getCount() != 0) {
-            merge.addAdapter(
-                    new ArrayAdapter<String>(ac, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1,
-                            new String[] {getString(R.string.nav_manage)}));
-        }
+        merge.addAdapter(new ArrayAdapter<>(ac, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1,
+                new String[] {getString(accounts.getCount() != 0 ? R.string.nav_manage : R.string.nav_noaccounts)}));
 
         spin.setAdapter(merge);
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i == adapterView.getCount() - 1 && accounts.getCount() != 0) {
@@ -63,6 +58,7 @@ public class FragmentNavigation extends FragmentBase
             }
         });
 
+        ac.findViewById(R.id.action_nav_settings).setOnClickListener(view -> actionSettings());
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -87,13 +83,17 @@ public class FragmentNavigation extends FragmentBase
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
+    protected int getMenuResource() {
+        return R.menu.menu_main;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        ActivityMain ac = (ActivityMain) getActivity();
+        ActivityMain ac = getMainActivity();
+
+        if (ac == null) {
+            return super.onOptionsItemSelected(item);
+        }
 
         switch (item.getItemId()) {
         case R.id.menu_main_about:
@@ -101,7 +101,7 @@ public class FragmentNavigation extends FragmentBase
             break;
 
         case R.id.menu_main_settings:
-            ac.getNavigation().openDialog(FragmentSettings.class);
+            actionSettings();
             break;
 
         default:
@@ -109,5 +109,9 @@ public class FragmentNavigation extends FragmentBase
         }
 
         return true;
+    }
+
+    private void actionSettings() {
+        getMainActivity().getNavigation().openDialog(FragmentSettings.class);
     }
 }

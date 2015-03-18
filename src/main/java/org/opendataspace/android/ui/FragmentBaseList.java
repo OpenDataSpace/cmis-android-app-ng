@@ -1,25 +1,338 @@
 package org.opendataspace.android.ui;
 
 import android.content.Context;
-import android.support.v4.app.ListFragment;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.navigation.NavigationCallback;
 
-public class FragmentBaseList extends ListFragment implements NavigationCallback {
+public class FragmentBaseList extends FragmentBase {
 
-    @Override
-    public boolean needDrawer() {
-        return true;
+    final private Handler mHandler = new Handler();
+
+    final private Runnable mRequestFocus = new Runnable() {
+        public void run() {
+            list.focusableViewAvailable(list);
+        }
+    };
+
+    final private AdapterView.OnItemClickListener mOnClickListener =
+            (parent, v, position, id) -> onListItemClick((ListView) parent, v, position, id);
+
+    ListAdapter adapter;
+    ListView list;
+    View emptyView;
+    TextView standardEmptyView;
+    View progressContainer;
+    View listContainer;
+    CharSequence emptyText;
+    boolean isListShown;
+
+    public FragmentBaseList() {
     }
 
+    /**
+     * Provide default implementation to return a simple list view.  Subclasses
+     * can override to replace with their own layout.  If doing so, the
+     * returned view hierarchy <em>must</em> have a ListView whose id
+     * is {@link android.R.id#list android.R.id.list} and can optionally
+     * have a sibling view id {@link android.R.id#empty android.R.id.empty}
+     * that is to be shown when the list is empty.
+     * <p/>
+     * <p>If you are overriding this method with your own custom content,
+     * consider including the standard layout {@link android.R.layout#list_content}
+     * in your layout file, so that you continue to retain all of the standard
+     * behavior of ListFragment.  In particular, this is currently the only
+     * way to have the built-in indeterminant progress state be shown.
+     */
     @Override
-    public boolean backPressed() {
-        return false;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        final Context context = getActivity();
+
+        FrameLayout root = new FrameLayout(context);
+
+        // ------------------------------------------------------------------
+
+        LinearLayout pframe = new LinearLayout(context);
+        pframe.setId(R.id.internal_progress);
+        pframe.setOrientation(LinearLayout.VERTICAL);
+        pframe.setVisibility(View.GONE);
+        pframe.setGravity(Gravity.CENTER);
+
+        ProgressBar progress = new ProgressBar(context, null, android.R.attr.progressBarStyleLarge);
+        pframe.addView(progress,
+                new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        root.addView(pframe,
+                new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        // ------------------------------------------------------------------
+
+        FrameLayout lframe = new FrameLayout(context);
+        lframe.setId(R.id.internal_listcontainer);
+
+        TextView tv = new TextView(getActivity());
+        tv.setId(R.id.internal_empty);
+        tv.setGravity(Gravity.CENTER);
+        lframe.addView(tv,
+                new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        ListView lv = new ListView(getActivity());
+        lv.setId(android.R.id.list);
+        lv.setDrawSelectorOnTop(false);
+        lframe.addView(lv,
+                new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        root.addView(lframe,
+                new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        // ------------------------------------------------------------------
+
+        root.setLayoutParams(
+                new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        return root;
     }
 
+    /**
+     * Attach to list view once the view hierarchy has been created.
+     */
     @Override
-    public String getTile(Context context) {
-        return context.getString(R.string.app_name);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ensureList();
+    }
+
+    /**
+     * Detach from list view.
+     */
+    @Override
+    public void onDestroyView() {
+        mHandler.removeCallbacks(mRequestFocus);
+        list = null;
+        isListShown = false;
+        emptyView = progressContainer = listContainer = null;
+        standardEmptyView = null;
+        super.onDestroyView();
+    }
+
+    /**
+     * This method will be called when an item in the list is selected.
+     * Subclasses should override. Subclasses can call
+     * getListView().getItemAtPosition(position) if they need to access the
+     * data associated with the selected item.
+     *
+     * @param l        The ListView where the click happened
+     * @param v        The view that was clicked within the ListView
+     * @param position The position of the view in the list
+     * @param id       The row id of the item that was clicked
+     */
+    public void onListItemClick(ListView l, View v, int position, long id) {
+    }
+
+    /**
+     * Provide the cursor for the list view.
+     */
+    public void setListAdapter(ListAdapter adapter) {
+        boolean hadAdapter = this.adapter != null;
+        this.adapter = adapter;
+        if (list != null) {
+            list.setAdapter(adapter);
+            if (!isListShown && !hadAdapter) {
+                // The list was hidden, and previously didn't have an
+                // adapter.  It is now time to show it.
+                View v = getView();
+                setListShown(true, v != null && v.getWindowToken() != null);
+            }
+        }
+    }
+
+    /**
+     * Set the currently selected list item to the specified
+     * position with the adapter's data
+     */
+    public void setSelection(int position) {
+        ensureList();
+        list.setSelection(position);
+    }
+
+    /**
+     * Get the position of the currently selected list item.
+     */
+    public int getSelectedItemPosition() {
+        ensureList();
+        return list.getSelectedItemPosition();
+    }
+
+    /**
+     * Get the cursor row ID of the currently selected list item.
+     */
+    public long getSelectedItemId() {
+        ensureList();
+        return list.getSelectedItemId();
+    }
+
+    /**
+     * Get the activity's list view widget.
+     */
+    public ListView getListView() {
+        ensureList();
+        return list;
+    }
+
+    /**
+     * The default content for a ListFragment has a TextView that can
+     * be shown when the list is empty.  If you would like to have it
+     * shown, call this method to supply the text it should use.
+     */
+    public void setEmptyText(CharSequence text) {
+        ensureList();
+        if (standardEmptyView == null) {
+            throw new IllegalStateException("Can't be used with a custom content view");
+        }
+        standardEmptyView.setText(text);
+        if (emptyText == null) {
+            list.setEmptyView(standardEmptyView);
+        }
+        emptyText = text;
+    }
+
+    /**
+     * Control whether the list is being displayed.  You can make it not
+     * displayed if you are waiting for the initial data to show in it.  During
+     * this time an indeterminant progress indicator will be shown instead.
+     * <p/>
+     * <p>Applications do not normally need to use this themselves.  The default
+     * behavior of ListFragment is to start with the list not being shown, only
+     * showing it once an adapter is given with {@link #setListAdapter(ListAdapter)}.
+     * If the list at that point had not been shown, when it does get shown
+     * it will be do without the user ever seeing the hidden state.
+     *
+     * @param shown If true, the list view is shown; if false, the progress
+     *              indicator.  The initial value is true.
+     */
+    public void setListShown(boolean shown) {
+        setListShown(shown, true);
+    }
+
+    /**
+     * Like {@link #setListShown(boolean)}, but no animation is used when
+     * transitioning from the previous state.
+     */
+    public void setListShownNoAnimation(boolean shown) {
+        setListShown(shown, false);
+    }
+
+    /**
+     * Control whether the list is being displayed.  You can make it not
+     * displayed if you are waiting for the initial data to show in it.  During
+     * this time an indeterminant progress indicator will be shown instead.
+     *
+     * @param shown   If true, the list view is shown; if false, the progress
+     *                indicator.  The initial value is true.
+     * @param animate If true, an animation will be used to transition to the
+     *                new state.
+     */
+    private void setListShown(boolean shown, boolean animate) {
+        ensureList();
+        if (progressContainer == null) {
+            throw new IllegalStateException("Can't be used with a custom content view");
+        }
+        if (isListShown == shown) {
+            return;
+        }
+        isListShown = shown;
+        if (shown) {
+            if (animate) {
+                progressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+                listContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+            } else {
+                progressContainer.clearAnimation();
+                listContainer.clearAnimation();
+            }
+            progressContainer.setVisibility(View.GONE);
+            listContainer.setVisibility(View.VISIBLE);
+        } else {
+            if (animate) {
+                progressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+                listContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+            } else {
+                progressContainer.clearAnimation();
+                listContainer.clearAnimation();
+            }
+            progressContainer.setVisibility(View.VISIBLE);
+            listContainer.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Get the ListAdapter associated with this activity's ListView.
+     */
+    public ListAdapter getListAdapter() {
+        return adapter;
+    }
+
+    private void ensureList() {
+        if (list != null) {
+            return;
+        }
+        View root = getView();
+        if (root == null) {
+            throw new IllegalStateException("Content view not yet created");
+        }
+        if (root instanceof ListView) {
+            list = (ListView) root;
+        } else {
+            standardEmptyView = (TextView) root.findViewById(R.id.internal_empty);
+            if (standardEmptyView == null) {
+                emptyView = root.findViewById(android.R.id.empty);
+            } else {
+                standardEmptyView.setVisibility(View.GONE);
+            }
+            progressContainer = root.findViewById(R.id.internal_progress);
+            listContainer = root.findViewById(R.id.internal_listcontainer);
+            View rawListView = root.findViewById(android.R.id.list);
+            if (!(rawListView instanceof ListView)) {
+                if (rawListView == null) {
+                    throw new RuntimeException(
+                            "Your content must have a ListView whose id attribute is " + "'android.R.id.list'");
+                }
+                throw new RuntimeException(
+                        "Content has view with id attribute 'android.R.id.list' " + "that is not a ListView class");
+            }
+            list = (ListView) rawListView;
+            if (emptyView != null) {
+                list.setEmptyView(emptyView);
+            } else if (emptyText != null) {
+                standardEmptyView.setText(emptyText);
+                list.setEmptyView(standardEmptyView);
+            }
+        }
+        isListShown = true;
+        list.setOnItemClickListener(mOnClickListener);
+        if (adapter != null) {
+            ListAdapter adapter = this.adapter;
+            this.adapter = null;
+            setListAdapter(adapter);
+        } else {
+            // We are starting without an adapter, so assume we won't
+            // have our data right away and start with the progress indicator.
+            if (progressContainer != null) {
+                setListShown(false, false);
+            }
+        }
+        mHandler.post(mRequestFocus);
     }
 }

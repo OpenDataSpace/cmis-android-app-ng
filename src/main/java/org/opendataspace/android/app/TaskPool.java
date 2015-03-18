@@ -10,7 +10,7 @@ public class TaskPool {
 
     private final ThreadPoolExecutor service =
             new ThreadPoolExecutor(NUMBER_OF_CORES, NUMBER_OF_CORES, 1, TimeUnit.MINUTES,
-                    new ArrayBlockingQueue<Runnable>(100, true), new ThreadPoolExecutor.CallerRunsPolicy());
+                    new ArrayBlockingQueue<>(100, true), new ThreadPoolExecutor.CallerRunsPolicy());
 
     public void execute(final Task task) {
         service.execute(task);

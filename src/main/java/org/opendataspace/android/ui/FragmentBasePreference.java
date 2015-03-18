@@ -18,15 +18,41 @@ import android.widget.ListView;
 import org.opendataspace.android.app.CompatPreferenceManager;
 import org.opendataspace.android.app.beta.R;
 
+import java.lang.ref.WeakReference;
+
 public abstract class FragmentBasePreference extends FragmentBase
         implements CompatPreferenceManager.OnPreferenceTreeClickListener {
 
     private static final String PREFERENCES_TAG = "android:preferences";
 
-    private PreferenceManager mPreferenceManager;
-    private ListView mList;
-    private boolean mHavePrefs;
-    private boolean mInitDone;
+    private PreferenceManager preferenceManager;
+    private ListView list;
+    private boolean havePrefs;
+    private boolean initDone;
+
+    private static class PrefHandler extends Handler {
+
+        private final WeakReference<FragmentBasePreference> frag;
+
+        public PrefHandler(FragmentBasePreference frag) {
+            this.frag = new WeakReference<>(frag);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+
+            case MSG_BIND_PREFERENCES: {
+                FragmentBasePreference f = frag.get();
+
+                if (f != null) {
+                    f.bindPreferences();
+                }
+            }
+            break;
+            }
+        }
+    }
 
     /**
      * The starting request code given out to preference framework.
@@ -34,21 +60,11 @@ public abstract class FragmentBasePreference extends FragmentBase
     private static final int FIRST_REQUEST_CODE = 100;
 
     private static final int MSG_BIND_PREFERENCES = 1;
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-
-            case MSG_BIND_PREFERENCES:
-                bindPreferences();
-                break;
-            }
-        }
-    };
+    private Handler mHandler = new PrefHandler(this);
 
     final private Runnable mRequestFocus = new Runnable() {
         public void run() {
-            mList.focusableViewAvailable(mList);
+            list.focusableViewAvailable(list);
         }
     };
 
@@ -70,8 +86,8 @@ public abstract class FragmentBasePreference extends FragmentBase
     @Override
     public void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
-        mPreferenceManager = CompatPreferenceManager.newInstance(getActivity(), FIRST_REQUEST_CODE);
-        CompatPreferenceManager.setFragment(mPreferenceManager, this);
+        preferenceManager = CompatPreferenceManager.newInstance(getActivity(), FIRST_REQUEST_CODE);
+        CompatPreferenceManager.setFragment(preferenceManager, this);
     }
 
     @Override
@@ -83,11 +99,11 @@ public abstract class FragmentBasePreference extends FragmentBase
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (mHavePrefs) {
+        if (havePrefs) {
             bindPreferences();
         }
 
-        mInitDone = true;
+        initDone = true;
 
         if (savedInstanceState != null) {
             Bundle container = savedInstanceState.getBundle(PREFERENCES_TAG);
@@ -103,19 +119,19 @@ public abstract class FragmentBasePreference extends FragmentBase
     @Override
     public void onStart() {
         super.onStart();
-        CompatPreferenceManager.setOnPreferenceTreeClickListener(mPreferenceManager, this);
+        CompatPreferenceManager.setOnPreferenceTreeClickListener(preferenceManager, this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        CompatPreferenceManager.dispatchActivityStop(mPreferenceManager);
-        CompatPreferenceManager.setOnPreferenceTreeClickListener(mPreferenceManager, null);
+        CompatPreferenceManager.dispatchActivityStop(preferenceManager);
+        CompatPreferenceManager.setOnPreferenceTreeClickListener(preferenceManager, null);
     }
 
     @Override
     public void onDestroyView() {
-        mList = null;
+        list = null;
         mHandler.removeCallbacks(mRequestFocus);
         mHandler.removeMessages(MSG_BIND_PREFERENCES);
         super.onDestroyView();
@@ -124,7 +140,7 @@ public abstract class FragmentBasePreference extends FragmentBase
     @Override
     public void onDestroy() {
         super.onDestroy();
-        CompatPreferenceManager.dispatchActivityDestroy(mPreferenceManager);
+        CompatPreferenceManager.dispatchActivityDestroy(preferenceManager);
     }
 
     @Override
@@ -143,7 +159,7 @@ public abstract class FragmentBasePreference extends FragmentBase
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        CompatPreferenceManager.dispatchActivityResult(mPreferenceManager, requestCode, resultCode, data);
+        CompatPreferenceManager.dispatchActivityResult(preferenceManager, requestCode, resultCode, data);
     }
 
     /**
@@ -152,7 +168,7 @@ public abstract class FragmentBasePreference extends FragmentBase
      * @return The {@link PreferenceManager}.
      */
     public PreferenceManager getPreferenceManager() {
-        return mPreferenceManager;
+        return preferenceManager;
     }
 
     /**
@@ -161,9 +177,9 @@ public abstract class FragmentBasePreference extends FragmentBase
      * @param preferenceScreen The root {@link PreferenceScreen} of the preference hierarchy.
      */
     public void setPreferenceScreen(PreferenceScreen preferenceScreen) {
-        if (CompatPreferenceManager.setPreferences(mPreferenceManager, preferenceScreen) && preferenceScreen != null) {
-            mHavePrefs = true;
-            if (mInitDone) {
+        if (CompatPreferenceManager.setPreferences(preferenceManager, preferenceScreen) && preferenceScreen != null) {
+            havePrefs = true;
+            if (initDone) {
                 postBindPreferences();
             }
         }
@@ -176,7 +192,7 @@ public abstract class FragmentBasePreference extends FragmentBase
      * hierarchy.
      */
     public PreferenceScreen getPreferenceScreen() {
-        return CompatPreferenceManager.getPreferenceScreen(mPreferenceManager);
+        return CompatPreferenceManager.getPreferenceScreen(preferenceManager);
     }
 
     /**
@@ -188,7 +204,7 @@ public abstract class FragmentBasePreference extends FragmentBase
         requirePreferenceManager();
 
         setPreferenceScreen(
-                CompatPreferenceManager.inflateFromIntent(mPreferenceManager, intent, getPreferenceScreen()));
+                CompatPreferenceManager.inflateFromIntent(preferenceManager, intent, getPreferenceScreen()));
     }
 
     /**
@@ -201,7 +217,7 @@ public abstract class FragmentBasePreference extends FragmentBase
         requirePreferenceManager();
 
         setPreferenceScreen(CompatPreferenceManager
-                .inflateFromResource(mPreferenceManager, getActivity(), preferencesResId, getPreferenceScreen()));
+                .inflateFromResource(preferenceManager, getActivity(), preferencesResId, getPreferenceScreen()));
     }
 
     /**
@@ -221,14 +237,14 @@ public abstract class FragmentBasePreference extends FragmentBase
      * @see PreferenceGroup#findPreference(CharSequence)
      */
     public Preference findPreference(CharSequence key) {
-        if (mPreferenceManager == null) {
+        if (preferenceManager == null) {
             return null;
         }
-        return mPreferenceManager.findPreference(key);
+        return preferenceManager.findPreference(key);
     }
 
     private void requirePreferenceManager() {
-        if (mPreferenceManager == null) {
+        if (preferenceManager == null) {
             throw new RuntimeException("This should be called after super.onCreate.");
         }
     }
@@ -249,11 +265,11 @@ public abstract class FragmentBasePreference extends FragmentBase
 
     public ListView getListView() {
         ensureList();
-        return mList;
+        return list;
     }
 
     private void ensureList() {
-        if (mList != null) {
+        if (list != null) {
             return;
         }
         View root = getView();
@@ -269,8 +285,8 @@ public abstract class FragmentBasePreference extends FragmentBase
             throw new RuntimeException(
                     "Content has view with id attribute 'android.R.id.list' " + "that is not a ListView class");
         }
-        mList = (ListView) rawListView;
-        mList.setOnKeyListener(mListOnKeyListener);
+        list = (ListView) rawListView;
+        list.setOnKeyListener(mListOnKeyListener);
         mHandler.post(mRequestFocus);
     }
 
@@ -278,17 +294,14 @@ public abstract class FragmentBasePreference extends FragmentBase
 
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
-            Object selectedItem = mList.getSelectedItem();
+            Object selectedItem = list.getSelectedItem();
             if (selectedItem instanceof Preference) {
-                @SuppressWarnings({"unused", "UnusedAssignment"}) View selectedView = mList.getSelectedView();
+                @SuppressWarnings({"unused", "UnusedAssignment"}) View selectedView = list.getSelectedView();
                 //return ((Preference)selectedItem).onKey(
                 //        selectedView, keyCode, event);
                 return false;
             }
             return false;
         }
-
     };
-
-
 }

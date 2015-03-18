@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.j256.ormlite.dao.CloseableIterator;
@@ -27,8 +25,6 @@ public class FragmentAccountList extends FragmentBaseList
         } catch (Exception ex) {
             Log.w(getClass().getSimpleName(), ex);
         }
-
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -56,12 +52,7 @@ public class FragmentAccountList extends FragmentBaseList
         accounts.swapResults(null);
         isEmpty = true;
     }
-
-    @Override
-    public boolean needDrawer() {
-        return !isEmpty;
-    }
-
+    
     @Override
     public boolean backPressed() {
         if (isEmpty) {
@@ -78,8 +69,8 @@ public class FragmentAccountList extends FragmentBaseList
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_accounts, menu);
+    protected int getMenuResource() {
+        return R.menu.menu_accounts;
     }
 
     @Override

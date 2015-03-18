@@ -104,33 +104,44 @@ public class Navigation {
 
 
         boolean needDrawer = backstack.size() > 1;
+        boolean needSync = true;
 
         if (fgm instanceof NavigationCallback) {
             NavigationCallback nc = (NavigationCallback) fgm;
 
-            needDrawer &= nc.needDrawer();
             bar.setTitle(nc.getTile(context));
         }
-
-        bar.setDisplayHomeAsUpEnabled(needDrawer);
-        bar.invalidateOptionsMenu();
-        drawer.setDrawerLockMode(needDrawer ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        toggle.syncState();
 
         if (isTablet) {
             switch (ns.getNavigationScope()) {
             case DETAILS:
                 applyFragment(R.id.main_view_details, fgm, TAG_DETAILS);
-                return;
+                break;
+
+            case MAIN:
+                applyFragment(R.id.main_view_frame, fgm, TAG_MAIN);
+                break;
+
             case DIALOG:
                 Intent intent = new Intent(context, ActivityDialog.class);
                 intent.putExtra(ActivityDialog.ARG_NAV_STATE, OdsApp.gson.toJson(ns, NavState.class));
                 context.startActivity(intent);
                 return;
             }
+        } else {
+            applyFragment(R.id.main_view_frame, fgm, TAG_MAIN);
         }
 
-        applyFragment(R.id.main_view_frame, fgm, TAG_MAIN);
+
+        bar.invalidateOptionsMenu();
+        bar.setDisplayHomeAsUpEnabled(needDrawer);
+        toggle.syncState();
+        drawer.setDrawerLockMode(needDrawer ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+                Gravity.LEFT);
+    }
+
+    private void closeDrawer() {
+        drawer.closeDrawer(Gravity.LEFT);
     }
 
     public static Fragment createFragment(NavState ns) {
@@ -148,13 +159,11 @@ public class Navigation {
     }
 
     public void openDialog(Class<? extends Fragment> cls) {
-        NavState ns = new NavState(NavScope.DIALOG, cls);
-        addBackstack(ns);
-        navigate(ns);
+        navigate(cls, NavScope.DIALOG, false);
     }
 
     private void addBackstack(NavState ns) {
-        if (!isTablet || ns.getNavigationScope() == NavScope.MAIN) {
+        if (!isTablet || ns.getNavigationScope() != NavScope.DIALOG) {
             backstack.add(ns);
         }
     }
@@ -170,17 +179,18 @@ public class Navigation {
             return true;
         }
 
-        backstack.pop();
-        navigate(backstack.lastElement());
+        NavState state = backstack.pop();
 
-        if (backstack.size() == 1 && isTablet) {
+        if (isTablet && state.getNavigationScope() == NavScope.DETAILS) {
             applyFragment(R.id.main_view_details, null, TAG_DETAILS);
+        } else {
+            navigate(backstack.lastElement());
         }
 
         return true;
     }
 
-    private Fragment getTopFragment() {
+    public Fragment getTopFragment() {
         return fm.findFragmentByTag(
                 (isTablet && backstack.lastElement().getNavigationScope() == NavScope.DETAILS) ? TAG_DETAILS :
                         TAG_MAIN);
@@ -199,10 +209,7 @@ public class Navigation {
     }
 
     public void openRootFolder(Class<? extends Fragment> cls) {
-        NavState ns = new NavState(NavScope.MAIN, cls);
-        goHome();
-        addBackstack(ns);
-        navigate(ns);
+        navigate(cls, NavScope.MAIN, true);
     }
 
     public void openDrawer() {
@@ -210,7 +217,21 @@ public class Navigation {
     }
 
     public void openFile(Class<? extends Fragment> cls) {
-        NavState ns = new NavState(NavScope.DETAILS, cls);
+        navigate(cls, NavScope.DETAILS, false);
+    }
+
+    private void navigate(Class<? extends Fragment> cls, NavScope scope, boolean needHome) {
+        closeDrawer();
+
+        if (getTopFragment().getClass().equals(cls)) {
+            return;
+        }
+
+        if (needHome) {
+            goHome();
+        }
+
+        NavState ns = new NavState(scope, cls);
         addBackstack(ns);
         navigate(ns);
     }

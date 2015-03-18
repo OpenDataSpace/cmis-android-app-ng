@@ -17,4 +17,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            style="@style/OdsSectionHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_views"/>
+    </ScrollView>
+
+    <TextView
+        style="@style/OdsSectionHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/action_nav_settings"
+        style="@style/OdsBorderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_settings"
+        android:drawableStart="@drawable/ic_settings"
+        android:text="@string/nav_settings"/>
+
 </LinearLayout>
