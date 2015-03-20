@@ -4,6 +4,11 @@
     public static ** getSerializer();
 }
 
+-keepclassmembers class * extends org.opendataspace.android.ui.FragmentBase {
+    public <init>(org.opendataspace.android.ui.operations.Operation*);
+}
+
+
 -dontwarn java.lang.invoke.*
 
 # optimize

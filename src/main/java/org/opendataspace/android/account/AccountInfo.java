@@ -1,12 +1,29 @@
 package org.opendataspace.android.account;
 
+import com.google.gson.annotations.Expose;
+
 class AccountInfo {
-    public String host;
-    public String login;
-    public String password;
-    public String name;
-    public boolean useHttps;
-    public boolean useJson;
-    public int port;
-    public String path;
+    @Expose
+    public String host = "";
+
+    @Expose
+    public String login = "";
+
+    @Expose
+    public String password = "";
+
+    @Expose
+    public String name = "";
+
+    @Expose
+    public boolean useHttps = true;
+
+    @Expose
+    public boolean useJson = true;
+
+    @Expose
+    public int port = -1;
+
+    @Expose
+    public String path = "";
 }

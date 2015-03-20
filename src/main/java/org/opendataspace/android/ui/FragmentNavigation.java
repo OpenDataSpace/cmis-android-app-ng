@@ -79,7 +79,7 @@ public class FragmentNavigation extends FragmentBase
 
     private void actionManage() {
         ActivityMain ac = (ActivityMain) getActivity();
-        ac.getNavigation().openRootFolder(FragmentAccountList.class);
+        ac.getNavigation().openRootFolder(FragmentAccountList.class, null);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class FragmentNavigation extends FragmentBase
 
         switch (item.getItemId()) {
         case R.id.menu_main_about:
-            ac.getNavigation().openDialog(FragmentAbout.class);
+            ac.getNavigation().openDialog(FragmentAbout.class, null);
             break;
 
         case R.id.menu_main_settings:
@@ -112,6 +112,6 @@ public class FragmentNavigation extends FragmentBase
     }
 
     private void actionSettings() {
-        getMainActivity().getNavigation().openDialog(FragmentSettings.class);
+        getMainActivity().getNavigation().openDialog(FragmentSettings.class, null);
     }
 }

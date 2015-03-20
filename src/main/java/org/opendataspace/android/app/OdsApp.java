@@ -10,7 +10,9 @@ import org.opendataspace.android.data.DataBase;
 public class OdsApp extends Application {
 
     private static OdsApp instance;
-    public static final Gson gson = new GsonBuilder().registerTypeAdapter(Class.class, new OdsClassSerializer()).create();
+    public static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+            .registerTypeAdapter(Class.class, new ClassSerializer())
+            .registerTypeAdapter(ClassWrapper.class, new ClassWrapperSerializer()).create();
 
     private OdsPreferences prefs;
     private DataBase database;

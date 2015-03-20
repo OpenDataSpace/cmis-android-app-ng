@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.widget.Toast;
 
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
@@ -12,9 +13,14 @@ import org.opendataspace.android.app.beta.R;
 @SuppressLint("Registered")
 class ActivityBase extends ActionBarActivity {
 
+    private Toast toast;
+
+    @SuppressLint("ShowToast")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
 
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
@@ -29,5 +35,14 @@ class ActivityBase extends ActionBarActivity {
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.remove("android:support:fragments"); // do not store fragment state
+    }
+
+    public void showToast(final int messageCode) {
+        showToast(getString(messageCode));
+    }
+
+    public void showToast(final String message) {
+        toast.setText(message);
+        toast.show();
     }
 }

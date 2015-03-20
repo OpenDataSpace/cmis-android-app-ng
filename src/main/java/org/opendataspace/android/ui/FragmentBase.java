@@ -7,20 +7,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.navigation.NavigationCallback;
 
-public class FragmentBase extends Fragment implements NavigationCallback {
+public class FragmentBase extends Fragment {
 
     public FragmentBase() {
         setHasOptionsMenu(true);
     }
 
-    @Override
     public boolean backPressed() {
         return false;
     }
 
-    @Override
     public String getTile(Context context) {
         return context.getString(R.string.app_name);
     }

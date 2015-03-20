@@ -1,6 +1,6 @@
 package org.opendataspace.android.navigation;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,15 +8,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.Gravity;
 
+import org.opendataspace.android.app.CompatKeyboard;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.operations.OperatonBase;
 import org.opendataspace.android.ui.ActivityDialog;
+import org.opendataspace.android.ui.ActivityMain;
 import org.opendataspace.android.ui.FragmentAccountList;
+import org.opendataspace.android.ui.FragmentBase;
 import org.opendataspace.android.ui.FragmentNavigation;
 
 import java.util.Collections;
@@ -29,15 +32,15 @@ public class Navigation {
     private static final String TAG_DETAILS = "details";
     private static final String ARG_BACKSTACK = "ods.backstack";
 
-    private FragmentManager fm;
-    private ActionBar bar;
-    private DrawerLayout drawer;
-    private Context context;
-    private final Stack<NavState> backstack = new Stack<>();
-    private boolean isTablet;
-    private ActionBarDrawerToggle toggle;
+    private final FragmentManager fm;
+    private final ActionBar bar;
+    private final DrawerLayout drawer;
+    private final Activity context;
+    private final Stack<NavigationState> backstack = new Stack<>();
+    private final boolean isTablet;
+    private final ActionBarDrawerToggle toggle;
 
-    public void initialize(ActionBarActivity activity, Bundle state) {
+    public Navigation(ActivityMain activity, Bundle state) {
         fm = activity.getSupportFragmentManager();
         bar = activity.getSupportActionBar();
         drawer = (DrawerLayout) activity.findViewById(R.id.main_view_root);
@@ -50,7 +53,7 @@ public class Navigation {
         drawer.setScrimColor(activity.getResources().getColor(android.R.color.transparent));
 
         if (state != null) {
-            NavState[] ns = OdsApp.gson.fromJson(state.getString(ARG_BACKSTACK), NavState[].class);
+            NavigationState[] ns = OdsApp.gson.fromJson(state.getString(ARG_BACKSTACK), NavigationState[].class);
 
             if (ns != null) {
                 Collections.addAll(backstack, ns);
@@ -58,12 +61,12 @@ public class Navigation {
         }
 
         if (backstack.isEmpty()) {
-            backstack.add(new NavState(NavScope.MAIN, FragmentNavigation.class));
+            backstack.add(new NavigationState(NavigationScope.MAIN, FragmentNavigation.class, null));
         }
 
         try {
             if (OdsApp.get().getDatabase().getAccounts().countOf() == 0) {
-                backstack.add(new NavState(NavScope.MAIN, FragmentAccountList.class));
+                backstack.add(new NavigationState(NavigationScope.MAIN, FragmentAccountList.class, null));
             }
         } catch (Exception ex) {
             Log.w(getClass().getSimpleName(), ex);
@@ -95,22 +98,14 @@ public class Navigation {
         }
     }
 
-    private void navigate(NavState ns) {
-        Fragment fgm = createFragment(ns);
+    private void navigate(NavigationState ns) {
+        FragmentBase fgm = createFragment(ns);
 
         if (fgm == null) {
             return;
         }
 
-
         boolean needDrawer = backstack.size() > 1;
-        boolean needSync = true;
-
-        if (fgm instanceof NavigationCallback) {
-            NavigationCallback nc = (NavigationCallback) fgm;
-
-            bar.setTitle(nc.getTile(context));
-        }
 
         if (isTablet) {
             switch (ns.getNavigationScope()) {
@@ -124,7 +119,7 @@ public class Navigation {
 
             case DIALOG:
                 Intent intent = new Intent(context, ActivityDialog.class);
-                intent.putExtra(ActivityDialog.ARG_NAV_STATE, OdsApp.gson.toJson(ns, NavState.class));
+                intent.putExtra(ActivityDialog.ARG_NAV_STATE, OdsApp.gson.toJson(ns, NavigationState.class));
                 context.startActivity(intent);
                 return;
             }
@@ -132,21 +127,23 @@ public class Navigation {
             applyFragment(R.id.main_view_frame, fgm, TAG_MAIN);
         }
 
-
         bar.invalidateOptionsMenu();
         bar.setDisplayHomeAsUpEnabled(needDrawer);
+        bar.setTitle(fgm.getTile(context));
         toggle.syncState();
         drawer.setDrawerLockMode(needDrawer ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
-                Gravity.LEFT);
+                Gravity.START);
     }
 
     private void closeDrawer() {
-        drawer.closeDrawer(Gravity.LEFT);
+        drawer.closeDrawer(Gravity.START);
     }
 
-    public static Fragment createFragment(NavState ns) {
+    public static FragmentBase createFragment(NavigationState ns) {
         try {
-            return ns.getFragmentClass().newInstance();
+            Class<?> cls = ns.getFragmentClass();
+            OperatonBase op = ns.getOperation();
+            return (FragmentBase) (op != null ? cls.getConstructor(op.getClass()).newInstance(op) : cls.newInstance());
         } catch (Exception ex) {
             Log.w(Navigation.class.getSimpleName(), ex);
         }
@@ -158,12 +155,12 @@ public class Navigation {
         state.putString(ARG_BACKSTACK, OdsApp.gson.toJson(backstack));
     }
 
-    public void openDialog(Class<? extends Fragment> cls) {
-        navigate(cls, NavScope.DIALOG, false);
+    public void openDialog(Class<? extends FragmentBase> cls, OperatonBase op) {
+        navigate(cls, op, NavigationScope.DIALOG, false);
     }
 
-    private void addBackstack(NavState ns) {
-        if (!isTablet || ns.getNavigationScope() != NavScope.DIALOG) {
+    private void addBackstack(NavigationState ns) {
+        if (!isTablet || ns.getNavigationScope() != NavigationScope.DIALOG) {
             backstack.add(ns);
         }
     }
@@ -173,15 +170,16 @@ public class Navigation {
             return false;
         }
 
-        Fragment fgm = getTopFragment();
+        FragmentBase fgm = getTopFragment();
 
-        if (fgm != null && fgm instanceof NavigationCallback && ((NavigationCallback) fgm).backPressed()) {
+        if (fgm != null && fgm.backPressed()) {
             return true;
         }
 
-        NavState state = backstack.pop();
+        CompatKeyboard.hide(context);
+        NavigationState state = backstack.pop();
 
-        if (isTablet && state.getNavigationScope() == NavScope.DETAILS) {
+        if (isTablet && state.getNavigationScope() == NavigationScope.DETAILS) {
             applyFragment(R.id.main_view_details, null, TAG_DETAILS);
         } else {
             navigate(backstack.lastElement());
@@ -190,9 +188,9 @@ public class Navigation {
         return true;
     }
 
-    public Fragment getTopFragment() {
-        return fm.findFragmentByTag(
-                (isTablet && backstack.lastElement().getNavigationScope() == NavScope.DETAILS) ? TAG_DETAILS :
+    public FragmentBase getTopFragment() {
+        return (FragmentBase) fm.findFragmentByTag(
+                (isTablet && backstack.lastElement().getNavigationScope() == NavigationScope.DETAILS) ? TAG_DETAILS :
                         TAG_MAIN);
     }
 
@@ -201,6 +199,7 @@ public class Navigation {
             return;
         }
 
+        CompatKeyboard.hide(context);
         backstack.setSize(1);
 
         if (isTablet) {
@@ -208,20 +207,21 @@ public class Navigation {
         }
     }
 
-    public void openRootFolder(Class<? extends Fragment> cls) {
-        navigate(cls, NavScope.MAIN, true);
+    public void openRootFolder(Class<? extends FragmentBase> cls, OperatonBase op) {
+        navigate(cls, op, NavigationScope.MAIN, true);
     }
 
     public void openDrawer() {
         drawer.openDrawer(Gravity.START);
     }
 
-    public void openFile(Class<? extends Fragment> cls) {
-        navigate(cls, NavScope.DETAILS, false);
+    public void openFile(Class<? extends FragmentBase> cls, OperatonBase op) {
+        navigate(cls, op, NavigationScope.DETAILS, false);
     }
 
-    private void navigate(Class<? extends Fragment> cls, NavScope scope, boolean needHome) {
+    private void navigate(Class<? extends FragmentBase> cls, OperatonBase op, NavigationScope scope, boolean needHome) {
         closeDrawer();
+        CompatKeyboard.hide(context);
 
         if (getTopFragment().getClass().equals(cls)) {
             return;
@@ -231,7 +231,7 @@ public class Navigation {
             goHome();
         }
 
-        NavState ns = new NavState(scope, cls);
+        NavigationState ns = new NavigationState(scope, cls, op);
         addBackstack(ns);
         navigate(ns);
     }

@@ -4,7 +4,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class TaskPool {
+class TaskPool {
 
     private static final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
 

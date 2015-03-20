@@ -9,7 +9,7 @@ import org.opendataspace.android.navigation.Navigation;
 
 public class ActivityMain extends ActivityBase {
 
-    private final Navigation nav = new Navigation();
+    private Navigation nav;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -17,7 +17,7 @@ public class ActivityMain extends ActivityBase {
         setContentView(
                 OdsApp.get().getPrefs().isTablet() ? R.layout.activity_main_tablet : R.layout.activity_main_phone);
 
-        nav.initialize(this, savedInstanceState);
+        nav = new Navigation(this, savedInstanceState);
     }
 
     @Override
@@ -49,5 +49,10 @@ public class ActivityMain extends ActivityBase {
 
     public Navigation getNavigation() {
         return nav;
+    }
+
+    public void onDestroy() {
+        nav = null;
+        super.onDestroy();
     }
 }

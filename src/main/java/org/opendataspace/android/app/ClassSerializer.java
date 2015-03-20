@@ -10,7 +10,7 @@ import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
 
-class OdsClassSerializer implements JsonSerializer<Class>, JsonDeserializer<Class> {
+class ClassSerializer implements JsonSerializer<Class>, JsonDeserializer<Class> {
 
     @Override
     public JsonElement serialize(Class src, Type typeOfSrc, JsonSerializationContext context) {

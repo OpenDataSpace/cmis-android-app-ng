@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:auto="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_dialog_apply"
+        android:icon="@drawable/ic_apply"
+        android:title="@string/app_apply"
+        auto:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_dialog_cancel"
+        android:icon="@drawable/ic_close"
+        android:title="@string/app_cancel"
+        auto:showAsAction="ifRoom"/>
+</menu>

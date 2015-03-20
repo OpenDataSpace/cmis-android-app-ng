@@ -12,6 +12,7 @@ import org.opendataspace.android.account.Account;
 import org.opendataspace.android.account.AccountAdapter;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.operations.OperationAccount;
 
 public class FragmentAccountList extends FragmentBaseList
         implements LoaderManager.LoaderCallbacks<CloseableIterator<Account>> {
@@ -52,7 +53,7 @@ public class FragmentAccountList extends FragmentBaseList
         accounts.swapResults(null);
         isEmpty = true;
     }
-    
+
     @Override
     public boolean backPressed() {
         if (isEmpty) {
@@ -79,7 +80,7 @@ public class FragmentAccountList extends FragmentBaseList
 
         switch (item.getItemId()) {
         case R.id.menu_accounts_add:
-            ac.getNavigation().openFile(FragmentAccountDetails.class);
+            ac.getNavigation().openFile(FragmentAccountDetails.class, new OperationAccount(new Account()));
             break;
 
         default:
