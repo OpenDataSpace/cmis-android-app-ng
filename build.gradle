@@ -12,10 +12,14 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
-android {
-    def Properties props = new Properties()
-    props.load(new FileInputStream(file('build.properties')))
+def Properties props = new Properties()
+props.load(new FileInputStream(file('build.properties')))
 
+retrolambda {
+    javaVersion JavaVersion.VERSION_1_7
+}
+
+android {
     compileSdkVersion 'android-22'
     buildToolsVersion '22.0.0'
 
@@ -48,14 +52,19 @@ android {
         versionCode 1
         versionName '0.1'
     }
-
-    lintOptions {
-        disable 'IconMissingDensityFolder'
-    }
 }
 
 repositories {
     mavenCentral()
+
+    maven {
+        url "https://artifactory.dataspace.cc/artifactory/libs-release"
+
+        credentials {
+            username props['repo.user']
+            password props['repo.password']
+        }
+    }
 }
 
 dependencies {
@@ -64,4 +73,6 @@ dependencies {
     compile 'com.android.support:cardview-v7:22.0.0'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile 'org.slf4j:slf4j-android:1.7.7'
+    compile 'org.apache.chemistry.opencmis:chemistry-opencmis-android-client:0.12.0.121'
 }

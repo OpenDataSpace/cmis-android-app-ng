@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="IconMissingDensityFolder" severity="ignore"/>
+    <issue id="UnusedResources" severity="ignore"/>
+    <issue id="InvalidPackage">
+        <ignore regexp="chemistry-opencmis-android-client-.*\.jar"/>
+    </issue>
+</lint>
