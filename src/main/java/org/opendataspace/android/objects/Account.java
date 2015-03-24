@@ -1,4 +1,4 @@
-package org.opendataspace.android.account;
+package org.opendataspace.android.objects;
 
 import android.net.Uri;
 import android.text.TextUtils;
@@ -19,19 +19,7 @@ public class Account {
 
     @Expose
     @DatabaseField(columnName = "data", canBeNull = false, persisterClass = AccountSerializer.class)
-    private AccountInfo info = new AccountInfo();
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getHost() {
-        return info.host;
-    }
+    private final AccountInfo info = new AccountInfo();
 
     public void setHost(String host) {
         info.host = host;
@@ -61,10 +49,6 @@ public class Account {
         info.name = name;
     }
 
-    public boolean isUseHttps() {
-        return info.useHttps;
-    }
-
     public void setUseHttps(boolean useHttps) {
         info.useHttps = useHttps;
     }
@@ -77,16 +61,8 @@ public class Account {
         info.useJson = useJson;
     }
 
-    public int getPort() {
-        return info.port;
-    }
-
     public void setPort(int port) {
         info.port = port;
-    }
-
-    public String getPath() {
-        return info.path;
     }
 
     public void setPath(String path) {

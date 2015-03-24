@@ -13,8 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.j256.ormlite.dao.CloseableIterator;
-import org.opendataspace.android.account.Account;
-import org.opendataspace.android.account.AccountAdapter;
+import org.opendataspace.android.objects.Account;
+import org.opendataspace.android.objects.AccountAdapter;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.data.DataAdapterMerge;
@@ -35,7 +35,7 @@ public class FragmentNavigation extends FragmentBase
 
         Activity ac = getActivity();
         Spinner spin = (Spinner) ac.findViewById(R.id.spin_nav_accounts);
-        accounts = new AccountAdapter(ac, null, OdsApp.get().getDatabase().getAccounts());
+        accounts = new AccountAdapter(ac, OdsApp.get().getDatabase().getAccounts());
 
         DataAdapterMerge merge = new DataAdapterMerge();
         merge.addAdapter(accounts);

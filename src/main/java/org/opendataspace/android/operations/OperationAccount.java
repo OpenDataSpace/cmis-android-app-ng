@@ -1,7 +1,7 @@
 package org.opendataspace.android.operations;
 
 import com.google.gson.annotations.Expose;
-import org.opendataspace.android.account.Account;
+import org.opendataspace.android.objects.Account;
 
 public class OperationAccount extends OperationBase {
 

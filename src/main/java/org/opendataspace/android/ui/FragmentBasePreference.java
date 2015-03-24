@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.Preference;
-import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.view.KeyEvent;
@@ -20,7 +19,7 @@ import org.opendataspace.android.app.beta.R;
 
 import java.lang.ref.WeakReference;
 
-public abstract class FragmentBasePreference extends FragmentBase
+abstract class FragmentBasePreference extends FragmentBase
         implements CompatPreferenceManager.OnPreferenceTreeClickListener {
 
     private static final String PREFERENCES_TAG = "android:preferences";
@@ -60,7 +59,7 @@ public abstract class FragmentBasePreference extends FragmentBase
     private static final int FIRST_REQUEST_CODE = 100;
 
     private static final int MSG_BIND_PREFERENCES = 1;
-    private Handler mHandler = new PrefHandler(this);
+    private final Handler mHandler = new PrefHandler(this);
 
     final private Runnable mRequestFocus = new Runnable() {
         public void run() {
@@ -87,7 +86,6 @@ public abstract class FragmentBasePreference extends FragmentBase
     public void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
         preferenceManager = CompatPreferenceManager.newInstance(getActivity(), FIRST_REQUEST_CODE);
-        CompatPreferenceManager.setFragment(preferenceManager, this);
     }
 
     @Override
@@ -163,20 +161,11 @@ public abstract class FragmentBasePreference extends FragmentBase
     }
 
     /**
-     * Returns the {@link PreferenceManager} used by this fragment.
-     *
-     * @return The {@link PreferenceManager}.
-     */
-    public PreferenceManager getPreferenceManager() {
-        return preferenceManager;
-    }
-
-    /**
      * Sets the root of the preference hierarchy that this fragment is showing.
      *
      * @param preferenceScreen The root {@link PreferenceScreen} of the preference hierarchy.
      */
-    public void setPreferenceScreen(PreferenceScreen preferenceScreen) {
+    void setPreferenceScreen(PreferenceScreen preferenceScreen) {
         if (CompatPreferenceManager.setPreferences(preferenceManager, preferenceScreen) && preferenceScreen != null) {
             havePrefs = true;
             if (initDone) {
@@ -191,20 +180,8 @@ public abstract class FragmentBasePreference extends FragmentBase
      * @return The {@link PreferenceScreen} that is the root of the preference
      * hierarchy.
      */
-    public PreferenceScreen getPreferenceScreen() {
+    PreferenceScreen getPreferenceScreen() {
         return CompatPreferenceManager.getPreferenceScreen(preferenceManager);
-    }
-
-    /**
-     * Adds preferences from activities that match the given {@link Intent}.
-     *
-     * @param intent The {@link Intent} to query activities.
-     */
-    public void addPreferencesFromIntent(Intent intent) {
-        requirePreferenceManager();
-
-        setPreferenceScreen(
-                CompatPreferenceManager.inflateFromIntent(preferenceManager, intent, getPreferenceScreen()));
     }
 
     /**
@@ -213,7 +190,7 @@ public abstract class FragmentBasePreference extends FragmentBase
      *
      * @param preferencesResId The XML resource ID to inflate.
      */
-    public void addPreferencesFromResource(int preferencesResId) {
+    void addPreferencesFromResource(int preferencesResId) {
         requirePreferenceManager();
 
         setPreferenceScreen(CompatPreferenceManager
@@ -223,24 +200,10 @@ public abstract class FragmentBasePreference extends FragmentBase
     /**
      * {@inheritDoc}
      */
-    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+    public boolean onPreferenceTreeClick(Preference preference) {
         //if (preference.getFragment() != null &&
         return getActivity() instanceof OnPreferenceStartFragmentCallback &&
                 ((OnPreferenceStartFragmentCallback) getActivity()).onPreferenceStartFragment(this, preference);
-    }
-
-    /**
-     * Finds a {@link Preference} based on its key.
-     *
-     * @param key The key of the preference to retrieve.
-     * @return The {@link Preference} with the key, or null.
-     * @see PreferenceGroup#findPreference(CharSequence)
-     */
-    public Preference findPreference(CharSequence key) {
-        if (preferenceManager == null) {
-            return null;
-        }
-        return preferenceManager.findPreference(key);
     }
 
     private void requirePreferenceManager() {
@@ -263,7 +226,7 @@ public abstract class FragmentBasePreference extends FragmentBase
         }
     }
 
-    public ListView getListView() {
+    ListView getListView() {
         ensureList();
         return list;
     }
@@ -290,7 +253,7 @@ public abstract class FragmentBasePreference extends FragmentBase
         mHandler.post(mRequestFocus);
     }
 
-    private OnKeyListener mListOnKeyListener = new OnKeyListener() {
+    private final OnKeyListener mListOnKeyListener = new OnKeyListener() {
 
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {

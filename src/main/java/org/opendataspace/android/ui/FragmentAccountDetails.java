@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
 
-import org.opendataspace.android.account.Account;
+import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.operations.OperationAccount;
 import org.opendataspace.android.operations.OperationLoader;
@@ -24,7 +24,7 @@ import java.net.URL;
 public class FragmentAccountDetails extends FragmentBaseInput
         implements LoaderManager.LoaderCallbacks<OperationStatus> {
 
-    private OperationAccount op;
+    private final OperationAccount op;
     private ProgressDialog waitDialog;
 
     public FragmentAccountDetails(OperationAccount op) {

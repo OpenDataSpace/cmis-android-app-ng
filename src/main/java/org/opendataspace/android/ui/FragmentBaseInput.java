@@ -120,27 +120,22 @@ public class FragmentBaseInput extends FragmentBase {
         }
     }
 
-    private ArrayList<InputEntry> entries = new ArrayList<>();
+    private final ArrayList<InputEntry> entries = new ArrayList<>();
 
-    protected FragmentBaseInput addText(int resource, CompatLambda.Supplier<String> getter,
-                                        CompatLambda.Consumer<String> setter,
-                                        CompatLambda.Predicate<String> validator) {
+    void addText(int resource, CompatLambda.Supplier<String> getter, CompatLambda.Consumer<String> setter,
+                 CompatLambda.Predicate<String> validator) {
         entries.add(new TextInputEntry(resource, getter, setter, validator));
-        return this;
     }
 
-    protected FragmentBaseInput addText(int resource, CompatLambda.Supplier<String> getter,
-                                        CompatLambda.Consumer<String> setter) {
-        return addText(resource, getter, setter, null);
+    void addText(int resource, CompatLambda.Supplier<String> getter, CompatLambda.Consumer<String> setter) {
+        addText(resource, getter, setter, null);
     }
 
-    protected FragmentBaseInput addBool(int resource, CompatLambda.Supplier<Boolean> getter,
-                                        CompatLambda.Consumer<Boolean> setter) {
+    void addBool(int resource, CompatLambda.Supplier<Boolean> getter, CompatLambda.Consumer<Boolean> setter) {
         entries.add(new CheckInputEntry(resource, getter, setter));
-        return this;
     }
 
-    protected void apply() {
+    void apply() {
         ActivityBase ac = (ActivityBase) getActivity();
 
         for (InputEntry cur : entries) {
@@ -148,7 +143,7 @@ public class FragmentBaseInput extends FragmentBase {
         }
     }
 
-    protected void read() {
+    void read() {
         ActivityBase ac = (ActivityBase) getActivity();
 
         for (InputEntry cur : entries) {
@@ -156,7 +151,7 @@ public class FragmentBaseInput extends FragmentBase {
         }
     }
 
-    protected boolean readAndValidate() {
+    boolean readAndValidate() {
         ActivityBase ac = (ActivityBase) getActivity();
         boolean res = true;
 

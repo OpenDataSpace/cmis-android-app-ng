@@ -14,6 +14,7 @@ import org.opendataspace.android.app.beta.R;
 
 import java.util.Calendar;
 
+@SuppressWarnings("WeakerAccess")
 public class FragmentAbout extends FragmentBase {
 
     @Override

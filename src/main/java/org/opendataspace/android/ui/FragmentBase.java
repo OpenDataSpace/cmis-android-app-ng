@@ -22,7 +22,7 @@ public class FragmentBase extends Fragment {
         return context.getString(R.string.app_name);
     }
 
-    protected ActivityMain getMainActivity() {
+    ActivityMain getMainActivity() {
         Activity ac = getActivity();
         return ac instanceof ActivityMain ? (ActivityMain) ac : null;
     }
@@ -42,7 +42,7 @@ public class FragmentBase extends Fragment {
         }
     }
 
-    protected int getMenuResource() {
+    int getMenuResource() {
         return 0;
     }
 }

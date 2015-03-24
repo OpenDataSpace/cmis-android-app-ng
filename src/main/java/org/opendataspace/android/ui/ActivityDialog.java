@@ -12,7 +12,7 @@ import org.opendataspace.android.navigation.NavigationState;
 public class ActivityDialog extends ActivityBase {
 
     public static final String ARG_NAV_STATE = "ods.navstate";
-    public static final String TAG_CONTENT = "content";
+    private static final String TAG_CONTENT = "content";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -37,11 +37,11 @@ class ActivityBase extends ActionBarActivity {
         outState.remove("android:support:fragments"); // do not store fragment state
     }
 
-    public void showToast(final int messageCode) {
+    void showToast(final int messageCode) {
         showToast(getString(messageCode));
     }
 
-    public void showToast(final String message) {
+    void showToast(final String message) {
         toast.setText(message);
         toast.show();
     }

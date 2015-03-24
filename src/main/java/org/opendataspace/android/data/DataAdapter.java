@@ -50,7 +50,7 @@ public abstract class DataAdapter<T> extends CursorAdapter {
         return inflater.inflate(layoutId, parent, false);
     }
 
-    public abstract void bindView(Context context, View view, T item);
+    protected abstract void bindView(Context context, View view, T item);
 
     public void swapResults(CloseableIterator<T> data) {
         this.data = data != null ? (AndroidDatabaseResults) data.getRawResults() : null;

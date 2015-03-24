@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import org.opendataspace.android.app.beta.R;
 
-public class FragmentBaseList extends FragmentBase {
+class FragmentBaseList extends FragmentBase {
 
     final private Handler mHandler = new Handler();
 
@@ -29,16 +29,16 @@ public class FragmentBaseList extends FragmentBase {
     };
 
     final private AdapterView.OnItemClickListener mOnClickListener =
-            (parent, v, position, id) -> onListItemClick((ListView) parent, v, position, id);
+            (parent, v, position, id) -> onListItemClick(position);
 
-    ListAdapter adapter;
-    ListView list;
-    View emptyView;
-    TextView standardEmptyView;
-    View progressContainer;
-    View listContainer;
-    CharSequence emptyText;
-    boolean isListShown;
+    private ListAdapter adapter;
+    private ListView list;
+    private View emptyView;
+    private TextView standardEmptyView;
+    private View progressContainer;
+    private View listContainer;
+    private CharSequence emptyText;
+    private boolean isListShown;
 
     public FragmentBaseList() {
     }
@@ -50,7 +50,7 @@ public class FragmentBaseList extends FragmentBase {
      * is {@link android.R.id#list android.R.id.list} and can optionally
      * have a sibling view id {@link android.R.id#empty android.R.id.empty}
      * that is to be shown when the list is empty.
-     * <p/>
+     * <p>
      * <p>If you are overriding this method with your own custom content,
      * consider including the standard layout {@link android.R.layout#list_content}
      * in your layout file, so that you continue to retain all of the standard
@@ -134,18 +134,15 @@ public class FragmentBaseList extends FragmentBase {
      * getListView().getItemAtPosition(position) if they need to access the
      * data associated with the selected item.
      *
-     * @param l        The ListView where the click happened
-     * @param v        The view that was clicked within the ListView
      * @param position The position of the view in the list
-     * @param id       The row id of the item that was clicked
      */
-    public void onListItemClick(ListView l, View v, int position, long id) {
+    void onListItemClick(int position) {
     }
 
     /**
      * Provide the cursor for the list view.
      */
-    public void setListAdapter(ListAdapter adapter) {
+    void setListAdapter(ListAdapter adapter) {
         boolean hadAdapter = this.adapter != null;
         this.adapter = adapter;
         if (list != null) {
@@ -160,44 +157,11 @@ public class FragmentBaseList extends FragmentBase {
     }
 
     /**
-     * Set the currently selected list item to the specified
-     * position with the adapter's data
-     */
-    public void setSelection(int position) {
-        ensureList();
-        list.setSelection(position);
-    }
-
-    /**
-     * Get the position of the currently selected list item.
-     */
-    public int getSelectedItemPosition() {
-        ensureList();
-        return list.getSelectedItemPosition();
-    }
-
-    /**
-     * Get the cursor row ID of the currently selected list item.
-     */
-    public long getSelectedItemId() {
-        ensureList();
-        return list.getSelectedItemId();
-    }
-
-    /**
-     * Get the activity's list view widget.
-     */
-    public ListView getListView() {
-        ensureList();
-        return list;
-    }
-
-    /**
      * The default content for a ListFragment has a TextView that can
      * be shown when the list is empty.  If you would like to have it
      * shown, call this method to supply the text it should use.
      */
-    public void setEmptyText(CharSequence text) {
+    void setEmptyText(CharSequence text) {
         ensureList();
         if (standardEmptyView == null) {
             throw new IllegalStateException("Can't be used with a custom content view");
@@ -207,32 +171,6 @@ public class FragmentBaseList extends FragmentBase {
             list.setEmptyView(standardEmptyView);
         }
         emptyText = text;
-    }
-
-    /**
-     * Control whether the list is being displayed.  You can make it not
-     * displayed if you are waiting for the initial data to show in it.  During
-     * this time an indeterminant progress indicator will be shown instead.
-     * <p/>
-     * <p>Applications do not normally need to use this themselves.  The default
-     * behavior of ListFragment is to start with the list not being shown, only
-     * showing it once an adapter is given with {@link #setListAdapter(ListAdapter)}.
-     * If the list at that point had not been shown, when it does get shown
-     * it will be do without the user ever seeing the hidden state.
-     *
-     * @param shown If true, the list view is shown; if false, the progress
-     *              indicator.  The initial value is true.
-     */
-    public void setListShown(boolean shown) {
-        setListShown(shown, true);
-    }
-
-    /**
-     * Like {@link #setListShown(boolean)}, but no animation is used when
-     * transitioning from the previous state.
-     */
-    public void setListShownNoAnimation(boolean shown) {
-        setListShown(shown, false);
     }
 
     /**
@@ -275,13 +213,6 @@ public class FragmentBaseList extends FragmentBase {
             progressContainer.setVisibility(View.VISIBLE);
             listContainer.setVisibility(View.GONE);
         }
-    }
-
-    /**
-     * Get the ListAdapter associated with this activity's ListView.
-     */
-    public ListAdapter getListAdapter() {
-        return adapter;
     }
 
     private void ensureList() {

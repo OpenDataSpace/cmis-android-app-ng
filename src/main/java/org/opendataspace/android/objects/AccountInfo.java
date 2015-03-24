@@ -1,4 +1,4 @@
-package org.opendataspace.android.account;
+package org.opendataspace.android.objects;
 
 import com.google.gson.annotations.Expose;
 

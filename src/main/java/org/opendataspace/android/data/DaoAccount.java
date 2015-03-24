@@ -1,7 +1,7 @@
 package org.opendataspace.android.data;
 
 import com.j256.ormlite.support.ConnectionSource;
-import org.opendataspace.android.account.Account;
+import org.opendataspace.android.objects.Account;
 
 import java.sql.SQLException;
 

@@ -8,8 +8,6 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 
-import org.opendataspace.android.ui.FragmentBasePreference;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -29,12 +27,10 @@ public class CompatPreferenceManager {
          * Called when a preference in the tree rooted at this
          * {@link PreferenceScreen} has been clicked.
          *
-         * @param preferenceScreen The {@link PreferenceScreen} that the
-         *                         preference is located in.
-         * @param preference       The preference that was clicked.
+         * @param preference The preference that was clicked.
          * @return Whether the click was handled.
          */
-        boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference);
+        boolean onPreferenceTreeClick(Preference preference);
     }
 
     public static PreferenceManager newInstance(Activity activity, int firstRequestCode) {
@@ -47,13 +43,6 @@ public class CompatPreferenceManager {
             Log.w(TAG, "Couldn't call constructor PreferenceManager by reflection", e);
         }
         return null;
-    }
-
-    /**
-     * Sets the owning preference fragment
-     */
-    public static void setFragment(PreferenceManager manager, FragmentBasePreference fragment) {
-        // stub
     }
 
     /**
@@ -72,7 +61,7 @@ public class CompatPreferenceManager {
                 Object proxy = Proxy.newProxyInstance(onPreferenceTreeClickListener.getType().getClassLoader(),
                         new Class[] {onPreferenceTreeClickListener.getType()}, (proxy1, method, args) -> {
                             if (method.getName().equals("onPreferenceTreeClick")) {
-                                return listener.onPreferenceTreeClick((PreferenceScreen) args[0], (Preference) args[1]);
+                                return listener.onPreferenceTreeClick((Preference) args[1]);
                             } else {
                                 return null;
                             }
@@ -84,31 +73,6 @@ public class CompatPreferenceManager {
         } catch (Exception e) {
             Log.w(TAG, "Couldn't set PreferenceManager.mOnPreferenceTreeClickListener by reflection", e);
         }
-    }
-
-    /**
-     * Inflates a preference hierarchy from the preference hierarchies of
-     * {@link Activity Activities} that match the given {@link Intent}. An
-     * {@link Activity} defines its preference hierarchy with meta-data using
-     * the METADATA_KEY_PREFERENCES key.
-     * <p>
-     * If a preference hierarchy is given, the new preference hierarchies will
-     * be merged in.
-     *
-     * @return The root hierarchy (if one was not provided, the new hierarchy's
-     * root).
-     */
-    public static PreferenceScreen inflateFromIntent(PreferenceManager manager, Intent intent,
-                                                     PreferenceScreen screen) {
-        try {
-            Method m = PreferenceManager.class
-                    .getDeclaredMethod("inflateFromIntent", Intent.class, PreferenceScreen.class);
-            m.setAccessible(true);
-            return (PreferenceScreen) m.invoke(manager, intent, screen);
-        } catch (Exception e) {
-            Log.w(TAG, "Couldn't call PreferenceManager.inflateFromIntent by reflection", e);
-        }
-        return null;
     }
 
     /**

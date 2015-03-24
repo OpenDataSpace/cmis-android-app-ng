@@ -31,11 +31,11 @@ public abstract class TaskLoader<T> extends Loader<T> {
 
     private Task current;
 
-    public TaskLoader(Context context) {
+    protected TaskLoader(Context context) {
         super(context);
     }
 
-    public abstract T loadInBackground() throws Exception;
+    protected abstract T loadInBackground() throws Exception;
 
     @Override
     protected void onForceLoad() {

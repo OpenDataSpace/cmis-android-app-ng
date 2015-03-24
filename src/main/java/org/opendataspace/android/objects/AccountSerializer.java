@@ -1,4 +1,4 @@
-package org.opendataspace.android.account;
+package org.opendataspace.android.objects;
 
 import org.opendataspace.android.data.DataGsonSerializer;
 
