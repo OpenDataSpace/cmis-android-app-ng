@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
+import com.j256.ormlite.dao.ReferenceObjectCache;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import org.opendataspace.android.objects.Account;
@@ -17,6 +18,7 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
     private static final int DATABASE_VERSION = 2;
 
     private DaoAccount accounts;
+    private final ReferenceObjectCache cache = ReferenceObjectCache.makeWeakCache();
 
     public DataBase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -46,6 +48,7 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
         if (accounts == null) {
             try {
                 accounts = new DaoAccount(getConnectionSource(), Account.class);
+                accounts.setObjectCache(cache);
             } catch (SQLException ex) {
                 Log.w(getClass().getSimpleName(), ex);
             }

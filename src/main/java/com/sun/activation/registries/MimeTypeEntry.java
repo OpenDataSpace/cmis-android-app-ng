@@ -41,8 +41,8 @@
 package com.sun.activation.registries;
 
 public class MimeTypeEntry {
-    private String type;
-    private String extension;
+    private final String type;
+    private final String extension;
 
     public MimeTypeEntry(String mime_type, String file_ext) {
         type = mime_type;

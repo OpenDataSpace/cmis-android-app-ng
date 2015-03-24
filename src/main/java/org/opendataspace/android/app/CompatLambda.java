@@ -2,6 +2,9 @@ package org.opendataspace.android.app;
 
 public class CompatLambda {
 
+    private CompatLambda() {
+    }
+
     public interface Supplier<T> {
         T get();
     }

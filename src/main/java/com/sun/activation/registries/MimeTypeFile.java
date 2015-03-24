@@ -46,14 +46,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.Hashtable;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
 public class MimeTypeFile {
-    private Hashtable<String, MimeTypeEntry> type_hash = new Hashtable<>();
+    private final Hashtable<String, MimeTypeEntry> type_hash = new Hashtable<>();
 
     /**
      * The construtor that takes a filename as an argument.
@@ -84,15 +83,9 @@ public class MimeTypeFile {
     }
 
     /**
-     * Creates an empty DB.
-     */
-    public MimeTypeFile() {
-    }
-
-    /**
      * get the MimeTypeEntry based on the file extension
      */
-    public MimeTypeEntry getMimeTypeEntry(String file_ext) {
+    MimeTypeEntry getMimeTypeEntry(String file_ext) {
         return type_hash.get(file_ext);
     }
 
@@ -106,29 +99,6 @@ public class MimeTypeFile {
             return entry.getMIMEType();
         } else {
             return null;
-        }
-    }
-
-    /**
-     * Appends string of entries to the types registry, must be valid
-     * .mime.types format.
-     * A mime.types entry is one of two forms:
-     * <p>
-     * type/subtype	ext1 ext2 ...
-     * or
-     * type=type/subtype desc="description of type" exts=ext1,ext2,...
-     * <p>
-     * Example:
-     * # this is a test
-     * audio/basic            au
-     * text/plain             txt text
-     * type=application/postscript exts=ps,eps
-     */
-    public void appendToRegistry(String mime_types) {
-        try {
-            parse(new BufferedReader(new StringReader(mime_types)));
-        } catch (IOException ex) {
-            // can't happen
         }
     }
 
@@ -245,9 +215,9 @@ public class MimeTypeFile {
 
 class LineTokenizer {
     private int currentPosition;
-    private int maxPosition;
-    private String str;
-    private Vector<String> stack = new Vector<>();
+    private final int maxPosition;
+    private final String str;
+    private final Vector<String> stack = new Vector<>();
     private static final String singles = "=";    // single character tokens
 
     /**

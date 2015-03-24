@@ -57,16 +57,7 @@ import java.io.File;
  * @see javax.activation.MimetypesFileTypeMap
  */
 
-public abstract class FileTypeMap {
-
-    private static FileTypeMap defaultMap = null;
-
-    /**
-     * The default constructor.
-     */
-    public FileTypeMap() {
-        super();
-    }
+abstract class FileTypeMap {
 
     /**
      * Return the type of the file object. This method should
@@ -86,46 +77,4 @@ public abstract class FileTypeMap {
      */
     abstract public String getContentType(String filename);
 
-    /**
-     * Sets the default FileTypeMap for the system. This instance
-     * will be returned to callers of getDefaultFileTypeMap.
-     *
-     * @param map The FileTypeMap.
-     * @throws SecurityException if the caller doesn't have permission
-     *                           to change the default
-     */
-    public static void setDefaultFileTypeMap(FileTypeMap map) {
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            try {
-                // if it's ok with the SecurityManager, it's ok with me...
-                security.checkSetFactory();
-            } catch (SecurityException ex) {
-                // otherwise, we also allow it if this code and the
-                // factory come from the same class loader (e.g.,
-                // the JAF classes were loaded with the applet classes).
-                if (FileTypeMap.class.getClassLoader() != map.getClass().getClassLoader()) {
-                    throw ex;
-                }
-            }
-        }
-        defaultMap = map;
-    }
-
-    /**
-     * Return the default FileTypeMap for the system.
-     * If setDefaultFileTypeMap was called, return
-     * that instance, otherwise return an instance of
-     * <code>MimetypesFileTypeMap</code>.
-     *
-     * @return The default FileTypeMap
-     * @see javax.activation.FileTypeMap#setDefaultFileTypeMap
-     */
-    public static FileTypeMap getDefaultFileTypeMap() {
-        // XXX - probably should be synchronized
-        if (defaultMap == null) {
-            defaultMap = new MimetypesFileTypeMap();
-        }
-        return defaultMap;
-    }
 }

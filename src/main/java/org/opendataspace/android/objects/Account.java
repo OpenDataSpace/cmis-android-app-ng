@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import org.opendataspace.android.cmis.Cmis;
 
 @DatabaseTable(tableName = "acc")
 public class Account {
@@ -20,6 +21,8 @@ public class Account {
     @Expose
     @DatabaseField(columnName = "data", canBeNull = false, persisterClass = AccountSerializer.class)
     private final AccountInfo info = new AccountInfo();
+
+    private transient Repositories repositories = null;
 
     public void setHost(String host) {
         info.host = host;
@@ -105,5 +108,13 @@ public class Account {
         }
 
         return b.toString();
+    }
+
+    public Repositories getRepositories() {
+        if (repositories == null) {
+            repositories = new Repositories(Cmis.createSessionSettings(this));
+        }
+
+        return repositories;
     }
 }

@@ -40,6 +40,8 @@
 
 package com.sun.activation.registries;
 
+import org.opendataspace.android.app.beta.BuildConfig;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,18 +49,9 @@ import java.util.logging.Logger;
  * Logging related methods.
  */
 public class LogSupport {
-    private static boolean debug = false;
-    private static Logger logger;
+    private static final boolean debug = BuildConfig.DEBUG;
+    private static final Logger logger = Logger.getLogger("javax.activation");
     private static final Level level = Level.FINE;
-
-    static {
-        try {
-            debug = Boolean.getBoolean("javax.activation.debug");
-        } catch (Throwable t) {
-            // ignore any errors
-        }
-        logger = Logger.getLogger("javax.activation");
-    }
 
     /**
      * Constructor.

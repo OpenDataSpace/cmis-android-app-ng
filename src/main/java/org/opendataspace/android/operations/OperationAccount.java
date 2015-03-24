@@ -1,6 +1,7 @@
 package org.opendataspace.android.operations;
 
 import com.google.gson.annotations.Expose;
+import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.objects.Account;
 
 public class OperationAccount extends OperationBase {
@@ -17,7 +18,14 @@ public class OperationAccount extends OperationBase {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) {
+    protected void doExecute(OperationStatus status) throws Exception {
+        account.getRepositories();
+
+        if (isCancel()) {
+            return;
+        }
+
+        //OdsApp.get().getDatabase().getAccounts().createOrUpdate(account);
         status.setOk();
     }
 }

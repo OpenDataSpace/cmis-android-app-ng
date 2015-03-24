@@ -90,7 +90,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
      * XXX - Can we safely share more databases between instances?
      */
     private static MimeTypeFile defDB = null;
-    private MimeTypeFile[] DB;
+    private final MimeTypeFile[] DB;
 
     /**
      * The default constructor.

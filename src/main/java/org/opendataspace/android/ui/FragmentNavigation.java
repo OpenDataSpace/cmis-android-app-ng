@@ -13,11 +13,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.j256.ormlite.dao.CloseableIterator;
-import org.opendataspace.android.objects.Account;
-import org.opendataspace.android.objects.AccountAdapter;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.data.DataAdapterMerge;
+import org.opendataspace.android.objects.Account;
+import org.opendataspace.android.objects.AccountAdapter;
 
 public class FragmentNavigation extends FragmentBase
         implements LoaderManager.LoaderCallbacks<CloseableIterator<Account>> {
@@ -40,7 +40,7 @@ public class FragmentNavigation extends FragmentBase
         DataAdapterMerge merge = new DataAdapterMerge();
         merge.addAdapter(accounts);
         merge.addAdapter(new ArrayAdapter<>(ac, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1,
-                new String[] {getString(accounts.getCount() != 0 ? R.string.nav_manage : R.string.nav_noaccounts)}));
+                new String[] {getString(R.string.nav_manage)}));
 
         spin.setAdapter(merge);
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
