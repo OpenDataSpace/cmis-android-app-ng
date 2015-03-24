@@ -4,11 +4,11 @@
     <item
         android:id="@+id/menu_dialog_apply"
         android:icon="@drawable/ic_apply"
-        android:title="@string/app_apply"
+        android:title="@string/common_apply"
         auto:showAsAction="always"/>
     <item
         android:id="@+id/menu_dialog_cancel"
         android:icon="@drawable/ic_close"
-        android:title="@string/app_cancel"
+        android:title="@string/common_cancel"
         auto:showAsAction="ifRoom"/>
 </menu>

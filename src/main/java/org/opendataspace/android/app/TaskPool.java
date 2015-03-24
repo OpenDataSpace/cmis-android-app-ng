@@ -20,7 +20,7 @@ class TaskPool {
         service.shutdown();
     }
 
-    public boolean cancel(Task task) {
-        return service.remove(task);
+    public void cancel(Task task) {
+        service.remove(task);
     }
 }

@@ -3,7 +3,7 @@ package org.opendataspace.android.operations;
 import com.google.gson.annotations.Expose;
 import org.opendataspace.android.account.Account;
 
-public class OperationAccount extends OperatonBase {
+public class OperationAccount extends OperationBase {
 
     @Expose
     private final Account account;
@@ -14,5 +14,10 @@ public class OperationAccount extends OperatonBase {
 
     public Account getAccount() {
         return account;
+    }
+
+    @Override
+    protected void doExecute(OperationStatus status) {
+        status.setOk();
     }
 }

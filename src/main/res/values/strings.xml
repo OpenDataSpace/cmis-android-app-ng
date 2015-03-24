@@ -3,14 +3,18 @@
 
     <!-- app -->
     <string name="app_name">ODS beta</string>
-    <string name="app_opendrawer">Open navigation</string>
-    <string name="app_closedrawer">Close navigation</string>
     <string name="app_market">market://details?id=org.opendataspace.android.app</string>
     <string name="app_weburl">https://github.com/OpenDataSpace</string>
     <string name="app_mailto">info@opendataspace.org</string>
-    <string name="app_invalidvalue">This valuse is not acceptable.</string>
-    <string name="app_apply">Apply</string>
-    <string name="app_cancel">Cancel</string>
+
+    <!-- common -->
+    <string name="common_opendrawer">Open navigation</string>
+    <string name="common_closedrawer">Close navigation</string>
+    <string name="common_invalidvalue">This valuse is not acceptable.</string>
+    <string name="common_apply">Apply</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="common_pleasewait">Please wait…</string>
+    <string name="common_error">Something went wrong.</string>
 
     <!-- navigation -->
     <string name="nav_accounts">Accounts</string>

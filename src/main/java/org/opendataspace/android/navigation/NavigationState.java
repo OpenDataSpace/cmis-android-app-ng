@@ -2,7 +2,7 @@ package org.opendataspace.android.navigation;
 
 import com.google.gson.annotations.Expose;
 import org.opendataspace.android.app.ClassWrapper;
-import org.opendataspace.android.operations.OperatonBase;
+import org.opendataspace.android.operations.OperationBase;
 import org.opendataspace.android.ui.FragmentBase;
 
 public class NavigationState {
@@ -16,7 +16,7 @@ public class NavigationState {
     @Expose
     private final ClassWrapper op;
 
-    public NavigationState(NavigationScope scope, Class<? extends FragmentBase> cls, OperatonBase op) {
+    public NavigationState(NavigationScope scope, Class<? extends FragmentBase> cls, OperationBase op) {
         this.scope = scope;
         this.cls = cls;
         this.op = new ClassWrapper(op);
@@ -30,7 +30,7 @@ public class NavigationState {
         return cls;
     }
 
-    public OperatonBase getOperation() {
-        return (OperatonBase) op.getObject();
+    public OperationBase getOperation() {
+        return (OperationBase) op.getObject();
     }
 }

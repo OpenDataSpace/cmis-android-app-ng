@@ -15,7 +15,7 @@ import android.view.Gravity;
 import org.opendataspace.android.app.CompatKeyboard;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.operations.OperatonBase;
+import org.opendataspace.android.operations.OperationBase;
 import org.opendataspace.android.ui.ActivityDialog;
 import org.opendataspace.android.ui.ActivityMain;
 import org.opendataspace.android.ui.FragmentAccountList;
@@ -46,7 +46,7 @@ public class Navigation {
         drawer = (DrawerLayout) activity.findViewById(R.id.main_view_root);
         context = activity;
         isTablet = OdsApp.get().getPrefs().isTablet();
-        toggle = new ActionBarDrawerToggle(activity, drawer, R.string.app_opendrawer, R.string.app_closedrawer);
+        toggle = new ActionBarDrawerToggle(activity, drawer, R.string.common_opendrawer, R.string.common_closedrawer);
 
         backstack.clear();
         drawer.setDrawerShadow(null, 0);
@@ -142,7 +142,7 @@ public class Navigation {
     public static FragmentBase createFragment(NavigationState ns) {
         try {
             Class<?> cls = ns.getFragmentClass();
-            OperatonBase op = ns.getOperation();
+            OperationBase op = ns.getOperation();
             return (FragmentBase) (op != null ? cls.getConstructor(op.getClass()).newInstance(op) : cls.newInstance());
         } catch (Exception ex) {
             Log.w(Navigation.class.getSimpleName(), ex);
@@ -155,7 +155,7 @@ public class Navigation {
         state.putString(ARG_BACKSTACK, OdsApp.gson.toJson(backstack));
     }
 
-    public void openDialog(Class<? extends FragmentBase> cls, OperatonBase op) {
+    public void openDialog(Class<? extends FragmentBase> cls, OperationBase op) {
         navigate(cls, op, NavigationScope.DIALOG, false);
     }
 
@@ -207,7 +207,7 @@ public class Navigation {
         }
     }
 
-    public void openRootFolder(Class<? extends FragmentBase> cls, OperatonBase op) {
+    public void openRootFolder(Class<? extends FragmentBase> cls, OperationBase op) {
         navigate(cls, op, NavigationScope.MAIN, true);
     }
 
@@ -215,11 +215,11 @@ public class Navigation {
         drawer.openDrawer(Gravity.START);
     }
 
-    public void openFile(Class<? extends FragmentBase> cls, OperatonBase op) {
+    public void openFile(Class<? extends FragmentBase> cls, OperationBase op) {
         navigate(cls, op, NavigationScope.DETAILS, false);
     }
 
-    private void navigate(Class<? extends FragmentBase> cls, OperatonBase op, NavigationScope scope, boolean needHome) {
+    private void navigate(Class<? extends FragmentBase> cls, OperationBase op, NavigationScope scope, boolean needHome) {
         closeDrawer();
         CompatKeyboard.hide(context);
 

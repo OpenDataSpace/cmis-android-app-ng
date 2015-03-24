@@ -44,14 +44,10 @@ public abstract class TaskLoader<T> extends Loader<T> {
         OdsApp.get().getPool().execute(current);
     }
 
-    public boolean cancelLoad() {
-        boolean res = true;
-
+    protected void cancelLoad() {
         if (current != null) {
-            res = OdsApp.get().getPool().cancel(current);
+            OdsApp.get().getPool().cancel(current);
             current = null;
         }
-
-        return res;
     }
 }

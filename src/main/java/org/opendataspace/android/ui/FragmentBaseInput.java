@@ -72,7 +72,7 @@ public class FragmentBaseInput extends FragmentBase {
             EditText et = (EditText) ac.findViewById(resource);
             CompatKeyboard.request(et, ac);
             et.selectAll();
-            ac.showToast(R.string.app_invalidvalue);
+            ac.showToast(R.string.common_invalidvalue);
         }
     }
 

@@ -3,7 +3,6 @@ package org.opendataspace.android.data;
 import android.content.Context;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
-import com.j256.ormlite.stmt.PreparedDelete;
 import com.j256.ormlite.support.ConnectionSource;
 
 import java.lang.ref.WeakReference;
@@ -57,8 +56,8 @@ public abstract class DaoBase<T, ID> extends BaseDaoImpl<T, ID> {
     }
 
     @Override
-    public int updateRaw(String statement, String... arguments) throws SQLException {
-        int result = super.updateRaw(statement, arguments);
+    public int update(T val) throws SQLException {
+        int result = super.update(val);
 
         if (result > 0) {
             notifyContentChange();
@@ -68,8 +67,8 @@ public abstract class DaoBase<T, ID> extends BaseDaoImpl<T, ID> {
     }
 
     @Override
-    public int delete(PreparedDelete<T> preparedDelete) throws SQLException {
-        int result = super.delete(preparedDelete);
+    public int delete(T val) throws SQLException {
+        int result = super.delete(val);
 
         if (result > 0) {
             notifyContentChange();

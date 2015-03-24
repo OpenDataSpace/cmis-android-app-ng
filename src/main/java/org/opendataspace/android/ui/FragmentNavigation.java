@@ -78,7 +78,7 @@ public class FragmentNavigation extends FragmentBase
     }
 
     private void actionManage() {
-        ActivityMain ac = (ActivityMain) getActivity();
+        ActivityMain ac = getMainActivity();
         ac.getNavigation().openRootFolder(FragmentAccountList.class, null);
     }
 

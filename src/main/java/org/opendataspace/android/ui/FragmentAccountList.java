@@ -76,7 +76,7 @@ public class FragmentAccountList extends FragmentBaseList
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        ActivityMain ac = (ActivityMain) getActivity();
+        ActivityMain ac = getMainActivity();
 
         switch (item.getItemId()) {
         case R.id.menu_accounts_add:

@@ -31,10 +31,6 @@ public class DataAdapterMerge extends BaseAdapter {
         adapter.registerDataSetObserver(observer);
     }
 
-    public void addViews(View... views) {
-        addAdapter(new DataAdapterViews(views));
-    }
-
     @Override
     public int getCount() {
         int cnt = 0;
