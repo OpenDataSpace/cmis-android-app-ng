@@ -69,7 +69,11 @@ public class Account {
     }
 
     public void setPath(String path) {
-        info.path = path;
+        if (!"/".equals(path)) {
+            info.path = path;
+        } else {
+            info.path = "";
+        }
     }
 
     public Uri getUri() {

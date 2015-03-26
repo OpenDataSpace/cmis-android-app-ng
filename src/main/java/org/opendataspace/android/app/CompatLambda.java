@@ -16,4 +16,8 @@ public class CompatLambda {
     public interface Predicate<T> {
         boolean test(T t);
     }
+
+    public interface Checker {
+        boolean test();
+    }
 }

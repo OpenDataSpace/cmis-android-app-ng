@@ -13,8 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
 
-import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.operations.OperationAccount;
 import org.opendataspace.android.operations.OperationLoader;
 import org.opendataspace.android.operations.OperationStatus;
@@ -35,7 +35,7 @@ public class FragmentAccountDetails extends FragmentBaseInput
                 val -> URLUtil.isValidUrl(URLUtil.guessUrl(val)));
         addText(R.id.edit_account_username, account::getLogin, account::setLogin, val -> !TextUtils.isEmpty(val));
         addText(R.id.edit_account_password, account::getPassword, account::setPassword, val -> !TextUtils.isEmpty(val));
-        addText(R.id.edit_account_description, account::getName, account::setName);
+        addImeDone(R.id.edit_account_description, account::getName, account::setName, null, this::actionApply);
         addBool(R.id.check_account_atom, account::isUseJson, account::setUseJson);
     }
 
@@ -66,26 +66,32 @@ public class FragmentAccountDetails extends FragmentBaseInput
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        ActivityMain ac = getMainActivity();
-
         switch (item.getItemId()) {
         case R.id.menu_dialog_apply:
-            if (readAndValidate()) {
-                waitDialog = ProgressDialog.show(ac, getTile(ac), getString(R.string.common_pleasewait), true, true,
-                        dialogInterface -> getLoaderManager().destroyLoader(0));
-
-                getLoaderManager().initLoader(0, null, this);
-            }
+            actionApply();
             break;
 
         case R.id.menu_dialog_cancel:
-            ac.getNavigation().backPressed();
+            getMainActivity().getNavigation().backPressed();
             break;
 
         default:
             return super.onOptionsItemSelected(item);
         }
 
+        return true;
+    }
+
+    private boolean actionApply() {
+        if (!readAndValidate()) {
+            return false;
+        }
+
+        ActivityMain ac = getMainActivity();
+        waitDialog = ProgressDialog.show(ac, getTile(ac), getString(R.string.common_pleasewait), true, true,
+                dialogInterface -> getLoaderManager().destroyLoader(0));
+
+        getLoaderManager().restartLoader(0, null, this);
         return true;
     }
 
@@ -106,7 +112,10 @@ public class FragmentAccountDetails extends FragmentBaseInput
         if (data.isOk()) {
             ac.getNavigation().backPressed();
         } else {
-            new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true).show();
+            new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
+                    .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> {
+                        dialogInterface.cancel();
+                    }).show();
         }
     }
 

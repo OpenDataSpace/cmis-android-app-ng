@@ -35,7 +35,7 @@ class ClassWrapperSerializer implements JsonSerializer<ClassWrapper>, JsonDeseri
 
         JsonObject jso = new JsonObject();
         jso.add("c", context.serialize(src.getClassInfo(), Class.class));
-        jso.add("o", context.serialize(src.getClass(), src.getClassInfo()));
+        jso.add("o", context.serialize(src.getObject(), src.getClassInfo()));
         return jso;
     }
 }

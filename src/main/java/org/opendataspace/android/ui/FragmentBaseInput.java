@@ -3,6 +3,7 @@ package org.opendataspace.android.ui;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
@@ -16,11 +17,13 @@ public class FragmentBaseInput extends FragmentBase {
 
     private interface InputEntry {
 
-        public void apply(ActivityBase ac);
+        void apply(ActivityBase ac);
 
-        public boolean read(ActivityBase ac);
+        boolean read(ActivityBase ac);
 
-        public void highlightError(ActivityBase ac);
+        void highlightError(ActivityBase ac);
+
+        void init();
     }
 
     private final class TextInputEntry implements InputEntry {
@@ -29,13 +32,15 @@ public class FragmentBaseInput extends FragmentBase {
         private final CompatLambda.Consumer<String> setter;
         private final CompatLambda.Predicate<String> validator;
         private final int resource;
+        private final CompatLambda.Checker imeDone;
 
         public TextInputEntry(int resource, CompatLambda.Supplier<String> getter, CompatLambda.Consumer<String> setter,
-                              CompatLambda.Predicate<String> validator) {
+                              CompatLambda.Predicate<String> validator, CompatLambda.Checker imeDone) {
             this.getter = getter;
             this.setter = setter;
             this.validator = validator;
             this.resource = resource;
+            this.imeDone = imeDone;
         }
 
         @Override
@@ -73,6 +78,22 @@ public class FragmentBaseInput extends FragmentBase {
             CompatKeyboard.request(et, ac);
             et.selectAll();
             ac.showToast(R.string.common_invalidvalue);
+        }
+
+        @Override
+        public void init() {
+            if (imeDone != null) {
+                EditText et = (EditText) getActivity().findViewById(resource);
+
+                et.setOnEditorActionListener((v, actionId, event) -> {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        if (!imeDone.test()) {
+                            return true; // do not hide keyboard
+                        }
+                    }
+                    return false;
+                });
+            }
         }
     }
 
@@ -118,13 +139,18 @@ public class FragmentBaseInput extends FragmentBase {
         public void highlightError(ActivityBase ac) {
             throw new IllegalStateException();
         }
+
+        @Override
+        public void init() {
+            // nothing
+        }
     }
 
     private final ArrayList<InputEntry> entries = new ArrayList<>();
 
     void addText(int resource, CompatLambda.Supplier<String> getter, CompatLambda.Consumer<String> setter,
                  CompatLambda.Predicate<String> validator) {
-        entries.add(new TextInputEntry(resource, getter, setter, validator));
+        entries.add(new TextInputEntry(resource, getter, setter, validator, null));
     }
 
     void addText(int resource, CompatLambda.Supplier<String> getter, CompatLambda.Consumer<String> setter) {
@@ -168,12 +194,23 @@ public class FragmentBaseInput extends FragmentBase {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        apply();
+
+        ActivityBase ac = (ActivityBase) getActivity();
+
+        for (InputEntry cur : entries) {
+            cur.init();
+            cur.apply(ac);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         read();
+    }
+
+    void addImeDone(int resource, CompatLambda.Supplier<String> getter, CompatLambda.Consumer<String> setter,
+                    CompatLambda.Predicate<String> validator, CompatLambda.Checker action) {
+        entries.add(new TextInputEntry(resource, getter, setter, validator, action));
     }
 }
