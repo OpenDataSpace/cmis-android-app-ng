@@ -1,7 +1,9 @@
 package org.opendataspace.android.operations;
 
 import com.google.gson.annotations.Expose;
+import com.j256.ormlite.misc.TransactionManager;
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.data.DataBase;
 import org.opendataspace.android.objects.Account;
 
 public class OperationAccount extends OperationBase {
@@ -19,13 +21,24 @@ public class OperationAccount extends OperationBase {
 
     @Override
     protected void doExecute(OperationStatus status) throws Exception {
-        account.getRepositories().sync();
+        final DataBase db = OdsApp.get().getDatabase();
 
-        if (isCancel()) {
-            return;
-        }
+        TransactionManager.callInTransaction(db.getConnectionSource(), () -> {
+            db.getAccounts().createOrUpdate(account);
 
-        OdsApp.get().getDatabase().getAccounts().createOrUpdate(account);
+            if (isCancel()) {
+                throw new InterruptedException();
+            }
+
+            account.getRepositories().sync();
+
+            if (isCancel()) {
+                throw new InterruptedException();
+            }
+
+            return null;
+        });
+
         status.setOk();
     }
 }

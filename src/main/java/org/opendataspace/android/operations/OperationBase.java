@@ -11,6 +11,8 @@ public abstract class OperationBase {
 
         try {
             doExecute(status);
+        } catch (InterruptedException ignore) {
+            // nothing
         } catch (Exception ex) {
             Log.w(getClass().getSimpleName(), ex);
             status.setError(ex.getMessage());
