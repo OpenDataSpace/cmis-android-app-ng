@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class DaoAccount extends DaoBase<Account, Long> {
 
-    DaoAccount(ConnectionSource connectionSource, Class<Account> dataClass) throws SQLException {
-        super(connectionSource, dataClass);
+    DaoAccount(ConnectionSource connectionSource) throws SQLException {
+        super(connectionSource, Account.class);
     }
 }

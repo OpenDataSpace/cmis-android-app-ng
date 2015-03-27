@@ -1,0 +1,27 @@
+package org.opendataspace.android.data;
+
+import com.j256.ormlite.dao.CloseableIterator;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.SelectArg;
+import com.j256.ormlite.support.ConnectionSource;
+import org.opendataspace.android.objects.Account;
+import org.opendataspace.android.objects.Repo;
+
+import java.sql.SQLException;
+
+public class DaoRepo extends DaoBase<Repo, Long> {
+
+    private final PreparedQuery<Repo> byAccount;
+    private final SelectArg byAccountArg;
+
+    DaoRepo(ConnectionSource connectionSource) throws SQLException {
+        super(connectionSource, Repo.class);
+        byAccountArg = new SelectArg();
+        byAccount = queryBuilder().where().eq(Repo.FIELD_ACCID, byAccountArg).prepare();
+    }
+
+    public CloseableIterator<Repo> forAccount(Account account) throws SQLException {
+        byAccountArg.setValue(account.getId());
+        return iterator(byAccount);
+    }
+}

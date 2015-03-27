@@ -2,11 +2,13 @@ package org.opendataspace.android.objects;
 
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import org.opendataspace.android.cmis.Cmis;
+
+import java.sql.SQLException;
 
 @DatabaseTable(tableName = "acc")
 public class Account {
@@ -22,7 +24,7 @@ public class Account {
     @DatabaseField(columnName = "data", canBeNull = false, persisterClass = AccountSerializer.class)
     private final AccountInfo info = new AccountInfo();
 
-    private transient Repositories repositories = null;
+    private transient RepoCollection repositories = null;
 
     public void setHost(String host) {
         info.host = host;
@@ -114,11 +116,19 @@ public class Account {
         return b.toString();
     }
 
-    public Repositories getRepositories() {
+    public RepoCollection getRepositories() {
         if (repositories == null) {
-            repositories = new Repositories(Cmis.createSessionSettings(this));
+            try {
+                repositories = new RepoCollection(this);
+            } catch (SQLException ex) {
+                Log.w(getClass().getSimpleName(), ex);
+            }
         }
 
         return repositories;
+    }
+
+    public long getId() {
+        return id;
     }
 }

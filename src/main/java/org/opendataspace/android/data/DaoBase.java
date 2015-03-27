@@ -80,4 +80,5 @@ public abstract class DaoBase<T, ID> extends BaseDaoImpl<T, ID> {
     public String getIdColumnName() {
         return tableInfo.getIdField().getColumnName();
     }
+
 }

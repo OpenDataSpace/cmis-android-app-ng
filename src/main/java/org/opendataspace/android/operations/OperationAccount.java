@@ -19,13 +19,13 @@ public class OperationAccount extends OperationBase {
 
     @Override
     protected void doExecute(OperationStatus status) throws Exception {
-        account.getRepositories();
+        account.getRepositories().sync();
 
         if (isCancel()) {
             return;
         }
 
-        //OdsApp.get().getDatabase().getAccounts().createOrUpdate(account);
+        OdsApp.get().getDatabase().getAccounts().createOrUpdate(account);
         status.setOk();
     }
 }

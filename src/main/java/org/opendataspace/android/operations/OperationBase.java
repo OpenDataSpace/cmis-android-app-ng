@@ -4,7 +4,7 @@ import android.util.Log;
 
 public abstract class OperationBase {
 
-    private boolean cancelled;
+    private boolean cancelled = false;
 
     public OperationStatus execute() {
         OperationStatus status = new OperationStatus();
