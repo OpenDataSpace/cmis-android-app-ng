@@ -3,11 +3,14 @@ package org.opendataspace.android.objects;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.URLUtil;
 
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.SQLException;
 
 @DatabaseTable(tableName = "acc")
@@ -25,10 +28,6 @@ public class Account {
     private final AccountInfo info = new AccountInfo();
 
     private transient RepoCollection repositories = null;
-
-    public void setHost(String host) {
-        info.host = host;
-    }
 
     public String getLogin() {
         return info.login;
@@ -54,20 +53,12 @@ public class Account {
         info.name = name;
     }
 
-    public void setUseHttps(boolean useHttps) {
-        info.useHttps = useHttps;
-    }
-
     public boolean isUseJson() {
         return info.useJson;
     }
 
     public void setUseJson(boolean useJson) {
         info.useJson = useJson;
-    }
-
-    public void setPort(int port) {
-        info.port = port;
     }
 
     public void setPath(String path) {
@@ -130,5 +121,19 @@ public class Account {
 
     public long getId() {
         return id;
+    }
+
+    public void setUri(String val) throws MalformedURLException {
+        URL url = new URL(URLUtil.guessUrl(val));
+        String path = url.getPath();
+
+        if ("/".equals(path)) {
+            path = "";
+        }
+
+        info.useHttps = "https".equals(url.getProtocol());
+        info.host = url.getHost();
+        info.path = path;
+        info.port = url.getPort();
     }
 }

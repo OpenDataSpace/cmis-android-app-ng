@@ -1,5 +1,6 @@
 package org.opendataspace.android.ui;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -19,8 +20,7 @@ import org.opendataspace.android.operations.OperationAccount;
 import org.opendataspace.android.operations.OperationLoader;
 import org.opendataspace.android.operations.OperationStatus;
 
-import java.net.URL;
-
+@SuppressLint("ValidFragment")
 public class FragmentAccountDetails extends FragmentBaseInput
         implements LoaderManager.LoaderCallbacks<OperationStatus> {
 
@@ -31,7 +31,7 @@ public class FragmentAccountDetails extends FragmentBaseInput
         Account account = op.getAccount();
         this.op = op;
 
-        addText(R.id.edit_account_host, account::getDisplayUri, this::setUri,
+        addText(R.id.edit_account_host, account::getDisplayUri, account::setUri,
                 val -> URLUtil.isValidUrl(URLUtil.guessUrl(val)));
         addText(R.id.edit_account_username, account::getLogin, account::setLogin, val -> !TextUtils.isEmpty(val));
         addText(R.id.edit_account_password, account::getPassword, account::setPassword, val -> !TextUtils.isEmpty(val));
@@ -47,16 +47,6 @@ public class FragmentAccountDetails extends FragmentBaseInput
     @Override
     public String getTile(Context context) {
         return context.getString(R.string.account_title);
-    }
-
-    private void setUri(String val) throws Exception {
-        Account account = op.getAccount();
-        URL url = new URL(URLUtil.guessUrl(val));
-
-        account.setUseHttps("https".equals(url.getProtocol()));
-        account.setHost(url.getHost());
-        account.setPath(url.getPath());
-        account.setPort(url.getPort());
     }
 
     @Override
