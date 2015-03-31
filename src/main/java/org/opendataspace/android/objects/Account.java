@@ -17,10 +17,10 @@ import java.sql.SQLException;
 public class Account {
 
     private static final String CMIS_JSON = "cmis/browser";
-    private static final String CMIS_ATOM = "service/cmis";
+    private static final String CMIS_ATOM = "cmis/atom";
 
     @Expose
-    @DatabaseField(id = true, columnName = "id")
+    @DatabaseField(generatedId = true, columnName = "id")
     private long id;
 
     @Expose

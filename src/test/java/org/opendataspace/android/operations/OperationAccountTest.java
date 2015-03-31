@@ -1,9 +1,11 @@
 package org.opendataspace.android.operations;
 
-import org.junit.Before;
+import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.objects.Account;
+import org.opendataspace.android.test.OdsAppTest;
+import org.opendataspace.android.test.OdsBaseTest;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -12,13 +14,15 @@ import java.io.FileReader;
 import java.util.Properties;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18)
-public class OperationAccountTest {
+@Config(manifest = "src/main/AndroidManifest.xml", application = OdsAppTest.class, emulateSdk = OdsBaseTest.SDK)
+public class OperationAccountTest extends OdsBaseTest {
 
     private OperationAccount op;
 
-    @Before
+    @Override
     public void setUp() throws Exception {
+        super.setUp();
+
         Properties p = new Properties();
         p.load(new FileReader(new File("build.properties")));
         Account acc = new Account();
@@ -31,12 +35,14 @@ public class OperationAccountTest {
     @Test
     public void testJsonConnection() {
         op.getAccount().setUseJson(true);
-        op.execute();
+        OperationStatus st = op.execute();
+        Assert.assertTrue(st.isOk());
     }
 
     @Test
     public void testAtomConnection() {
         op.getAccount().setUseJson(false);
-        op.execute();
+        OperationStatus st = op.execute();
+        Assert.assertTrue(st.isOk());
     }
 }

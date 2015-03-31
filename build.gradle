@@ -6,13 +6,11 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:1.1.3'
         classpath 'me.tatarka:gradle-retrolambda:2.5.0'
-        classpath 'org.robolectric:robolectric-gradle-plugin:1.0.1'
     }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'org.robolectric'
 
 def Properties props = new Properties()
 props.load(new FileInputStream(file('build.properties')))
@@ -82,21 +80,13 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.apache.maven:maven-ant-tasks:2.1.3'
 
-    testCompile('org.robolectric:robolectric:2.3') {
-        exclude module: 'classworlds'
-        exclude module: 'commons-logging'
-        exclude module: 'httpclient'
-        exclude module: 'maven-artifact'
-        exclude module: 'maven-artifact-manager'
-        exclude module: 'maven-error-diagnostics'
-        exclude module: 'maven-model'
-        exclude module: 'maven-project'
-        exclude module: 'maven-settings'
-        exclude module: 'plexus-container-default'
-        exclude module: 'plexus-interpolation'
-        exclude module: 'plexus-utils'
-        exclude module: 'wagon-file'
-        exclude module: 'wagon-http-lightweight'
-        exclude module: 'wagon-provider-api'
+    testCompile('org.robolectric:robolectric:3.0-rc2') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
+
+    testCompile('org.robolectric:shadows-support-v4:3.0-rc2') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
 }

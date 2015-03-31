@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.annotations.Expose;
 import org.apache.chemistry.opencmis.client.api.Repository;
 
-public class RepoInfo {
+class RepoInfo {
 
     @Expose
     public String name = "";

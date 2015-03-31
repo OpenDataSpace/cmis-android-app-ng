@@ -11,7 +11,7 @@ public class Repo {
     public static final String FIELD_ACCID = "aid";
 
     @Expose
-    @DatabaseField(id = true, columnName = "id")
+    @DatabaseField(generatedId = true, columnName = "id")
     private long id;
 
     @Expose

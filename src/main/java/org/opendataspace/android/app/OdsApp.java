@@ -27,7 +27,8 @@ public class OdsApp extends Application {
         super.onCreate();
 
         instance = this;
-        CompatPRNG.apply();
+        performHacks();
+
         prefs = new OdsPreferences(this);
         database = OpenHelperManager.getHelper(this, DataBase.class);
         pool = new TaskPool();
@@ -56,5 +57,9 @@ public class OdsApp extends Application {
 
     public TaskPool getPool() {
         return pool;
+    }
+
+    protected void performHacks() {
+        CompatPRNG.apply();
     }
 }

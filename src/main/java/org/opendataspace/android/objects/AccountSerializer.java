@@ -2,7 +2,7 @@ package org.opendataspace.android.objects;
 
 import org.opendataspace.android.data.DataGsonSerializer;
 
-class AccountSerializer extends DataGsonSerializer<AccountInfo> {
+public class AccountSerializer extends DataGsonSerializer<AccountInfo> {
 
     private static final AccountSerializer instance = new AccountSerializer();
 
