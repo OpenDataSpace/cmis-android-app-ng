@@ -1,5 +1,6 @@
 package org.opendataspace.android.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.view.MenuInflater;
 
 import org.opendataspace.android.app.beta.R;
 
+@SuppressLint("ValidFragment")
 public class FragmentBase extends Fragment {
 
     public FragmentBase() {

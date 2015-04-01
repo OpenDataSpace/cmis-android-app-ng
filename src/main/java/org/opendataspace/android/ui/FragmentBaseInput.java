@@ -1,5 +1,6 @@
 package org.opendataspace.android.ui;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -13,7 +14,8 @@ import org.opendataspace.android.app.beta.R;
 
 import java.util.ArrayList;
 
-public class FragmentBaseInput extends FragmentBase {
+@SuppressLint("ValidFragment")
+class FragmentBaseInput extends FragmentBase {
 
     private interface InputEntry {
 

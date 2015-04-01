@@ -1,5 +1,6 @@
 package org.opendataspace.android.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import org.opendataspace.android.app.beta.R;
 
+@SuppressLint("ValidFragment")
 class FragmentBaseList extends FragmentBase {
 
     final private Handler mHandler = new Handler();

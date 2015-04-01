@@ -13,7 +13,7 @@ import java.util.List;
 
 public class RepoCollection {
 
-    private WeakReference<Account> account;
+    private final WeakReference<Account> account;
     private List<Repo> data = new ArrayList<>();
 
     RepoCollection(Account account) throws SQLException {
