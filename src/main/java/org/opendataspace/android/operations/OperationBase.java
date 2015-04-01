@@ -1,6 +1,6 @@
 package org.opendataspace.android.operations;
 
-import android.util.Log;
+import org.opendataspace.android.app.OdsLog;
 
 public abstract class OperationBase {
 
@@ -14,7 +14,7 @@ public abstract class OperationBase {
         } catch (InterruptedException ignore) {
             // nothing
         } catch (Exception ex) {
-            Log.w(getClass().getSimpleName(), ex);
+            OdsLog.ex(getClass(), ex);
             status.setError(ex.getMessage());
         }
 

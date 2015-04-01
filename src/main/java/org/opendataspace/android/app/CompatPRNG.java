@@ -2,7 +2,6 @@ package org.opendataspace.android.app;
 
 import android.os.Build;
 import android.os.Process;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -179,10 +178,10 @@ final class CompatPRNG {
                 }
                 out.write(bytes);
                 out.flush();
-            } catch (IOException e) {
+            } catch (IOException ex) {
                 // On a small fraction of devices /dev/urandom is not writable.
                 // Log and ignore.
-                Log.w(CompatPRNG.class.getSimpleName(), "Failed to mix seed into " + URANDOM_FILE);
+                OdsLog.ex(getClass(), ex);
             } finally {
                 mSeeded = true;
             }

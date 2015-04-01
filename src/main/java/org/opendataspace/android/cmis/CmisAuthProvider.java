@@ -1,12 +1,12 @@
 package org.opendataspace.android.cmis;
 
 import android.util.Base64;
-import android.util.Log;
 
 import org.apache.chemistry.opencmis.client.bindings.spi.AbstractAuthenticationProvider;
 import org.apache.chemistry.opencmis.client.bindings.spi.BindingSession;
 import org.apache.chemistry.opencmis.client.bindings.spi.cookies.CmisCookieManager;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
+import org.opendataspace.android.app.OdsLog;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -63,7 +63,7 @@ public class CmisAuthProvider extends AbstractAuthenticationProvider {
                 context.init(null, new X509TrustManager[] {customManager}, new SecureRandom());
                 factory = context.getSocketFactory();
             } catch (Exception ex) {
-                Log.w(getClass().getSimpleName(), ex);
+                OdsLog.ex(getClass(), ex);
             }
         }
 

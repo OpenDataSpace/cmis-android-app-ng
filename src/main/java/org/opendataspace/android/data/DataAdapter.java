@@ -3,7 +3,6 @@ package org.opendataspace.android.data;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,7 @@ import android.view.ViewGroup;
 import com.j256.ormlite.android.AndroidDatabaseResults;
 import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.stmt.GenericRowMapper;
+import org.opendataspace.android.app.OdsLog;
 
 public abstract class DataAdapter<T> extends CursorAdapter {
 
@@ -26,7 +26,7 @@ public abstract class DataAdapter<T> extends CursorAdapter {
         try {
             this.mapper = dao.getSelectStarRowMapper();
         } catch (Exception ex) {
-            Log.w(getClass().getSimpleName(), ex);
+            OdsLog.ex(getClass(), ex);
         }
 
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -41,7 +41,7 @@ public abstract class DataAdapter<T> extends CursorAdapter {
         try {
             bindView(context, view, mapper.mapRow(data));
         } catch (Exception ex) {
-            Log.w(getClass().getSimpleName(), ex);
+            OdsLog.ex(getClass(), ex);
         }
     }
 

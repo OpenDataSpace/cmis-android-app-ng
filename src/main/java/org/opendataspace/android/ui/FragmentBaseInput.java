@@ -1,7 +1,6 @@
 package org.opendataspace.android.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
@@ -9,6 +8,7 @@ import android.widget.EditText;
 
 import org.opendataspace.android.app.CompatKeyboard;
 import org.opendataspace.android.app.CompatLambda;
+import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class FragmentBaseInput extends FragmentBase {
                         setter.accept(val);
                         return true;
                     } catch (Exception ex) {
-                        Log.w(getClass().getSimpleName(), ex);
+                        OdsLog.ex(getClass(), ex);
                     }
                 }
             }
@@ -128,7 +128,7 @@ public class FragmentBaseInput extends FragmentBase {
                     setter.accept(((CompoundButton) vw).isChecked());
                     return true;
                 } catch (Exception ex) {
-                    Log.w(getClass().getSimpleName(), ex);
+                    OdsLog.ex(getClass(), ex);
                 }
             }
 

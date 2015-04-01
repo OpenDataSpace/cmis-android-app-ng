@@ -2,12 +2,12 @@ package org.opendataspace.android.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.ReferenceObjectCache;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.objects.Repo;
 
@@ -33,7 +33,7 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Account.class);
             TableUtils.createTable(connectionSource, Repo.class);
         } catch (Exception ex) {
-            Log.w(getClass().getSimpleName(), ex);
+            OdsLog.ex(getClass(), ex);
         }
     }
 
@@ -55,7 +55,7 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
                 accounts = new DaoAccount(getConnectionSource());
                 accounts.setObjectCache(cache);
             } catch (SQLException ex) {
-                Log.w(getClass().getSimpleName(), ex);
+                OdsLog.ex(getClass(), ex);
             }
         }
 
@@ -68,7 +68,7 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
                 repos = new DaoRepo(getConnectionSource());
                 repos.setObjectCache(cache);
             } catch (SQLException ex) {
-                Log.w(getClass().getSimpleName(), ex);
+                OdsLog.ex(getClass(), ex);
             }
         }
 

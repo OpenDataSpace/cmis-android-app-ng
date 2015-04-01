@@ -2,9 +2,9 @@ package org.opendataspace.android.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.Navigation;
 import org.opendataspace.android.navigation.NavigationState;
@@ -24,13 +24,17 @@ public class ActivityDialog extends ActivityBase {
                     OdsApp.gson.fromJson(getIntent().getStringExtra(ARG_NAV_STATE), NavigationState.class);
             FragmentBase fgm = Navigation.createFragment(state);
 
+            if (fgm == null) {
+                throw new IllegalArgumentException();
+            }
+
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.dialog_view_frame, fgm, TAG_CONTENT);
             ft.commitAllowingStateLoss();
 
             getSupportActionBar().setTitle(fgm.getTile(this));
         } catch (Exception ex) {
-            Log.w(getClass().getSimpleName(), ex);
+            OdsLog.ex(getClass(), ex);
             finish();
         }
     }

@@ -24,5 +24,9 @@
         <activity
             android:name="org.opendataspace.android.ui.ActivityDialog"
             android:theme="@style/OdsDialog"/>
+
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="${fabricKey}"/>
     </application>
 </manifest>

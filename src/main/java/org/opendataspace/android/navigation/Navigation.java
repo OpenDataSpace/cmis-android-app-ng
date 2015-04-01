@@ -9,11 +9,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Gravity;
 
 import org.opendataspace.android.app.CompatKeyboard;
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.operations.OperationBase;
 import org.opendataspace.android.ui.ActivityDialog;
@@ -69,7 +69,7 @@ public class Navigation {
                 backstack.add(new NavigationState(NavigationScope.MAIN, FragmentAccountList.class, null));
             }
         } catch (Exception ex) {
-            Log.w(getClass().getSimpleName(), ex);
+            OdsLog.ex(getClass(), ex);
         }
 
         FragmentNavigation nav = new FragmentNavigation();
@@ -94,7 +94,7 @@ public class Navigation {
 
             ft.commitAllowingStateLoss();
         } catch (Exception ex) {
-            Log.w(getClass().getSimpleName(), ex);
+            OdsLog.ex(getClass(), ex);
         }
     }
 
@@ -145,7 +145,7 @@ public class Navigation {
             OperationBase op = ns.getOperation();
             return (FragmentBase) (op != null ? cls.getConstructor(op.getClass()).newInstance(op) : cls.newInstance());
         } catch (Exception ex) {
-            Log.w(Navigation.class.getSimpleName(), ex);
+            OdsLog.ex(Navigation.class, ex);
         }
 
         return null;
@@ -219,7 +219,8 @@ public class Navigation {
         navigate(cls, op, NavigationScope.DETAILS, false);
     }
 
-    private void navigate(Class<? extends FragmentBase> cls, OperationBase op, NavigationScope scope, boolean needHome) {
+    private void navigate(Class<? extends FragmentBase> cls, OperationBase op, NavigationScope scope,
+                          boolean needHome) {
         closeDrawer();
         CompatKeyboard.hide(context);
 

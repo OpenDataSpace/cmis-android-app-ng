@@ -2,9 +2,11 @@ package org.opendataspace.android.app;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import io.fabric.sdk.android.Fabric;
 import org.opendataspace.android.data.DataBase;
 
 public class OdsApp extends Application {
@@ -27,7 +29,12 @@ public class OdsApp extends Application {
         super.onCreate();
 
         instance = this;
-        performHacks();
+
+        try {
+            performHacks();
+        } catch (final Exception ex) {
+            OdsLog.ex(getClass(), ex);
+        }
 
         prefs = new OdsPreferences(this);
         database = OpenHelperManager.getHelper(this, DataBase.class);
@@ -61,5 +68,9 @@ public class OdsApp extends Application {
 
     protected void performHacks() {
         CompatPRNG.apply();
+
+        if (!prefs.isDebug()) {
+            Fabric.with(this, new Crashlytics());
+        }
     }
 }

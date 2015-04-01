@@ -1,7 +1,6 @@
 package org.opendataspace.android.app;
 
 import android.os.Handler;
-import android.util.Log;
 
 abstract class Task implements Runnable {
 
@@ -18,7 +17,7 @@ abstract class Task implements Runnable {
         try {
             onExecute();
         } catch (final Exception ex) {
-            Log.w(getClass().getSimpleName(), ex);
+            OdsLog.ex(getClass(), ex);
         }
 
         handler.post(new Runnable() {
@@ -28,7 +27,7 @@ abstract class Task implements Runnable {
                 try {
                     onDone();
                 } catch (final Exception ex) {
-                    Log.w(getClass().getSimpleName(), ex);
+                    OdsLog.ex(getClass(), ex);
                 }
             }
         });

@@ -39,8 +39,8 @@ public class CompatPreferenceManager {
                     PreferenceManager.class.getDeclaredConstructor(Activity.class, int.class);
             c.setAccessible(true);
             return c.newInstance(activity, firstRequestCode);
-        } catch (Exception e) {
-            Log.w(TAG, "Couldn't call constructor PreferenceManager by reflection", e);
+        } catch (Exception ex) {
+            OdsLog.ex(CompatPreferenceManager.class, ex);
         }
         return null;
     }
@@ -70,8 +70,8 @@ public class CompatPreferenceManager {
             } else {
                 onPreferenceTreeClickListener.set(manager, null);
             }
-        } catch (Exception e) {
-            Log.w(TAG, "Couldn't set PreferenceManager.mOnPreferenceTreeClickListener by reflection", e);
+        } catch (Exception ex) {
+            OdsLog.ex(CompatPreferenceManager.class, ex);
         }
     }
 
@@ -90,8 +90,8 @@ public class CompatPreferenceManager {
                     .getDeclaredMethod("inflateFromResource", Context.class, int.class, PreferenceScreen.class);
             m.setAccessible(true);
             return (PreferenceScreen) m.invoke(manager, activity, resId, screen);
-        } catch (Exception e) {
-            Log.w(TAG, "Couldn't call PreferenceManager.inflateFromResource by reflection", e);
+        } catch (Exception ex) {
+            OdsLog.ex(CompatPreferenceManager.class, ex);
         }
         return null;
     }
@@ -106,8 +106,8 @@ public class CompatPreferenceManager {
             Method m = PreferenceManager.class.getDeclaredMethod("getPreferenceScreen");
             m.setAccessible(true);
             return (PreferenceScreen) m.invoke(manager);
-        } catch (Exception e) {
-            Log.w(TAG, "Couldn't call PreferenceManager.getPreferenceScreen by reflection", e);
+        } catch (Exception ex) {
+            OdsLog.ex(CompatPreferenceManager.class, ex);
         }
         return null;
     }
@@ -121,8 +121,8 @@ public class CompatPreferenceManager {
                     .getDeclaredMethod("dispatchActivityResult", int.class, int.class, Intent.class);
             m.setAccessible(true);
             m.invoke(manager, requestCode, resultCode, data);
-        } catch (Exception e) {
-            Log.w(TAG, "Couldn't call PreferenceManager.dispatchActivityResult by reflection", e);
+        } catch (Exception ex) {
+            OdsLog.ex(CompatPreferenceManager.class, ex);
         }
     }
 
@@ -135,8 +135,8 @@ public class CompatPreferenceManager {
             Method m = PreferenceManager.class.getDeclaredMethod("dispatchActivityStop");
             m.setAccessible(true);
             m.invoke(manager);
-        } catch (Exception e) {
-            Log.w(TAG, "Couldn't call PreferenceManager.dispatchActivityStop by reflection", e);
+        } catch (Exception ex) {
+            OdsLog.ex(CompatPreferenceManager.class, ex);
         }
     }
 
@@ -149,8 +149,8 @@ public class CompatPreferenceManager {
             Method m = PreferenceManager.class.getDeclaredMethod("dispatchActivityDestroy");
             m.setAccessible(true);
             m.invoke(manager);
-        } catch (Exception e) {
-            Log.w(TAG, "Couldn't call PreferenceManager.dispatchActivityDestroy by reflection", e);
+        } catch (Exception ex) {
+            OdsLog.ex(CompatPreferenceManager.class, ex);
         }
     }
 
@@ -165,8 +165,8 @@ public class CompatPreferenceManager {
             Method m = PreferenceManager.class.getDeclaredMethod("setPreferences", PreferenceScreen.class);
             m.setAccessible(true);
             return ((Boolean) m.invoke(manager, screen));
-        } catch (Exception e) {
-            Log.w(TAG, "Couldn't call PreferenceManager.setPreferences by reflection", e);
+        } catch (Exception ex) {
+            OdsLog.ex(CompatPreferenceManager.class, ex);
         }
         return false;
     }

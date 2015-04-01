@@ -4,14 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.j256.ormlite.dao.CloseableIterator;
+import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.app.OdsLog;
+import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.objects.AccountAdapter;
-import org.opendataspace.android.app.OdsApp;
-import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.operations.OperationAccount;
 
 public class FragmentAccountList extends FragmentBaseList
@@ -24,7 +24,7 @@ public class FragmentAccountList extends FragmentBaseList
         try {
             isEmpty = OdsApp.get().getDatabase().getAccounts().countOf() == 0;
         } catch (Exception ex) {
-            Log.w(getClass().getSimpleName(), ex);
+            OdsLog.ex(getClass(), ex);
         }
     }
 

@@ -2,12 +2,12 @@ package org.opendataspace.android.objects;
 
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 import android.webkit.URLUtil;
 
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import org.opendataspace.android.app.OdsLog;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -112,7 +112,7 @@ public class Account {
             try {
                 repositories = new RepoCollection(this);
             } catch (SQLException ex) {
-                Log.w(getClass().getSimpleName(), ex);
+                OdsLog.ex(getClass(), ex);
             }
         }
 
