@@ -11,14 +11,26 @@ import java.io.IOException;
 public class AccountTest {
 
     @Test
-    public void testUri() throws IOException {
+    public void checkUri() throws IOException {
         Account acc = new Account();
-        String test = "https://demo.dataspace.cc";
-        acc.setUri(test);
+        String domain = "demo.dataspace.cc";
+        acc.setUri("https://" + domain);
+        Assert.assertEquals("https", acc.getUri().getScheme());
+        Assert.assertEquals(domain, acc.getUri().getAuthority());
         acc.setUseJson(false);
-        Assert.assertEquals(acc.getUri().getPath(), "/cmis/atom");
+        Assert.assertEquals("/cmis/atom", acc.getUri().getPath());
         acc.setUseJson(true);
-        Assert.assertEquals(acc.getUri().getPath(), "/cmis/browser");
-        Assert.assertEquals(acc.getDisplayUri(), test);
+        Assert.assertEquals("/cmis/browser", acc.getUri().getPath());
+        Assert.assertEquals("https://" + domain, acc.getDisplayUri());
+
+        String path = "/test/path";
+        acc.setUri("http://" + domain + path);
+        Assert.assertEquals("http", acc.getUri().getScheme());
+        Assert.assertEquals(domain, acc.getUri().getAuthority());
+        acc.setUseJson(false);
+        Assert.assertEquals(path, acc.getUri().getPath());
+        acc.setUseJson(true);
+        Assert.assertEquals(path, acc.getUri().getPath());
+        Assert.assertEquals(domain + path, acc.getDisplayUri());
     }
 }

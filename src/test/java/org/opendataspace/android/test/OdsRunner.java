@@ -12,6 +12,11 @@ import org.robolectric.manifest.AndroidManifest;
 import org.robolectric.res.FileFsFile;
 import org.robolectric.util.ReflectionHelpers;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
 public class OdsRunner extends RobolectricTestRunner {
 
     public OdsRunner(Class<?> testClass) throws InitializationError {
@@ -73,5 +78,22 @@ public class OdsRunner extends RobolectricTestRunner {
     @Override
     protected Class<? extends TestLifecycle> getTestLifecycleClass() {
         return OdsLifecycle.class;
+    }
+
+    @Override
+    protected Properties getConfigProperties() {
+        Properties p = new Properties();
+
+        try {
+            File f = new File("build.properties");
+
+            if (f.exists()) {
+                p.load(new FileReader(f));
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        return p;
     }
 }

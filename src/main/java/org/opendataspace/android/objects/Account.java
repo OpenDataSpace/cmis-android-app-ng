@@ -61,14 +61,6 @@ public class Account {
         info.useJson = useJson;
     }
 
-    public void setPath(String path) {
-        if (!"/".equals(path)) {
-            info.path = path;
-        } else {
-            info.path = "";
-        }
-    }
-
     public Uri getUri() {
         boolean defaultPort =
                 info.port == -1 || (info.useHttps && info.port == 80) || (!info.useHttps && info.port == 443);
@@ -101,7 +93,11 @@ public class Account {
         }
 
         if (!defaultPath) {
-            b.append("/").append(info.path);
+            if (!info.path.startsWith("/")) {
+                b.append("/");
+            }
+
+            b.append(info.path);
         }
 
         return b.toString();

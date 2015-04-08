@@ -25,6 +25,11 @@ public class OdsLifecycle extends DefaultTestLifecycle {
             protected void performHacks() {
                 // nothing
             }
+
+            @Override
+            protected void setUpHacks() {
+                // nothing
+            }
         };
 
         if (appManifest != null) {

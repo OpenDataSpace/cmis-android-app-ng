@@ -39,6 +39,12 @@ public class OdsApp extends Application {
         prefs = new OdsPreferences(this);
         database = OpenHelperManager.getHelper(this, DataBase.class);
         pool = new TaskPool();
+
+        try {
+            setUpHacks();
+        } catch (final Exception ex) {
+            OdsLog.ex(getClass(), ex);
+        }
     }
 
     @Override
@@ -71,6 +77,12 @@ public class OdsApp extends Application {
 
         if (!prefs.isDebug()) {
             Fabric.with(this, new Crashlytics());
+        }
+    }
+
+    protected void setUpHacks() {
+        if (!prefs.isDebug()) {
+            Crashlytics.setUserIdentifier(prefs.getInstallId());
         }
     }
 }
