@@ -16,8 +16,11 @@ public class ActivityMain extends ActivityBase {
         super.onCreate(savedInstanceState);
         setContentView(
                 OdsApp.get().getPrefs().isTablet() ? R.layout.activity_main_tablet : R.layout.activity_main_phone);
+        nav = createNavigation(savedInstanceState);
+    }
 
-        nav = new Navigation(this, savedInstanceState);
+    protected Navigation createNavigation(Bundle savedInstanceState) {
+        return new Navigation(this, savedInstanceState);
     }
 
     @Override
@@ -37,7 +40,10 @@ public class ActivityMain extends ActivityBase {
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
-        nav.save(outState);
+
+        if (nav != null) {
+            nav.save(outState);
+        }
     }
 
     @Override

@@ -54,6 +54,6 @@ public abstract class DataAdapter<T> extends CursorAdapter {
 
     public void swapResults(CloseableIterator<T> data) {
         this.data = data != null ? (AndroidDatabaseResults) data.getRawResults() : null;
-        swapCursor(data != null ? new DataAdapterCursor(this.data.getRawCursor(), idColumn) : null);
+        changeCursor(data != null ? new DataAdapterCursor(this.data.getRawCursor(), idColumn) : null);
     }
 }

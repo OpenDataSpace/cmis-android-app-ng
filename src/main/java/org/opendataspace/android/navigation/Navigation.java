@@ -62,14 +62,14 @@ public class Navigation {
 
         if (backstack.isEmpty()) {
             backstack.add(new NavigationState(NavigationScope.MAIN, FragmentNavigation.class, null));
-        }
 
-        try {
-            if (OdsApp.get().getDatabase().getAccounts().countOf() == 0) {
-                backstack.add(new NavigationState(NavigationScope.MAIN, FragmentAccountList.class, null));
+            try {
+                if (OdsApp.get().getDatabase().getAccounts().countOf() == 0) {
+                    backstack.add(new NavigationState(NavigationScope.MAIN, FragmentAccountList.class, null));
+                }
+            } catch (Exception ex) {
+                OdsLog.ex(getClass(), ex);
             }
-        } catch (Exception ex) {
-            OdsLog.ex(getClass(), ex);
         }
 
         FragmentNavigation nav = new FragmentNavigation();

@@ -268,4 +268,8 @@ class FragmentBaseList extends FragmentBase {
         }
         mHandler.post(mRequestFocus);
     }
+
+    public ListView getList() {
+        return list;
+    }
 }

@@ -36,7 +36,7 @@ public class FragmentAccountDetails extends FragmentBaseInput
         addText(R.id.edit_account_username, account::getLogin, account::setLogin, val -> !TextUtils.isEmpty(val));
         addText(R.id.edit_account_password, account::getPassword, account::setPassword, val -> !TextUtils.isEmpty(val));
         addImeDone(R.id.edit_account_description, account::getName, account::setName, null, this::actionApply);
-        addBool(R.id.check_account_atom, account::isUseJson, account::setUseJson);
+        addBool(R.id.check_account_json, account::isUseJson, account::setUseJson);
     }
 
     @Override

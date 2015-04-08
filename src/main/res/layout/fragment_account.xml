@@ -92,7 +92,7 @@
             android:text="@string/account_usejson"/>
 
         <CheckBox
-            android:id="@+id/check_account_atom"
+            android:id="@+id/check_account_json"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </TableRow>

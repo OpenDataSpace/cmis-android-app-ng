@@ -21,13 +21,13 @@ public class OperationAccountTest {
     public void connectJson() {
         op.getAccount().setUseJson(true);
         OperationStatus st = op.execute();
-        Assert.assertTrue(st.isOk());
+        Assert.assertEquals(true, st.isOk());
     }
 
     @Test
     public void connectAtom() {
         op.getAccount().setUseJson(false);
         OperationStatus st = op.execute();
-        Assert.assertTrue(st.isOk());
+        Assert.assertEquals(true, st.isOk());
     }
 }

@@ -8,14 +8,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.j256.ormlite.dao.CloseableIterator;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.data.DataAdapterMerge;
 import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.objects.AccountAdapter;
 
@@ -35,30 +32,13 @@ public class FragmentNavigation extends FragmentBase
 
         Activity ac = getActivity();
         Spinner spin = (Spinner) ac.findViewById(R.id.spin_nav_accounts);
+
         accounts = new AccountAdapter(ac, OdsApp.get().getDatabase().getAccounts());
-
-        DataAdapterMerge merge = new DataAdapterMerge();
-        merge.addAdapter(accounts);
-        merge.addAdapter(new ArrayAdapter<>(ac, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1,
-                new String[] {getString(R.string.nav_manage)}));
-
-        spin.setAdapter(merge);
-        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == adapterView.getCount() - 1 && accounts.getCount() != 0) {
-                    actionManage();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                // nothing
-            }
-        });
+        spin.setAdapter(accounts);
+        updateSpin();
 
         ac.findViewById(R.id.action_nav_settings).setOnClickListener(view -> actionSettings());
+        ac.findViewById(R.id.action_nav_manage).setOnClickListener(view -> actionManage());
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -70,14 +50,16 @@ public class FragmentNavigation extends FragmentBase
     @Override
     public void onLoadFinished(Loader<CloseableIterator<Account>> loader, CloseableIterator<Account> data) {
         accounts.swapResults(data);
+        updateSpin();
     }
 
     @Override
     public void onLoaderReset(Loader<CloseableIterator<Account>> loader) {
         accounts.swapResults(null);
+        updateSpin();
     }
 
-    public void actionManage() {
+    private void actionManage() {
         ActivityMain ac = getMainActivity();
         ac.getNavigation().openRootFolder(FragmentAccountList.class, null);
     }
@@ -113,5 +95,17 @@ public class FragmentNavigation extends FragmentBase
 
     private void actionSettings() {
         getMainActivity().getNavigation().openDialog(FragmentSettings.class, null);
+    }
+
+    private void updateSpin() {
+        Activity ac = getActivity();
+
+        if (ac != null) {
+            Spinner spin = (Spinner) ac.findViewById(R.id.spin_nav_accounts);
+
+            if (spin != null) {
+                spin.setEnabled(accounts.getCount() != 0);
+            }
+        }
     }
 }

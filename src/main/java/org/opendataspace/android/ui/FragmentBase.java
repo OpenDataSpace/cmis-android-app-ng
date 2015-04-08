@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.navigation.Navigation;
 
 @SuppressLint("ValidFragment")
 public class FragmentBase extends Fragment {
@@ -33,8 +34,13 @@ public class FragmentBase extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         ActivityMain ac = getMainActivity();
 
-        if (ac != null && ac.getNavigation().getTopFragment() != this) {
-            return;
+
+        if (ac != null) {
+            Navigation nav = ac.getNavigation();
+
+            if (nav != null && nav.getTopFragment() != this) {
+                return;
+            }
         }
 
         int res = getMenuResource();

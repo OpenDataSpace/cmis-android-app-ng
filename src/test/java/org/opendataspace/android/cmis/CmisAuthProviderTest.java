@@ -29,9 +29,9 @@ public class CmisAuthProviderTest {
 
         Map<String, List<String>> data = provider.getHTTPHeaders("https://demo.dataspace.cc");
 
-        Assert.assertTrue(data.containsKey("Authorization"));
-        Assert.assertTrue(data.containsKey("User-Agent"));
-        Assert.assertTrue(data.containsKey("Device-ID"));
+        Assert.assertEquals(true, data.containsKey("Authorization"));
+        Assert.assertEquals(true, data.containsKey("User-Agent"));
+        Assert.assertEquals(true, data.containsKey("Device-ID"));
 
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         OdsPreferences pref = app.getPrefs();
@@ -39,10 +39,10 @@ public class CmisAuthProviderTest {
         String deviceid = data.get("Device-ID").get(0);
         String auth = data.get("Authorization").get(0);
 
-        Assert.assertFalse(TextUtils.isEmpty(auth));
-        Assert.assertFalse(TextUtils.isEmpty(deviceid));
+        Assert.assertEquals(false, TextUtils.isEmpty(auth));
+        Assert.assertEquals(false, TextUtils.isEmpty(deviceid));
         Assert.assertEquals(pref.getInstallId(), deviceid);
-        Assert.assertTrue(agent.contains(pref.version()));
-        Assert.assertTrue(agent.contains("Android"));
+        Assert.assertEquals(true, agent.contains(pref.version()));
+        Assert.assertEquals(true, agent.contains("Android"));
     }
 }
