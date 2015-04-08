@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsPreferences;
 import org.opendataspace.android.test.OdsRunner;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.List;
 import java.util.Map;
@@ -32,10 +33,11 @@ public class CmisAuthProviderTest {
         Assert.assertTrue(data.containsKey("User-Agent"));
         Assert.assertTrue(data.containsKey("Device-ID"));
 
+        OdsApp app = (OdsApp) RuntimeEnvironment.application;
+        OdsPreferences pref = app.getPrefs();
         String agent = data.get("User-Agent").get(0);
         String deviceid = data.get("Device-ID").get(0);
         String auth = data.get("Authorization").get(0);
-        OdsPreferences pref = OdsApp.get().getPrefs();
 
         Assert.assertFalse(TextUtils.isEmpty(auth));
         Assert.assertFalse(TextUtils.isEmpty(deviceid));

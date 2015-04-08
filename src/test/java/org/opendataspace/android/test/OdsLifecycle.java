@@ -50,6 +50,9 @@ public class OdsLifecycle extends DefaultTestLifecycle {
     @Override
     public void beforeTest(Method method) {
         super.beforeTest(method);
-        ShadowLog.stream = System.out;
+
+        if (Boolean.valueOf(OdsTestUtil.getProperties().getProperty("test.logging"))) {
+            ShadowLog.stream = System.out;
+        }
     }
 }
