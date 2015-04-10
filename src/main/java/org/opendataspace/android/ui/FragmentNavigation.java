@@ -2,22 +2,17 @@ package org.opendataspace.android.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Spinner;
 
-import com.j256.ormlite.dao.CloseableIterator;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.objects.AccountAdapter;
 
-public class FragmentNavigation extends FragmentBase
-        implements LoaderManager.LoaderCallbacks<CloseableIterator<Account>> {
+public class FragmentNavigation extends FragmentBase {
 
     private AccountAdapter accounts;
 
@@ -32,31 +27,17 @@ public class FragmentNavigation extends FragmentBase
 
         Activity ac = getActivity();
         Spinner spin = (Spinner) ac.findViewById(R.id.spin_nav_accounts);
-
-        accounts = new AccountAdapter(ac, OdsApp.get().getDatabase().getAccounts());
+        accounts = new AccountAdapter(OdsApp.get().getViewManager().getAccounts(), ac);
         spin.setAdapter(accounts);
-        updateSpin();
 
         ac.findViewById(R.id.action_nav_settings).setOnClickListener(view -> actionSettings());
         ac.findViewById(R.id.action_nav_manage).setOnClickListener(view -> actionManage());
-        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
-    public Loader<CloseableIterator<Account>> onCreateLoader(int id, Bundle args) {
-        return OdsApp.get().getDatabase().getAccounts().getLoader(getActivity());
-    }
-
-    @Override
-    public void onLoadFinished(Loader<CloseableIterator<Account>> loader, CloseableIterator<Account> data) {
-        accounts.swapResults(data);
-        updateSpin();
-    }
-
-    @Override
-    public void onLoaderReset(Loader<CloseableIterator<Account>> loader) {
-        accounts.swapResults(null);
-        updateSpin();
+    public void onDestroyView() {
+        accounts.dispose();
+        super.onDestroyView();
     }
 
     private void actionManage() {
@@ -95,17 +76,5 @@ public class FragmentNavigation extends FragmentBase
 
     private void actionSettings() {
         getMainActivity().getNavigation().openDialog(FragmentSettings.class, null);
-    }
-
-    private void updateSpin() {
-        Activity ac = getActivity();
-
-        if (ac != null) {
-            Spinner spin = (Spinner) ac.findViewById(R.id.spin_nav_accounts);
-
-            if (spin != null) {
-                spin.setEnabled(accounts.getCount() != 0);
-            }
-        }
     }
 }

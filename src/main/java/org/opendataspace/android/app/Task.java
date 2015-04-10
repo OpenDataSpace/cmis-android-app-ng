@@ -2,13 +2,13 @@ package org.opendataspace.android.app;
 
 import android.os.Handler;
 
-abstract class Task implements Runnable {
+public abstract class Task implements Runnable {
 
     private final Handler handler = new Handler();
 
     public abstract void onExecute() throws Exception;
 
-    void onDone() {
+    public void onDone() throws Exception {
         // nothing
     }
 

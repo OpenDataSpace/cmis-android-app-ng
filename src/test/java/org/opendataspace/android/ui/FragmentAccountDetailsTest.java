@@ -9,18 +9,18 @@ import org.junit.runner.RunWith;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.operations.OperationAccount;
-import org.opendataspace.android.test.OdsRunner;
-import org.opendataspace.android.test.OdsTestUtil;
+import org.opendataspace.android.test.RunnerDefault;
+import org.opendataspace.android.test.TestUtil;
 
-@RunWith(OdsRunner.class)
+@RunWith(RunnerDefault.class)
 public class FragmentAccountDetailsTest {
 
     @Test
     public void checkDefaults() throws Exception {
-        Account acc = OdsTestUtil.getDefaultAccount();
+        Account acc = TestUtil.getDefaultAccount();
         OperationAccount op = new OperationAccount(acc);
         FragmentAccountDetails fgm = new FragmentAccountDetails(op);
-        ActivityMain ac = OdsTestUtil.setupFragment(fgm);
+        ActivityMain ac = TestUtil.setupFragment(fgm);
 
         EditText etl = (EditText) ac.findViewById(R.id.edit_account_username);
         EditText etp = (EditText) ac.findViewById(R.id.edit_account_password);
@@ -47,7 +47,7 @@ public class FragmentAccountDetailsTest {
         cbp.setChecked(useJs);
 
         fgm = new FragmentAccountDetails(op);
-        OdsTestUtil.replaceFragment(ac, fgm);
+        TestUtil.replaceFragment(ac, fgm);
 
         Assert.assertEquals(login, acc.getLogin());
         Assert.assertEquals(password, acc.getPassword());
@@ -55,6 +55,6 @@ public class FragmentAccountDetailsTest {
         Assert.assertEquals(desc, acc.getName());
         Assert.assertEquals(useJs, acc.isUseJson());
 
-        OdsTestUtil.dismisActivity(ac);
+        TestUtil.dismisActivity(ac);
     }
 }

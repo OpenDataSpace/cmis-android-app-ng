@@ -3,18 +3,18 @@ package org.opendataspace.android.ui;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.opendataspace.android.test.OdsRunner;
-import org.opendataspace.android.test.OdsTestUtil;
+import org.opendataspace.android.test.RunnerDefault;
+import org.opendataspace.android.test.TestUtil;
 
-@RunWith(OdsRunner.class)
+@RunWith(RunnerDefault.class)
 public class FragmentAccountListTest {
 
     @Test
     public void checkDefaults() throws Exception {
         FragmentAccountList fgm = new FragmentAccountList();
-        ActivityMain ac = OdsTestUtil.setupFragment(fgm);
-        OdsTestUtil.waitRunnable();
+        ActivityMain ac = TestUtil.setupFragment(fgm);
+        TestUtil.waitRunnable();
         Assert.assertEquals(1, fgm.getList().getCount());
-        OdsTestUtil.dismisActivity(ac);
+        TestUtil.dismisActivity(ac);
     }
 }

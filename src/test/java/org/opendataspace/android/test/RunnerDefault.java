@@ -14,9 +14,9 @@ import org.robolectric.util.ReflectionHelpers;
 
 import java.util.Properties;
 
-public class OdsRunner extends RobolectricTestRunner {
+public class RunnerDefault extends RobolectricTestRunner {
 
-    public OdsRunner(Class<?> testClass) throws InitializationError {
+    public RunnerDefault(Class<?> testClass) throws InitializationError {
         super(testClass);
     }
 
@@ -74,11 +74,11 @@ public class OdsRunner extends RobolectricTestRunner {
 
     @Override
     protected Class<? extends TestLifecycle> getTestLifecycleClass() {
-        return OdsLifecycle.class;
+        return LifecycleDefault.class;
     }
 
     @Override
     protected Properties getConfigProperties() {
-        return OdsTestUtil.getProperties();
+        return TestUtil.getProperties();
     }
 }

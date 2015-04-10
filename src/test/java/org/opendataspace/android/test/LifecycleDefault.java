@@ -15,22 +15,11 @@ import org.robolectric.shadows.ShadowLog;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-public class OdsLifecycle extends DefaultTestLifecycle {
+public class LifecycleDefault extends DefaultTestLifecycle {
 
     @Override
     public Application createApplication(Method method, AndroidManifest appManifest, Config config) {
-        Application app = new OdsApp() {
-
-            @Override
-            protected void performHacks() {
-                // nothing
-            }
-
-            @Override
-            protected void setUpHacks() {
-                // nothing
-            }
-        };
+        Application app = createApp();
 
         if (appManifest != null) {
             Map ad = appManifest.getActivityDatas();
@@ -47,11 +36,21 @@ public class OdsLifecycle extends DefaultTestLifecycle {
         return app;
     }
 
+    protected Application createApp() {
+        return new OdsApp() {
+
+            @Override
+            protected void performHacks() {
+                // nothing
+            }
+        };
+    }
+
     @Override
     public void beforeTest(Method method) {
         super.beforeTest(method);
 
-        if (Boolean.valueOf(OdsTestUtil.getProperties().getProperty("test.logging"))) {
+        if (Boolean.valueOf(TestUtil.getProperties().getProperty("test.logging"))) {
             ShadowLog.stream = System.out;
         }
     }

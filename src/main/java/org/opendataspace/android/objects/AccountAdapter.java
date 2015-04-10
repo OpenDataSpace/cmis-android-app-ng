@@ -2,20 +2,23 @@ package org.opendataspace.android.objects;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.opendataspace.android.data.DaoBase;
-import org.opendataspace.android.data.DataAdapter;
+import org.opendataspace.android.views.ViewAdapter;
+import org.opendataspace.android.views.ViewBase;
 
-public class AccountAdapter extends DataAdapter<Account> {
+public class AccountAdapter extends ViewAdapter<Account> {
 
-    public AccountAdapter(Context context, DaoBase<Account, ?> dao) {
-        super(context, null, dao, android.R.layout.simple_spinner_dropdown_item);
+    public AccountAdapter(ViewBase<Account> view, Context context) {
+        super(view, context, android.R.layout.simple_spinner_dropdown_item);
     }
 
     @Override
-    public void bindView(Context context, View view, Account item) {
-        TextView tv = (TextView) view;
-        tv.setText(item.getName());
+    public View getView(final int position, View convertView, final ViewGroup parent) {
+        TextView vw = (TextView) super.getView(position, convertView, parent);
+        vw.setText(getObject(position).getName());
+        return vw;
     }
+
 }

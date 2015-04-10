@@ -5,14 +5,14 @@ import android.text.TextUtils;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.opendataspace.android.test.OdsRunner;
+import org.opendataspace.android.test.RunnerSimple;
 import org.robolectric.RuntimeEnvironment;
 
-@RunWith(OdsRunner.class)
+@RunWith(RunnerSimple.class)
 public class OdsPreferencesTest {
 
     @Test
-    public void checkDefaults() {
+    public void checkDefaults() throws InterruptedException {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         OdsPreferences pref = app.getPrefs();
 

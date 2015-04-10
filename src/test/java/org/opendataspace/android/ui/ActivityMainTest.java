@@ -10,14 +10,14 @@ import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.Navigation;
 import org.opendataspace.android.navigation.NavigationState;
 import org.opendataspace.android.operations.OperationAccount;
-import org.opendataspace.android.test.OdsRunner;
-import org.opendataspace.android.test.OdsTestUtil;
+import org.opendataspace.android.test.RunnerDefault;
+import org.opendataspace.android.test.TestUtil;
 import org.robolectric.Robolectric;
 import org.robolectric.Shadows;
 import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.util.ActivityController;
 
-@RunWith(OdsRunner.class)
+@RunWith(RunnerDefault.class)
 public class ActivityMainTest {
 
     @Test
@@ -30,7 +30,7 @@ public class ActivityMainTest {
 
     @Test
     public void checkNavigation() throws Exception {
-        ActivityMain ac = OdsTestUtil.setupActivity();
+        ActivityMain ac = TestUtil.setupActivity();
         Assert.assertEquals(FragmentNavigation.class, ac.getNavigation().getTopFragment().getClass());
 
         // settings
@@ -74,12 +74,12 @@ public class ActivityMainTest {
 
     @Test
     public void checkSerialization() throws Exception {
-        ActivityMain ac = OdsTestUtil.setupActivity();
+        ActivityMain ac = TestUtil.setupActivity();
         Navigation nav = ac.getNavigation();
         nav.openRootFolder(FragmentAccountList.class, null);
-        nav.openFile(FragmentAccountDetails.class, new OperationAccount(OdsTestUtil.getDefaultAccount()));
+        nav.openFile(FragmentAccountDetails.class, new OperationAccount(TestUtil.getDefaultAccount()));
 
-        Bundle bu = OdsTestUtil.dismisActivity(ac);
+        Bundle bu = TestUtil.dismisActivity(ac);
         NavigationState[] ns = OdsApp.gson.fromJson(bu.getString("ods.backstack"), NavigationState[].class);
         Assert.assertEquals(3, ns.length);
         Assert.assertEquals(FragmentAccountDetails.class, ns[2].getFragmentClass());
@@ -89,6 +89,6 @@ public class ActivityMainTest {
 
         ac = ActivityController.of(Robolectric.getShadowsAdapter(), ActivityMain.class).setup(bu).get();
         Assert.assertEquals(FragmentAccountDetails.class, ac.getNavigation().getTopFragment().getClass());
-        OdsTestUtil.dismisActivity(ac);
+        TestUtil.dismisActivity(ac);
     }
 }

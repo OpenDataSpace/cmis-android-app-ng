@@ -15,7 +15,7 @@ public abstract class TaskLoader<T> extends Loader<T> {
         }
 
         @Override
-        protected void onDone() {
+        public void onDone() {
             if (current == this) {
                 current = null;
 

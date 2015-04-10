@@ -9,13 +9,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsPreferences;
-import org.opendataspace.android.test.OdsRunner;
+import org.opendataspace.android.test.RunnerSimple;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.List;
 import java.util.Map;
 
-@RunWith(OdsRunner.class)
+@RunWith(RunnerSimple.class)
 public class CmisAuthProviderTest {
 
     @Test

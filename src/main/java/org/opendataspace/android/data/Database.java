@@ -5,13 +5,16 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.ReferenceObjectCache;
+import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.support.DatabaseConnection;
 import com.j256.ormlite.table.TableUtils;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.objects.Repo;
 
 import java.sql.SQLException;
+import java.util.concurrent.Callable;
 
 public class DataBase extends OrmLiteSqliteOpenHelper {
 
@@ -52,8 +55,7 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
     public DaoAccount getAccounts() {
         if (accounts == null) {
             try {
-                accounts = new DaoAccount(getConnectionSource());
-                accounts.setObjectCache(cache);
+                accounts = new DaoAccount(getConnectionSource(), cache);
             } catch (SQLException ex) {
                 OdsLog.ex(getClass(), ex);
             }
@@ -65,13 +67,30 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
     public DaoRepo getRepos() {
         if (repos == null) {
             try {
-                repos = new DaoRepo(getConnectionSource());
-                repos.setObjectCache(cache);
+                repos = new DaoRepo(getConnectionSource(), cache);
             } catch (SQLException ex) {
                 OdsLog.ex(getClass(), ex);
             }
         }
 
         return repos;
+    }
+
+    public <T> T transact(Callable<T> action) throws SQLException {
+        ConnectionSource source = getConnectionSource();
+        DatabaseConnection conn = source.getReadWriteConnection();
+        T res;
+
+        try {
+            boolean saved = source.saveSpecialConnection(conn);
+            res = TransactionManager.callInTransaction(conn, saved, source.getDatabaseType(), action);
+            accounts.fire(conn);
+            repos.fire(conn);
+        } finally {
+            connectionSource.clearSpecialConnection(conn);
+            connectionSource.releaseConnection(conn);
+        }
+
+        return res;
     }
 }

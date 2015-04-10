@@ -81,6 +81,7 @@ dependencies {
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'org.slf4j:slf4j-android:1.7.7'
     compile 'com.crashlytics.sdk.android:crashlytics:2.2.2'
+    compile 'de.greenrobot:eventbus:2.4.0'
 
     //noinspection GradleDynamicVersion
     compile 'org.apache.chemistry.opencmis:chemistry-opencmis-android-client:0.12.0.1+'

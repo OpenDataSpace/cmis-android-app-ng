@@ -8,10 +8,12 @@ import com.google.gson.GsonBuilder;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import io.fabric.sdk.android.Fabric;
 import org.opendataspace.android.data.DataBase;
+import org.opendataspace.android.views.ViewManager;
 
 public class OdsApp extends Application {
 
     private static OdsApp instance;
+    private static boolean crashl = false;
     public static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
             .registerTypeAdapter(Class.class, new ClassSerializer())
             .registerTypeAdapter(ClassWrapper.class, new ClassWrapperSerializer()).create();
@@ -19,6 +21,7 @@ public class OdsApp extends Application {
     private OdsPreferences prefs;
     private DataBase database;
     private TaskPool pool;
+    private ViewManager vm;
 
     public static OdsApp get() {
         return instance;
@@ -39,12 +42,9 @@ public class OdsApp extends Application {
         prefs = new OdsPreferences(this);
         database = OpenHelperManager.getHelper(this, DataBase.class);
         pool = new TaskPool();
+        vm = new ViewManager();
 
-        try {
-            setUpHacks();
-        } catch (final Exception ex) {
-            OdsLog.ex(getClass(), ex);
-        }
+        performSync();
     }
 
     @Override
@@ -52,10 +52,13 @@ public class OdsApp extends Application {
         pool.stop();
         OpenHelperManager.releaseHelper();
 
+        vm.dispose();
+
         instance = null;
         prefs = null;
         database = null;
         pool = null;
+        vm = null;
 
         super.onTerminate();
     }
@@ -75,14 +78,22 @@ public class OdsApp extends Application {
     protected void performHacks() {
         CompatPRNG.apply();
 
-        if (!prefs.isDebug()) {
+        if (!OdsPreferences.isDebug()) {
             Fabric.with(this, new Crashlytics());
+            Crashlytics.setUserIdentifier(prefs.getInstallId());
+            crashl = true;
         }
     }
 
-    protected void setUpHacks() {
-        if (!prefs.isDebug()) {
-            Crashlytics.setUserIdentifier(prefs.getInstallId());
-        }
+    public ViewManager getViewManager() {
+        return vm;
+    }
+
+    protected static boolean hasCrahlytics() {
+        return crashl;
+    }
+
+    protected void performSync() {
+        vm.sync(database);
     }
 }

@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Properties;
 
-public class OdsTestUtil {
+public class TestUtil {
 
     private static Properties props = new Properties();
 
@@ -52,14 +52,14 @@ public class OdsTestUtil {
 
     public static ActivityMain setupActivity() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
-        app.getDatabase().getAccounts().create(OdsTestUtil.getDefaultAccount());
+        app.getDatabase().getAccounts().create(TestUtil.getDefaultAccount());
         return Robolectric.setupActivity(ActivityMain.class);
     }
 
     public static ActivityMain setupFragment(FragmentBase fragment) throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
-        app.getDatabase().getAccounts().create(OdsTestUtil.getDefaultAccount());
-        ActivityMain ac = Robolectric.setupActivity(OdsTestActivity.class);
+        app.getDatabase().getAccounts().create(TestUtil.getDefaultAccount());
+        ActivityMain ac = Robolectric.setupActivity(TestActivity.class);
         replaceFragment(ac, fragment);
         return ac;
     }
@@ -74,7 +74,7 @@ public class OdsTestUtil {
     public static void waitRunnable() throws InterruptedException {
         int cnt = 0;
 
-        while (!ShadowLooper.getUiThreadScheduler().areAnyRunnable() || cnt > 20) {
+        while (!ShadowLooper.getUiThreadScheduler().areAnyRunnable() && cnt < 20) {
             Thread.sleep(10);
             cnt++;
         }

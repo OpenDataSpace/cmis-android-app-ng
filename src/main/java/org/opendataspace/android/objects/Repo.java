@@ -6,13 +6,9 @@ import com.j256.ormlite.table.DatabaseTable;
 import org.apache.chemistry.opencmis.client.api.Repository;
 
 @DatabaseTable(tableName = "repo")
-public class Repo {
+public class Repo extends ObjectBase {
 
     public static final String FIELD_ACCID = "aid";
-
-    @Expose
-    @DatabaseField(generatedId = true, columnName = "id")
-    private long id;
 
     @Expose
     @DatabaseField(index = true, columnName = FIELD_ACCID, canBeNull = false)
@@ -37,7 +33,7 @@ public class Repo {
     }
 
     public Repo(Repo other) {
-        id = other.id;
+        setId(other.getId());
         accountId = other.accountId;
         info = new RepoInfo(other.info);
         cmis = other.cmis;

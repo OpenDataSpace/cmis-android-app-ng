@@ -14,14 +14,10 @@ import java.net.URL;
 import java.sql.SQLException;
 
 @DatabaseTable(tableName = "acc")
-public class Account {
+public class Account extends ObjectBase {
 
     private static final String CMIS_JSON = "cmis/browser";
     private static final String CMIS_ATOM = "cmis/atom";
-
-    @Expose
-    @DatabaseField(generatedId = true, columnName = "id")
-    private long id;
 
     @Expose
     @DatabaseField(columnName = "data", canBeNull = false, persisterClass = AccountSerializer.class)
@@ -113,10 +109,6 @@ public class Account {
         }
 
         return repositories;
-    }
-
-    public long getId() {
-        return id;
     }
 
     public void setUri(String val) throws MalformedURLException {

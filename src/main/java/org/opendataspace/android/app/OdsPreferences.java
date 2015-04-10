@@ -19,8 +19,9 @@ public class OdsPreferences {
         prefs = context.getSharedPreferences("ods", Context.MODE_PRIVATE);
     }
 
-    public boolean isDebug() {
-        return 0 != (context.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE);
+    public static boolean isDebug() {
+        return 0 !=
+                (OdsApp.get().getApplicationContext().getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE);
     }
 
     public boolean isTablet() {

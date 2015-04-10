@@ -1,84 +1,225 @@
 package org.opendataspace.android.data;
 
-import android.content.Context;
-
-import com.j256.ormlite.dao.BaseDaoImpl;
+import com.j256.ormlite.dao.CloseableIterator;
+import com.j256.ormlite.dao.ObjectCache;
+import com.j256.ormlite.db.DatabaseType;
+import com.j256.ormlite.field.FieldType;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.SelectArg;
+import com.j256.ormlite.stmt.SelectIterator;
+import com.j256.ormlite.stmt.StatementBuilder;
+import com.j256.ormlite.stmt.mapped.MappedCreate;
+import com.j256.ormlite.stmt.mapped.MappedDelete;
+import com.j256.ormlite.stmt.mapped.MappedUpdate;
+import com.j256.ormlite.support.CompiledStatement;
 import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.support.DatabaseConnection;
+import com.j256.ormlite.table.TableInfo;
+import de.greenrobot.event.EventBus;
+import org.opendataspace.android.objects.ObjectBase;
 
-import java.lang.ref.WeakReference;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-public abstract class DaoBase<T, ID> extends BaseDaoImpl<T, ID> {
+public abstract class DaoBase<T extends ObjectBase> {
 
-    private final List<WeakReference<DataLoader<T>>> loaders = new ArrayList<>();
+    private final ConnectionSource source;
+    private final TableInfo<T, Long> info;
+    private final DatabaseType type;
+    private final ObjectCache cache;
 
-    DaoBase(ConnectionSource connectionSource, Class<T> dataClass) throws SQLException {
-        super(connectionSource, dataClass);
+    private MappedCreate<T, Long> creator;
+    private MappedUpdate<T, Long> updater;
+    private MappedDelete<T, Long> deleter;
+    private PreparedQuery<T> selectAll;
+    private String checker;
+    private String countof;
+    private DaoEvent<T> event = new DaoEvent<>();
+
+    DaoBase(ConnectionSource source, ObjectCache cache, Class<T> dataClass) throws SQLException {
+        this.source = source;
+        this.cache = cache;
+        type = source.getDatabaseType();
+        info = new TableInfo<>(source, null, dataClass);
     }
 
-    public DataLoader<T> getLoader(Context context) {
-        DataLoader<T> loader = new DataLoader<>(context, this);
-
-        synchronized (loaders) {
-            loaders.add(new WeakReference<>(loader));
+    public int create(T val) throws SQLException {
+        if (creator == null) {
+            creator = MappedCreate.build(type, info);
         }
 
-        return loader;
+        DatabaseConnection conn = source.getReadWriteConnection();
+        int res;
+
+        try {
+            res = creator.insert(type, conn, val, cache);
+
+            if (res > 0) {
+                event.addInsert(val);
+                fire(conn);
+            }
+        } finally {
+            source.releaseConnection(conn);
+        }
+
+
+        return res;
     }
 
-    void notifyContentChange() {
-        synchronized (loaders) {
-            for (Iterator<WeakReference<DataLoader<T>>> itr = loaders.iterator(); itr.hasNext(); ) {
-                WeakReference<DataLoader<T>> weakRef = itr.next();
-                DataLoader<T> loader = weakRef.get();
+    public int update(T val) throws SQLException {
+        if (updater == null) {
+            updater = MappedUpdate.build(type, info);
+        }
 
-                if (loader == null) {
-                    itr.remove();
-                } else {
-                    loader.onContentChanged();
-                }
+        DatabaseConnection conn = source.getReadWriteConnection();
+        int res;
+
+        try {
+            res = updater.update(conn, val, cache);
+
+            if (res > 0) {
+                event.addInsert(val);
+                fire(conn);
+            }
+        } finally {
+            source.releaseConnection(conn);
+        }
+
+        return res;
+    }
+
+    public int delete(T val) throws SQLException {
+        if (deleter == null) {
+            deleter = MappedDelete.build(type, info);
+        }
+
+        DatabaseConnection conn = source.getReadWriteConnection();
+        int res;
+
+        try {
+            res = deleter.delete(conn, val, cache);
+
+            if (res > 0) {
+                event.addDelete(val);
+                fire(conn);
+            }
+        } finally {
+            source.releaseConnection(conn);
+        }
+
+        return res;
+    }
+
+    public CloseableIterator<T> iterate() throws SQLException {
+        if (selectAll == null) {
+            selectAll = new QueryBuilder<>(type, info, null).prepare();
+        }
+
+        return iterate(selectAll);
+    }
+
+    public CloseableIterator<T> iterate(PreparedQuery<T> querry) throws SQLException {
+        DatabaseConnection conn = source.getReadOnlyConnection();
+        CompiledStatement compiledStatement = null;
+        SelectIterator<T, Long> it;
+
+        try {
+            compiledStatement = querry.compile(conn, StatementBuilder.StatementType.SELECT, -1);
+            it = new SelectIterator<>(info.getDataClass(), null, querry, source, conn, compiledStatement,
+                    querry.getStatement(), cache);
+            conn = null;
+            compiledStatement = null;
+        } finally {
+            if (compiledStatement != null) {
+                compiledStatement.close();
+            }
+
+            if (conn != null) {
+                source.releaseConnection(conn);
             }
         }
+
+        return it;
     }
 
-    @Override
-    public int create(T data) throws SQLException {
-        int result = super.create(data);
+    public QueryBuilder<T, Long> queryBuilder() {
+        return new QueryBuilder<>(type, info, null);
+    }
 
-        if (result > 0) {
-            notifyContentChange();
+    public void createOrUpdate(T val) throws SQLException {
+        if (val == null) {
+            return;
         }
 
-        return result;
+        if (exists(val)) {
+            update(val);
+        } else {
+            create(val);
+        }
     }
 
-    @Override
-    public int update(T val) throws SQLException {
-        int result = super.update(val);
+    private Object extractId(T val) throws SQLException {
+        FieldType field = info.getIdField();
 
-        if (result > 0) {
-            notifyContentChange();
+        if (field == null) {
+            throw new SQLException("Class " + info.getDataClass() + " does not have an id field");
         }
 
-        return result;
+        return field.extractJavaFieldValue(val);
     }
 
-    @Override
-    public int delete(T val) throws SQLException {
-        int result = super.delete(val);
-
-        if (result > 0) {
-            notifyContentChange();
+    public boolean exists(T val) throws SQLException {
+        if (val == null) {
+            return false;
         }
 
-        return result;
+        Object id = extractId(val);
+
+        if (id == null) {
+            return false;
+        }
+
+        if (checker == null) {
+            QueryBuilder count = queryBuilder();
+            count.selectRaw("COUNT(*)").where().eq(info.getIdField().getColumnName(), new SelectArg());
+            checker = count.prepareStatementString();
+        }
+
+        DatabaseConnection conn = source.getReadWriteConnection();
+        long res;
+
+        try {
+            res = conn.queryForLong(checker, new Object[] {id}, new FieldType[] {info.getIdField()});
+        } finally {
+            source.releaseConnection(conn);
+        }
+
+        return res != 0;
     }
 
-    public String getIdColumnName() {
-        return tableInfo.getIdField().getColumnName();
+    protected void fire(DatabaseConnection conn) throws SQLException {
+        if (conn.isAutoCommit() && !event.isEmpty()) {
+            EventBus.getDefault().post(event);
+            event = new DaoEvent<>();
+        }
     }
 
+    public long countOf() throws SQLException {
+        if (countof == null) {
+            QueryBuilder count = queryBuilder();
+            count.selectRaw("COUNT(*)");
+            countof = count.prepareStatementString();
+        }
+
+        DatabaseConnection conn = source.getReadWriteConnection();
+        long res;
+
+        try {
+            res = conn.queryForLong(countof);
+        } finally {
+            source.releaseConnection(conn);
+        }
+
+        return res;
+    }
 }

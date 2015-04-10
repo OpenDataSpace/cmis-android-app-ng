@@ -6,19 +6,19 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.test.OdsRunner;
-import org.opendataspace.android.test.OdsTestUtil;
+import org.opendataspace.android.test.RunnerDefault;
+import org.opendataspace.android.test.TestUtil;
 
-@RunWith(OdsRunner.class)
+@RunWith(RunnerDefault.class)
 public class FragmentNavigationTest {
 
     @Test
     public void checkDefaults() throws Exception {
         FragmentNavigation fgm = new FragmentNavigation();
-        ActivityMain ac = OdsTestUtil.setupFragment(fgm);
-        OdsTestUtil.waitRunnable();
+        ActivityMain ac = TestUtil.setupFragment(fgm);
+        TestUtil.waitRunnable();
         Spinner spin = (Spinner) ac.findViewById(R.id.spin_nav_accounts);
         Assert.assertEquals(1, spin.getCount());
-        OdsTestUtil.dismisActivity(ac);
+        TestUtil.dismisActivity(ac);
     }
 }

@@ -5,6 +5,7 @@ import org.apache.chemistry.opencmis.client.api.Repository;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.cmis.Cmis;
 import org.opendataspace.android.data.DaoRepo;
+import org.opendataspace.android.data.DataBase;
 
 import java.lang.ref.WeakReference;
 import java.sql.SQLException;
@@ -31,14 +32,15 @@ public class RepoCollection {
 
     public void sync() throws SQLException {
         final Account acc = account.get();
-        final DaoRepo dao = OdsApp.get().getDatabase().getRepos();
+        final DataBase db = OdsApp.get().getDatabase();
+        final DaoRepo dao = db.getRepos();
         final List<Repo> copy = new ArrayList<>();
 
         for (Repo cur : data) {
             copy.add(new Repo(cur));
         }
 
-        dao.callBatchTasks(() -> {
+        db.transact(() -> {
             for (Repository cur : Cmis.factory.getRepositories(Cmis.createSessionSettings(acc))) {
                 Repo repo = findByUuid(cur.getId(), copy);
 

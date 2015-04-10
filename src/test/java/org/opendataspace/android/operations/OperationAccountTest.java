@@ -4,17 +4,17 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.opendataspace.android.test.OdsRunner;
-import org.opendataspace.android.test.OdsTestUtil;
+import org.opendataspace.android.test.RunnerDefault;
+import org.opendataspace.android.test.TestUtil;
 
-@RunWith(OdsRunner.class)
+@RunWith(RunnerDefault.class)
 public class OperationAccountTest {
 
     private OperationAccount op;
 
     @Before
     public void setUp() throws Exception {
-        op = new OperationAccount(OdsTestUtil.getDefaultAccount());
+        op = new OperationAccount(TestUtil.getDefaultAccount());
     }
 
     @Test
