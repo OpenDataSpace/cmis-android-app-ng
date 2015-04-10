@@ -84,8 +84,14 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
         try {
             boolean saved = source.saveSpecialConnection(conn);
             res = TransactionManager.callInTransaction(conn, saved, source.getDatabaseType(), action);
-            accounts.fire(conn);
-            repos.fire(conn);
+
+            if (accounts != null) {
+                accounts.fire(conn);
+            }
+
+            if (repos != null) {
+                repos.fire(conn);
+            }
         } finally {
             connectionSource.clearSpecialConnection(conn);
             connectionSource.releaseConnection(conn);
