@@ -4,10 +4,10 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.opendataspace.android.test.RunnerDefault;
+import org.opendataspace.android.test.RunnerSimple;
 import org.opendataspace.android.test.TestUtil;
 
-@RunWith(RunnerDefault.class)
+@RunWith(RunnerSimple.class)
 public class OperationAccountTest {
 
     private OperationAccount op;
