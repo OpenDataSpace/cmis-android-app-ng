@@ -3,3 +3,4 @@
 /build
 /build.properties
 /*.iml
+/target
