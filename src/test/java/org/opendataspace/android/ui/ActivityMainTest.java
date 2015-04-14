@@ -2,7 +2,7 @@ package org.opendataspace.android.ui;
 
 import android.os.Bundle;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;

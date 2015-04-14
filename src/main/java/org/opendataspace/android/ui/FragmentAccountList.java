@@ -5,10 +5,13 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.objects.AccountAdapter;
 import org.opendataspace.android.operations.OperationAccount;
+
+import java.sql.SQLException;
 
 public class FragmentAccountList extends FragmentBaseList {
 
@@ -33,9 +36,13 @@ public class FragmentAccountList extends FragmentBaseList {
 
     @Override
     public boolean backPressed() {
-        if (accounts.getCount() == 0) {
-            getActivity().finish();
-            return true;
+        try {
+            if (OdsApp.get().getDatabase().getAccounts().countOf() == 0) {
+                getActivity().finish();
+                return true;
+            }
+        } catch (SQLException ex) {
+            OdsLog.ex(getClass(), ex);
         }
 
         return false;

@@ -8,6 +8,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:1.1.3'
         classpath 'me.tatarka:gradle-retrolambda:2.5.0'
         classpath 'io.fabric.tools:gradle:1.15.2'
+        classpath 'net.sf.proguard:proguard-base:5.2'
     }
 }
 
@@ -30,8 +31,8 @@ android {
         release {
             storeFile file('keystore')
             keyAlias 'beta'
-            storePassword props['sign.password']
-            keyPassword props['sign.password']
+            storePassword props['ods.sign.password']
+            keyPassword props['ods.sign.password']
         }
     }
 
@@ -55,7 +56,7 @@ android {
         versionCode 1
         versionName '0.1'
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
-        manifestPlaceholders = [fabricKey: props['key.fabric']]
+        manifestPlaceholders = ['ods.key.fabric': props['ods.key.fabric']]
     }
 }
 
@@ -67,8 +68,8 @@ repositories {
         url "https://artifactory.dataspace.cc/artifactory/libs-release"
 
         credentials {
-            username props['repo.user']
-            password props['repo.password']
+            username props['ods.repo.user']
+            password props['ods.repo.password']
         }
     }
 }
@@ -90,11 +91,6 @@ dependencies {
     testCompile 'org.apache.maven:maven-ant-tasks:2.1.3'
 
     testCompile('org.robolectric:robolectric:3.0-rc2') {
-        exclude group: 'commons-logging', module: 'commons-logging'
-        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-    }
-
-    testCompile('org.robolectric:shadows-support-v4:3.0-rc2') {
         exclude group: 'commons-logging', module: 'commons-logging'
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }

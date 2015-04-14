@@ -2,7 +2,7 @@ package org.opendataspace.android.cmis;
 
 import android.text.TextUtils;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.apache.chemistry.opencmis.client.bindings.impl.SessionImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.junit.Test;

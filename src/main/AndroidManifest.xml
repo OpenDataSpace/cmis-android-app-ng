@@ -27,6 +27,6 @@
 
         <meta-data
             android:name="com.crashlytics.ApiKey"
-            android:value="${fabricKey}"/>
+            android:value="${ods.key.fabric}"/>
     </application>
 </manifest>
