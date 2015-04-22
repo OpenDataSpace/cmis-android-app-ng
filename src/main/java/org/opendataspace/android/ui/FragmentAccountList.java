@@ -9,7 +9,7 @@ import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.objects.AccountAdapter;
-import org.opendataspace.android.operations.OperationAccount;
+import org.opendataspace.android.operations.OperationAccountUpdate;
 
 import java.sql.SQLException;
 
@@ -55,7 +55,7 @@ public class FragmentAccountList extends FragmentBaseList {
 
     @Override
     protected int getMenuResource() {
-        return R.menu.menu_accounts;
+        return R.menu.menu_account_list;
     }
 
     @Override
@@ -63,8 +63,8 @@ public class FragmentAccountList extends FragmentBaseList {
         ActivityMain ac = getMainActivity();
 
         switch (item.getItemId()) {
-        case R.id.menu_accounts_add:
-            ac.getNavigation().openFile(FragmentAccountDetails.class, new OperationAccount(new Account()));
+        case R.id.menu_account_add:
+            ac.getNavigation().openFile(FragmentAccountDetails.class, new OperationAccountUpdate(new Account()));
             break;
 
         default:
@@ -77,6 +77,6 @@ public class FragmentAccountList extends FragmentBaseList {
     @Override
     void onListItemClick(int position) {
         getMainActivity().getNavigation()
-                .openFile(FragmentAccountDetails.class, new OperationAccount((Account) accounts.getItem(position)));
+                .openFile(FragmentAccountDetails.class, new OperationAccountUpdate((Account) accounts.getItem(position)));
     }
 }

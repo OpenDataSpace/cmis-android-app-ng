@@ -28,8 +28,8 @@ public class ViewManagerTest {
         app.getDatabase().getRepos().create(new Repo(null, acc));
         app.getViewManager().sync(app.getDatabase());
         TestUtil.waitRunnable();
-        Assert.assertEquals(1, app.getViewManager().getAccounts().getObjects().size());
-        Assert.assertEquals(2, app.getViewManager().getRepos().getObjects().size());
+        Assert.assertEquals(1, app.getViewManager().getAccounts().getCount());
+        Assert.assertEquals(2, app.getViewManager().getRepos().getCount());
     }
 
     @Test
@@ -55,6 +55,9 @@ public class ViewManagerTest {
     @Test
     public void checkTransaction() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
+        final Account acc = TestUtil.getDefaultAccount();
+        app.getDatabase().getAccounts().create(acc);
+        app.getViewManager().getRepos().setAccount(acc);
         AtomicInteger invalidated = new AtomicInteger(0);
 
         AccountAdapter adp = new AccountAdapter(app.getViewManager().getAccounts(), app.getApplicationContext()) {
@@ -65,13 +68,11 @@ public class ViewManagerTest {
             }
         };
 
-        final Account acc = TestUtil.getDefaultAccount();
-
         app.getDatabase().transact(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                app.getDatabase().getAccounts().create(acc);
                 app.getDatabase().getRepos().create(new Repo(null, acc));
+                app.getDatabase().getAccounts().create(TestUtil.getDefaultAccount());
                 app.getDatabase().getAccounts().create(TestUtil.getDefaultAccount());
 
                 app.getDatabase().transact(new Callable<Object>() {
@@ -91,7 +92,17 @@ public class ViewManagerTest {
 
         TestUtil.waitRunnable();
         Assert.assertEquals(1, invalidated.get());
-        Assert.assertEquals(4, app.getViewManager().getAccounts().getObjects().size());
-        Assert.assertEquals(2, app.getViewManager().getRepos().getObjects().size());
+        Assert.assertEquals(5, app.getViewManager().getAccounts().getCount());
+        Assert.assertEquals(2, app.getViewManager().getRepos().getCount());
+    }
+
+    @Test
+    public void checkInsertUpdate() throws Exception {
+        OdsApp app = (OdsApp) RuntimeEnvironment.application;
+        final Account acc = TestUtil.getDefaultAccount();
+        app.getDatabase().getAccounts().create(acc);
+        app.getDatabase().getAccounts().createOrUpdate(acc);
+
+        Assert.assertEquals(1, app.getViewManager().getAccounts().getCount());
     }
 }

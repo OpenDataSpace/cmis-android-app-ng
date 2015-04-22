@@ -57,4 +57,8 @@ public class Repo extends ObjectBase {
     public boolean merge(Repository repo) {
         return info.update(repo);
     }
+
+    public long getAccountId() {
+        return accountId;
+    }
 }

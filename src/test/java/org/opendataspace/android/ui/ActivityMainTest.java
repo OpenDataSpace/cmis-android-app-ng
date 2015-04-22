@@ -7,9 +7,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.navigation.Navigation;
+import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.navigation.NavigationState;
-import org.opendataspace.android.operations.OperationAccount;
+import org.opendataspace.android.operations.OperationAccountUpdate;
 import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 import org.robolectric.Robolectric;
@@ -45,7 +45,7 @@ public class ActivityMainTest {
 
         // accounts
         navigateClick(R.id.action_nav_manage, FragmentAccountList.class, ac);
-        navigateMenu(R.id.menu_accounts_add, FragmentAccountDetails.class, ac);
+        navigateMenu(R.id.menu_account_add, FragmentAccountDetails.class, ac);
         navigateBack(FragmentAccountList.class, ac);
         navigateBack(FragmentNavigation.class, ac);
 
@@ -75,9 +75,9 @@ public class ActivityMainTest {
     @Test
     public void checkSerialization() throws Exception {
         ActivityMain ac = TestUtil.setupActivity();
-        Navigation nav = ac.getNavigation();
+        NavigationInterface nav = ac.getNavigation();
         nav.openRootFolder(FragmentAccountList.class, null);
-        nav.openFile(FragmentAccountDetails.class, new OperationAccount(TestUtil.getDefaultAccount()));
+        nav.openFile(FragmentAccountDetails.class, new OperationAccountUpdate(TestUtil.getDefaultAccount()));
 
         Bundle bu = TestUtil.dismisActivity(ac);
         NavigationState[] ns = OdsApp.gson.fromJson(bu.getString("ods.backstack"), NavigationState[].class);
@@ -85,7 +85,7 @@ public class ActivityMainTest {
         Assert.assertEquals(FragmentAccountDetails.class, ns[2].getFragmentClass());
         Assert.assertEquals(FragmentAccountList.class, ns[1].getFragmentClass());
         Assert.assertEquals(FragmentNavigation.class, ns[0].getFragmentClass());
-        Assert.assertEquals(OperationAccount.class, ns[2].getOperation().getClass());
+        Assert.assertEquals(OperationAccountUpdate.class, ns[2].getOperation().getClass());
 
         ac = ActivityController.of(Robolectric.getShadowsAdapter(), ActivityMain.class).setup(bu).get();
         Assert.assertEquals(FragmentAccountDetails.class, ac.getNavigation().getTopFragment().getClass());

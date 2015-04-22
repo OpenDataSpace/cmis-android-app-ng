@@ -25,7 +25,7 @@ import org.opendataspace.android.ui.FragmentNavigation;
 import java.util.Collections;
 import java.util.Stack;
 
-public class Navigation {
+public class Navigation implements NavigationInterface {
 
     private static final String TAG_NAVGATION = "nav";
     private static final String TAG_MAIN = "main";

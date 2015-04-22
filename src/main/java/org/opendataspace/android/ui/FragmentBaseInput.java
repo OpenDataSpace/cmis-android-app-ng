@@ -21,14 +21,14 @@ class FragmentBaseInput extends FragmentBase {
 
         void apply(ActivityBase ac);
 
-        boolean read(ActivityBase ac);
+        boolean read(ActivityBase ac, Dirty dirty);
 
         void highlightError(ActivityBase ac);
 
-        void init();
+        void init(ActivityBase ac);
     }
 
-    private final class TextInputEntry implements InputEntry {
+    private static class TextInputEntry implements InputEntry {
 
         private final CompatLambda.Supplier<String> getter;
         private final CompatLambda.Consumer<String> setter;
@@ -55,15 +55,20 @@ class FragmentBaseInput extends FragmentBase {
         }
 
         @Override
-        public boolean read(ActivityBase ac) {
+        public boolean read(ActivityBase ac, Dirty dirty) {
             View vw = ac.findViewById(resource);
 
             if (vw instanceof EditText) {
                 String val = ((EditText) vw).getText().toString().trim();
 
+                if (val.equals(getter.get())) {
+                    return true;
+                }
+
                 if (validator == null || validator.test(val)) {
                     try {
                         setter.accept(val);
+                        dirty.value = true;
                         return true;
                     } catch (Exception ex) {
                         OdsLog.ex(getClass(), ex);
@@ -83,9 +88,9 @@ class FragmentBaseInput extends FragmentBase {
         }
 
         @Override
-        public void init() {
+        public void init(ActivityBase ac) {
             if (imeDone != null) {
-                EditText et = (EditText) getActivity().findViewById(resource);
+                EditText et = (EditText) ac.findViewById(resource);
 
                 et.setOnEditorActionListener((v, actionId, event) -> {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -99,7 +104,7 @@ class FragmentBaseInput extends FragmentBase {
         }
     }
 
-    private final class CheckInputEntry implements InputEntry {
+    private static class CheckInputEntry implements InputEntry {
 
         private final CompatLambda.Supplier<Boolean> getter;
         private final CompatLambda.Consumer<Boolean> setter;
@@ -122,16 +127,25 @@ class FragmentBaseInput extends FragmentBase {
         }
 
         @Override
-        public boolean read(ActivityBase ac) {
+        public boolean read(ActivityBase ac, Dirty dirty) {
             View vw = ac.findViewById(resource);
 
-            if (vw instanceof CompoundButton) {
-                try {
-                    setter.accept(((CompoundButton) vw).isChecked());
-                    return true;
-                } catch (Exception ex) {
-                    OdsLog.ex(getClass(), ex);
-                }
+            if (!(vw instanceof CompoundButton)) {
+                return false;
+            }
+
+            boolean val = ((CompoundButton) vw).isChecked();
+
+            if (val == getter.get()) {
+                return true;
+            }
+
+            try {
+                setter.accept(val);
+                dirty.value = true;
+                return true;
+            } catch (Exception ex) {
+                OdsLog.ex(getClass(), ex);
             }
 
             return false;
@@ -143,12 +157,17 @@ class FragmentBaseInput extends FragmentBase {
         }
 
         @Override
-        public void init() {
+        public void init(ActivityBase ac) {
             // nothing
         }
     }
 
+    private static class Dirty {
+        public boolean value = false;
+    }
+
     private final ArrayList<InputEntry> entries = new ArrayList<>();
+    private Dirty dirty = new Dirty();
 
     void addText(int resource, CompatLambda.Supplier<String> getter, CompatLambda.Consumer<String> setter,
                  CompatLambda.Predicate<String> validator) {
@@ -169,13 +188,15 @@ class FragmentBaseInput extends FragmentBase {
         for (InputEntry cur : entries) {
             cur.apply(ac);
         }
+
+        dirty.value = false;
     }
 
     void read() {
         ActivityBase ac = (ActivityBase) getActivity();
 
         for (InputEntry cur : entries) {
-            cur.read(ac);
+            cur.read(ac, dirty);
         }
     }
 
@@ -184,7 +205,7 @@ class FragmentBaseInput extends FragmentBase {
         boolean res = true;
 
         for (InputEntry cur : entries) {
-            if (!cur.read(ac) && res) {
+            if (!cur.read(ac, dirty) && res) {
                 res = false;
                 cur.highlightError(ac);
             }
@@ -200,9 +221,10 @@ class FragmentBaseInput extends FragmentBase {
         ActivityBase ac = (ActivityBase) getActivity();
 
         for (InputEntry cur : entries) {
-            cur.init();
-            cur.apply(ac);
+            cur.init(ac);
         }
+
+        apply();
     }
 
     @Override
@@ -214,5 +236,9 @@ class FragmentBaseInput extends FragmentBase {
     void addImeDone(int resource, CompatLambda.Supplier<String> getter, CompatLambda.Consumer<String> setter,
                     CompatLambda.Predicate<String> validator, CompatLambda.Checker action) {
         entries.add(new TextInputEntry(resource, getter, setter, validator, action));
+    }
+
+    public boolean isDirty() {
+        return dirty.value;
     }
 }

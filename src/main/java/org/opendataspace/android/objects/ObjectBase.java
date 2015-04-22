@@ -7,7 +7,7 @@ public class ObjectBase {
 
     @Expose
     @DatabaseField(generatedId = true, columnName = "id")
-    private long id;
+    private long id = -1;
 
     public long getId() {
         return id;
@@ -34,5 +34,9 @@ public class ObjectBase {
     @Override
     public int hashCode() {
         return (int) id;
+    }
+
+    public boolean isValidId() {
+        return id != -1;
     }
 }

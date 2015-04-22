@@ -5,12 +5,12 @@ import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.data.DataBase;
 import org.opendataspace.android.objects.Account;
 
-public class OperationAccount extends OperationBase {
+public class OperationAccountUpdate extends OperationBase {
 
     @Expose
     private final Account account;
 
-    public OperationAccount(Account account) {
+    public OperationAccountUpdate(Account account) {
         this.account = account;
     }
 

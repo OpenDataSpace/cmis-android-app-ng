@@ -24,26 +24,24 @@ public class ViewBase<T extends ObjectBase> implements CompatDisposable {
     }
 
     protected boolean processEvent(DaoEvent<T> event) {
-        List<DaoEvent.Event<T>> ls = event.getEvents();
-
-        if (ls.isEmpty()) {
-            return false;
-        }
+        int cnt = 0;
 
         for (DaoEvent.Event<T> cur : event.getEvents()) {
             final T object = cur.getObject();
 
-            if (object == null) {
+            if (object == null || !isValid(object)) {
                 continue;
             }
 
             switch (cur.getOperation()) {
             case INSERT:
                 data.add(object);
+                cnt++;
                 break;
 
             case DELETE:
                 data.remove(object);
+                cnt++;
                 break;
 
             case UPDATE: {
@@ -51,13 +49,14 @@ public class ViewBase<T extends ObjectBase> implements CompatDisposable {
 
                 if (pos != -1) {
                     data.set(pos, object);
+                    cnt++;
                 }
             }
             break;
             }
         }
 
-        return true;
+        return cnt > 0;
     }
 
     public void sync(final DaoBase<T> dao, final Account acc) {
@@ -100,5 +99,13 @@ public class ViewBase<T extends ObjectBase> implements CompatDisposable {
 
     protected CloseableIterator<T> iterate(DaoBase<T> dao, Account acc) throws SQLException {
         return dao.iterate();
+    }
+
+    public int getCount() {
+        return data.size();
+    }
+
+    protected boolean isValid(T val) {
+        return true;
     }
 }

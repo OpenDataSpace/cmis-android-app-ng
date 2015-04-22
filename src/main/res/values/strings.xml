@@ -61,5 +61,7 @@
     <string name="account_optional">Optional</string>
     <string name="account_advanced">Advanced</string>
     <string name="account_usejson">Use Json binding</string>
+    <string name="account_delete">Delete</string>
+    <string name="text_accout_delete">Are you sure you want to delete \'%1$s\'?</string>
 
 </resources>

@@ -63,7 +63,6 @@ public abstract class DaoBase<T extends ObjectBase> {
             source.releaseConnection(conn);
         }
 
-
         return res;
     }
 
@@ -79,7 +78,7 @@ public abstract class DaoBase<T extends ObjectBase> {
             res = updater.update(conn, val, cache);
 
             if (res > 0) {
-                event.addInsert(val);
+                event.addUpdate(val);
                 fire(conn);
             }
         } finally {
@@ -170,7 +169,7 @@ public abstract class DaoBase<T extends ObjectBase> {
     }
 
     public boolean exists(T val) throws SQLException {
-        if (val == null) {
+        if (val == null || !val.isValidId()) {
             return false;
         }
 

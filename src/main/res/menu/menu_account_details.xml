@@ -2,13 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:auto="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_dialog_apply"
+        android:id="@+id/menu_account_apply"
         android:icon="@drawable/ic_apply"
         android:title="@string/common_apply"
         auto:showAsAction="always"/>
     <item
-        android:id="@+id/menu_dialog_cancel"
+        android:id="@+id/menu_account_cancel"
         android:icon="@drawable/ic_close"
         android:title="@string/common_cancel"
         auto:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/menu_account_delete"
+        android:title="@string/account_delete"/>
 </menu>

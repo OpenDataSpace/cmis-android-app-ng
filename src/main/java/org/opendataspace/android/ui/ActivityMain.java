@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.Navigation;
+import org.opendataspace.android.navigation.NavigationInterface;
 
 public class ActivityMain extends ActivityBase {
 
@@ -53,7 +54,7 @@ public class ActivityMain extends ActivityBase {
         }
     }
 
-    public Navigation getNavigation() {
+    public NavigationInterface getNavigation() {
         return nav;
     }
 
