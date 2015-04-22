@@ -9,10 +9,10 @@ import org.junit.runner.RunWith;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.operations.OperationAccount;
-import org.opendataspace.android.test.RunnerDefault;
+import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 
-@RunWith(RunnerDefault.class)
+@RunWith(TestRunner.class)
 public class FragmentAccountDetailsTest {
 
     @Test

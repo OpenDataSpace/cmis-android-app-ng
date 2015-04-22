@@ -112,7 +112,7 @@ public class Account extends ObjectBase {
     }
 
     public void setUri(String val) throws MalformedURLException {
-        URL url = new URL(URLUtil.guessUrl(val));
+        URL url = new URL(TextUtils.isEmpty(val) ? "" : URLUtil.guessUrl(val));
         String path = url.getPath();
 
         if ("/".equals(path)) {

@@ -3,11 +3,11 @@ package org.opendataspace.android.objects;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.opendataspace.android.test.RunnerSimple;
+import org.opendataspace.android.test.TestRunner;
 
 import java.io.IOException;
 
-@RunWith(RunnerSimple.class)
+@RunWith(TestRunner.class)
 public class AccountTest {
 
     @Test

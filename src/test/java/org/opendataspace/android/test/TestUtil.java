@@ -3,7 +3,6 @@ package org.opendataspace.android.test;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
-import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.ui.ActivityMain;
@@ -51,14 +50,16 @@ public class TestUtil {
     }
 
     public static ActivityMain setupActivity() throws Exception {
-        OdsApp app = (OdsApp) RuntimeEnvironment.application;
+        TestApp app = (TestApp) RuntimeEnvironment.application;
         app.getDatabase().getAccounts().create(TestUtil.getDefaultAccount());
+        app.testStartSync();
         return Robolectric.setupActivity(ActivityMain.class);
     }
 
     public static ActivityMain setupFragment(FragmentBase fragment) throws Exception {
-        OdsApp app = (OdsApp) RuntimeEnvironment.application;
+        TestApp app = (TestApp) RuntimeEnvironment.application;
         app.getDatabase().getAccounts().create(TestUtil.getDefaultAccount());
+        app.testStartSync();
         ActivityMain ac = Robolectric.setupActivity(TestActivity.class);
         replaceFragment(ac, fragment);
         return ac;
@@ -85,7 +86,7 @@ public class TestUtil {
     public static Bundle dismisActivity(ActivityMain ac) {
         ActivityController con = ActivityController.of(Robolectric.getShadowsAdapter(), ac);
         Bundle bu = new Bundle();
-        con.pause().saveInstanceState(bu).destroy();
+        con.pause().stop().saveInstanceState(bu).destroy();
         return bu;
     }
 }

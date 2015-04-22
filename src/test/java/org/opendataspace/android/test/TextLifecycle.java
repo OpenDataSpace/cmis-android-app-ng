@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 
-import org.opendataspace.android.app.OdsApp;
 import org.robolectric.DefaultTestLifecycle;
 import org.robolectric.annotation.Config;
 import org.robolectric.manifest.ActivityData;
@@ -15,7 +14,7 @@ import org.robolectric.shadows.ShadowLog;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-public class LifecycleDefault extends DefaultTestLifecycle {
+public class TextLifecycle extends DefaultTestLifecycle {
 
     @Override
     public Application createApplication(Method method, AndroidManifest appManifest, Config config) {
@@ -37,13 +36,7 @@ public class LifecycleDefault extends DefaultTestLifecycle {
     }
 
     protected Application createApp() {
-        return new OdsApp() {
-
-            @Override
-            protected void performHacks() {
-                // nothing
-            }
-        };
+        return new TestApp();
     }
 
     @Override

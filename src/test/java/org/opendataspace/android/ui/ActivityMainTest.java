@@ -10,14 +10,14 @@ import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.Navigation;
 import org.opendataspace.android.navigation.NavigationState;
 import org.opendataspace.android.operations.OperationAccount;
-import org.opendataspace.android.test.RunnerDefault;
+import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 import org.robolectric.Robolectric;
 import org.robolectric.Shadows;
 import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.util.ActivityController;
 
-@RunWith(RunnerDefault.class)
+@RunWith(TestRunner.class)
 public class ActivityMainTest {
 
     @Test

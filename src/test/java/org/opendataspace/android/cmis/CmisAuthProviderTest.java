@@ -2,20 +2,20 @@ package org.opendataspace.android.cmis;
 
 import android.text.TextUtils;
 
-import org.junit.Assert;
 import org.apache.chemistry.opencmis.client.bindings.impl.SessionImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsPreferences;
-import org.opendataspace.android.test.RunnerSimple;
+import org.opendataspace.android.test.TestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.List;
 import java.util.Map;
 
-@RunWith(RunnerSimple.class)
+@RunWith(TestRunner.class)
 public class CmisAuthProviderTest {
 
     @Test

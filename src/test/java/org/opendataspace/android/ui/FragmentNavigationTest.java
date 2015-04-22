@@ -3,17 +3,15 @@ package org.opendataspace.android.ui;
 import android.widget.Spinner;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.test.RunnerDefault;
+import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 
-@RunWith(RunnerDefault.class)
+@RunWith(TestRunner.class)
 public class FragmentNavigationTest {
 
-    @Ignore
     @Test
     public void checkDefaults() throws Exception {
         FragmentNavigation fgm = new FragmentNavigation();

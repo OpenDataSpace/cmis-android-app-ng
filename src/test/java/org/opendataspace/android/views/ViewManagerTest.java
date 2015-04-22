@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.objects.AccountAdapter;
-import org.opendataspace.android.test.RunnerSimple;
+import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@RunWith(RunnerSimple.class)
+@RunWith(TestRunner.class)
 public class ViewManagerTest {
 
     @Test
