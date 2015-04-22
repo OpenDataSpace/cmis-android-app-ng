@@ -38,10 +38,6 @@ public class ViewAdapter<T extends ObjectBase> extends DataAdapter implements Co
         return data.get(i);
     }
 
-    public void onEvent(ViewEvent<T> event) {
-        invalidate();
-    }
-
     @Override
     public void dispose() {
         EventBus.getDefault().unregister(this);

@@ -26,9 +26,16 @@ public class Repo extends ObjectBase {
     }
 
     public Repo(Repository repo, Account account) {
-        accountId = account.getId();
+        if (account != null) {
+            accountId = account.getId();
+        }
+
         info = new RepoInfo();
-        info.update(repo);
+
+        if (repo != null) {
+            info.update(repo);
+        }
+
         cmis = repo;
     }
 

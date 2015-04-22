@@ -51,14 +51,18 @@ public class TestUtil {
 
     public static ActivityMain setupActivity() throws Exception {
         TestApp app = (TestApp) RuntimeEnvironment.application;
-        app.getDatabase().getAccounts().create(TestUtil.getDefaultAccount());
+        Account acc = TestUtil.getDefaultAccount();
+        app.getDatabase().getAccounts().create(acc);
+        app.getPrefs().setLastAccount(acc);
         app.testStartSync();
         return Robolectric.setupActivity(ActivityMain.class);
     }
 
     public static ActivityMain setupFragment(FragmentBase fragment) throws Exception {
         TestApp app = (TestApp) RuntimeEnvironment.application;
-        app.getDatabase().getAccounts().create(TestUtil.getDefaultAccount());
+        Account acc = TestUtil.getDefaultAccount();
+        app.getDatabase().getAccounts().create(acc);
+        app.getPrefs().setLastAccount(acc);
         app.testStartSync();
         ActivityMain ac = Robolectric.setupActivity(TestActivity.class);
         replaceFragment(ac, fragment);

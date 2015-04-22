@@ -4,7 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.objects.AccountAdapter;
+import org.opendataspace.android.objects.Repo;
 import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -19,10 +21,15 @@ public class ViewManagerTest {
     @Test
     public void checkSync() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
-        app.getDatabase().getAccounts().create(TestUtil.getDefaultAccount());
+        Account acc = TestUtil.getDefaultAccount();
+        app.getDatabase().getAccounts().create(acc);
+        app.getPrefs().setLastAccount(acc);
+        app.getDatabase().getRepos().create(new Repo(null, acc));
+        app.getDatabase().getRepos().create(new Repo(null, acc));
         app.getViewManager().sync(app.getDatabase());
         TestUtil.waitRunnable();
         Assert.assertEquals(1, app.getViewManager().getAccounts().getObjects().size());
+        Assert.assertEquals(2, app.getViewManager().getRepos().getObjects().size());
     }
 
     @Test
@@ -38,7 +45,9 @@ public class ViewManagerTest {
             }
         };
 
-        app.getDatabase().getAccounts().create(TestUtil.getDefaultAccount());
+        Account acc = TestUtil.getDefaultAccount();
+        app.getDatabase().getAccounts().create(acc);
+        app.getDatabase().getRepos().create(new Repo(null, acc));
         TestUtil.waitRunnable();
         Assert.assertEquals(true, invalidated.get());
     }
@@ -56,10 +65,13 @@ public class ViewManagerTest {
             }
         };
 
+        final Account acc = TestUtil.getDefaultAccount();
+
         app.getDatabase().transact(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                app.getDatabase().getAccounts().create(TestUtil.getDefaultAccount());
+                app.getDatabase().getAccounts().create(acc);
+                app.getDatabase().getRepos().create(new Repo(null, acc));
                 app.getDatabase().getAccounts().create(TestUtil.getDefaultAccount());
 
                 app.getDatabase().transact(new Callable<Object>() {
@@ -75,8 +87,11 @@ public class ViewManagerTest {
             }
         });
 
+        app.getDatabase().getRepos().create(new Repo(null, acc));
+
         TestUtil.waitRunnable();
         Assert.assertEquals(1, invalidated.get());
         Assert.assertEquals(4, app.getViewManager().getAccounts().getObjects().size());
+        Assert.assertEquals(2, app.getViewManager().getRepos().getObjects().size());
     }
 }

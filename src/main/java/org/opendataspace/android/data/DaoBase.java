@@ -34,13 +34,14 @@ public abstract class DaoBase<T extends ObjectBase> {
     private PreparedQuery<T> selectAll;
     private String checker;
     private String countof;
-    private DaoEvent<T> event = new DaoEvent<>();
+    private DaoEvent<T> event;
 
     DaoBase(ConnectionSource source, ObjectCache cache, Class<T> dataClass) throws SQLException {
         this.source = source;
         this.cache = cache;
         type = source.getDatabaseType();
         info = new TableInfo<>(source, null, dataClass);
+        event = createEvent();
     }
 
     public int create(T val) throws SQLException {
@@ -200,7 +201,7 @@ public abstract class DaoBase<T extends ObjectBase> {
     protected void fire(DatabaseConnection conn) throws SQLException {
         if (conn.isAutoCommit() && !event.isEmpty()) {
             EventBus.getDefault().post(event);
-            event = new DaoEvent<>();
+            event = createEvent();
         }
     }
 
@@ -222,4 +223,6 @@ public abstract class DaoBase<T extends ObjectBase> {
 
         return res;
     }
+
+    protected abstract DaoEvent<T> createEvent();
 }

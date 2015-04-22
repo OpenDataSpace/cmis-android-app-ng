@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import org.opendataspace.android.views.ViewAdapter;
 import org.opendataspace.android.views.ViewBase;
+import org.opendataspace.android.views.ViewAccountEvent;
 
 public class AccountAdapter extends ViewAdapter<Account> {
 
@@ -21,4 +22,7 @@ public class AccountAdapter extends ViewAdapter<Account> {
         return vw;
     }
 
+    public void onEvent(ViewAccountEvent event) {
+        invalidate();
+    }
 }

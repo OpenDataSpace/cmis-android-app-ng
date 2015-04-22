@@ -25,4 +25,9 @@ public class DaoRepo extends DaoBase<Repo> {
         byAccountArg.setValue(account.getId());
         return iterate(byAccount);
     }
+
+    @Override
+    protected DaoEvent<Repo> createEvent() {
+        return new DaoRepoEvent();
+    }
 }

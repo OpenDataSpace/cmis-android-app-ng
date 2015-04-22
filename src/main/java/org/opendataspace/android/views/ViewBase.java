@@ -7,8 +7,10 @@ import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.Task;
 import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.data.DaoEvent;
+import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.objects.ObjectBase;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +23,13 @@ public class ViewBase<T extends ObjectBase> implements CompatDisposable {
         EventBus.getDefault().register(this);
     }
 
-    public void onEventMainThread(DaoEvent<T> event) {
+    protected boolean processEvent(DaoEvent<T> event) {
+        List<DaoEvent.Event<T>> ls = event.getEvents();
+
+        if (ls.isEmpty()) {
+            return false;
+        }
+
         for (DaoEvent.Event<T> cur : event.getEvents()) {
             final T object = cur.getObject();
 
@@ -49,17 +57,17 @@ public class ViewBase<T extends ObjectBase> implements CompatDisposable {
             }
         }
 
-        EventBus.getDefault().post(new ViewEvent<T>());
+        return true;
     }
 
-    public void sync(final DaoBase<T> dao) {
+    public void sync(final DaoBase<T> dao, final Account acc) {
         OdsApp.get().getPool().execute(new Task() {
 
             private CloseableIterator<T> it;
 
             @Override
             public void onExecute() throws Exception {
-                it = dao.iterate();
+                it = iterate(dao, acc);
             }
 
             @Override
@@ -88,5 +96,9 @@ public class ViewBase<T extends ObjectBase> implements CompatDisposable {
     @Override
     public void dispose() {
         EventBus.getDefault().unregister(this);
+    }
+
+    protected CloseableIterator<T> iterate(DaoBase<T> dao, Account acc) throws SQLException {
+        return dao.iterate();
     }
 }

@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.text.TextUtils;
 
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.objects.Account;
 
 import java.util.UUID;
 
@@ -55,5 +56,13 @@ public class OdsPreferences {
         }
 
         return res;
+    }
+
+    public Account getLastAccount() {
+        return OdsApp.gson.fromJson(getString("last-acc", ""), Account.class);
+    }
+
+    public void setLastAccount(Account val) {
+        setString("last-acc", OdsApp.gson.toJson(val, Account.class));
     }
 }

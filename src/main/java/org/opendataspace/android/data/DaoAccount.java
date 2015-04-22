@@ -11,4 +11,9 @@ public class DaoAccount extends DaoBase<Account> {
     DaoAccount(ConnectionSource source, ObjectCache cache) throws SQLException {
         super(source, cache, Account.class);
     }
+
+    @Override
+    protected DaoEvent<Account> createEvent() {
+        return new DaoAccountEvent();
+    }
 }
