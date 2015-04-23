@@ -10,7 +10,7 @@ import org.opendataspace.android.navigation.NavigationInterface;
 
 public class ActivityMain extends ActivityBase {
 
-    private Navigation nav;
+    private NavigationInterface nav;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -20,7 +20,7 @@ public class ActivityMain extends ActivityBase {
         nav = createNavigation(savedInstanceState);
     }
 
-    protected Navigation createNavigation(Bundle savedInstanceState) {
+    protected NavigationInterface createNavigation(Bundle savedInstanceState) {
         return new Navigation(this, savedInstanceState);
     }
 

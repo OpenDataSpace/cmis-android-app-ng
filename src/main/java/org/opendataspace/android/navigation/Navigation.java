@@ -151,10 +151,12 @@ public class Navigation implements NavigationInterface {
         return null;
     }
 
+    @Override
     public void save(Bundle state) {
         state.putString(ARG_BACKSTACK, OdsApp.gson.toJson(backstack));
     }
 
+    @Override
     public void openDialog(Class<? extends FragmentBase> cls, OperationBase op) {
         navigate(cls, op, NavigationScope.DIALOG, false);
     }
@@ -165,6 +167,7 @@ public class Navigation implements NavigationInterface {
         }
     }
 
+    @Override
     public boolean backPressed() {
         if (backstack.size() < 2) {
             return false;
@@ -188,6 +191,7 @@ public class Navigation implements NavigationInterface {
         return true;
     }
 
+    @Override
     public FragmentBase getTopFragment() {
         return (FragmentBase) fm.findFragmentByTag(
                 (isTablet && backstack.lastElement().getNavigationScope() == NavigationScope.DETAILS) ? TAG_DETAILS :
@@ -207,14 +211,17 @@ public class Navigation implements NavigationInterface {
         }
     }
 
+    @Override
     public void openRootFolder(Class<? extends FragmentBase> cls, OperationBase op) {
         navigate(cls, op, NavigationScope.MAIN, true);
     }
 
+    @Override
     public void openDrawer() {
         drawer.openDrawer(Gravity.START);
     }
 
+    @Override
     public void openFile(Class<? extends FragmentBase> cls, OperationBase op) {
         navigate(cls, op, NavigationScope.DETAILS, false);
     }
