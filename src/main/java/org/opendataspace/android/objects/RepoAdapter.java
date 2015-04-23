@@ -2,9 +2,9 @@ package org.opendataspace.android.objects;
 
 import android.content.Context;
 
+import org.opendataspace.android.event.EventDaoRepo;
 import org.opendataspace.android.views.ViewAdapter;
 import org.opendataspace.android.views.ViewBase;
-import org.opendataspace.android.views.ViewRepoEvent;
 
 public class RepoAdapter extends ViewAdapter<Repo> {
 
@@ -12,7 +12,7 @@ public class RepoAdapter extends ViewAdapter<Repo> {
         super(view, context, resId);
     }
 
-    public void onEvent(ViewRepoEvent event) {
+    public void onEventMainThread(EventDaoRepo event) {
         invalidate();
     }
 }

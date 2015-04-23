@@ -5,9 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.opendataspace.android.event.EventDaoAccount;
 import org.opendataspace.android.views.ViewAdapter;
 import org.opendataspace.android.views.ViewBase;
-import org.opendataspace.android.views.ViewAccountEvent;
 
 public class AccountAdapter extends ViewAdapter<Account> {
 
@@ -22,7 +22,7 @@ public class AccountAdapter extends ViewAdapter<Account> {
         return vw;
     }
 
-    public void onEvent(ViewAccountEvent event) {
+    public void onEventMainThread(EventDaoAccount event) {
         invalidate();
     }
 }

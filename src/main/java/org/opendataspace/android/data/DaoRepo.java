@@ -5,6 +5,8 @@ import com.j256.ormlite.dao.ObjectCache;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.support.ConnectionSource;
+import org.opendataspace.android.event.EventDaoBase;
+import org.opendataspace.android.event.EventDaoRepo;
 import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.objects.Repo;
 
@@ -27,7 +29,7 @@ public class DaoRepo extends DaoBase<Repo> {
     }
 
     @Override
-    protected DaoEvent<Repo> createEvent() {
-        return new DaoRepoEvent();
+    protected EventDaoBase<Repo> createEvent() {
+        return new EventDaoRepo();
     }
 }

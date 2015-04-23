@@ -17,6 +17,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.support.DatabaseConnection;
 import com.j256.ormlite.table.TableInfo;
 import de.greenrobot.event.EventBus;
+import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.objects.ObjectBase;
 
 import java.sql.SQLException;
@@ -34,7 +35,7 @@ public abstract class DaoBase<T extends ObjectBase> {
     private PreparedQuery<T> selectAll;
     private String checker;
     private String countof;
-    private DaoEvent<T> event;
+    private EventDaoBase<T> event;
 
     DaoBase(ConnectionSource source, ObjectCache cache, Class<T> dataClass) throws SQLException {
         this.source = source;
@@ -223,5 +224,5 @@ public abstract class DaoBase<T extends ObjectBase> {
         return res;
     }
 
-    protected abstract DaoEvent<T> createEvent();
+    protected abstract EventDaoBase<T> createEvent();
 }

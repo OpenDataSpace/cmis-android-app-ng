@@ -1,4 +1,4 @@
-package org.opendataspace.android.data;
+package org.opendataspace.android.event;
 
 import org.opendataspace.android.objects.ObjectBase;
 
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DaoEvent<T extends ObjectBase> {
+public class EventDaoBase<T extends ObjectBase> {
 
     public enum Operation {INSERT, DELETE, UPDATE}
 
@@ -30,7 +30,7 @@ public class DaoEvent<T extends ObjectBase> {
 
     private final List<Event<T>> data = new ArrayList<Event<T>>();
 
-    public DaoEvent() {
+    public EventDaoBase() {
     }
 
     public List<Event<T>> getEvents() {

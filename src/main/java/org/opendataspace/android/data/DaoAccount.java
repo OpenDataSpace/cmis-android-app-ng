@@ -2,6 +2,8 @@ package org.opendataspace.android.data;
 
 import com.j256.ormlite.dao.ObjectCache;
 import com.j256.ormlite.support.ConnectionSource;
+import org.opendataspace.android.event.EventDaoBase;
+import org.opendataspace.android.event.EventDaoAccount;
 import org.opendataspace.android.objects.Account;
 
 import java.sql.SQLException;
@@ -13,7 +15,7 @@ public class DaoAccount extends DaoBase<Account> {
     }
 
     @Override
-    protected DaoEvent<Account> createEvent() {
-        return new DaoAccountEvent();
+    protected EventDaoBase<Account> createEvent() {
+        return new EventDaoAccount();
     }
 }

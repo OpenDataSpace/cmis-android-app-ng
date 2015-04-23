@@ -4,6 +4,7 @@ import android.content.Context;
 
 import de.greenrobot.event.EventBus;
 import org.opendataspace.android.app.CompatDisposable;
+import org.opendataspace.android.app.CompatEvent;
 import org.opendataspace.android.data.DataAdapter;
 import org.opendataspace.android.objects.ObjectBase;
 
@@ -16,7 +17,7 @@ public class ViewAdapter<T extends ObjectBase> extends DataAdapter implements Co
     public ViewAdapter(ViewBase<T> view, Context context, int resId) {
         super(context, resId);
         this.data = view.getObjects();
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this, CompatEvent.PRIORITY_UI);
     }
 
     @Override

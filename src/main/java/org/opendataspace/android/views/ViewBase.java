@@ -3,10 +3,11 @@ package org.opendataspace.android.views;
 import com.j256.ormlite.dao.CloseableIterator;
 import de.greenrobot.event.EventBus;
 import org.opendataspace.android.app.CompatDisposable;
+import org.opendataspace.android.app.CompatEvent;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.Task;
 import org.opendataspace.android.data.DaoBase;
-import org.opendataspace.android.data.DaoEvent;
+import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.objects.Account;
 import org.opendataspace.android.objects.ObjectBase;
 
@@ -20,13 +21,11 @@ public class ViewBase<T extends ObjectBase> implements CompatDisposable {
     private final List<T> data = new ArrayList<>();
 
     public ViewBase() {
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this, CompatEvent.PRIORITY_VIEW);
     }
 
-    protected boolean processEvent(DaoEvent<T> event) {
-        int cnt = 0;
-
-        for (DaoEvent.Event<T> cur : event.getEvents()) {
+    protected void processEvent(EventDaoBase<T> event) {
+        for (EventDaoBase.Event<T> cur : event.getEvents()) {
             final T object = cur.getObject();
 
             if (object == null || !isValid(object)) {
@@ -36,12 +35,10 @@ public class ViewBase<T extends ObjectBase> implements CompatDisposable {
             switch (cur.getOperation()) {
             case INSERT:
                 data.add(object);
-                cnt++;
                 break;
 
             case DELETE:
                 data.remove(object);
-                cnt++;
                 break;
 
             case UPDATE: {
@@ -49,14 +46,11 @@ public class ViewBase<T extends ObjectBase> implements CompatDisposable {
 
                 if (pos != -1) {
                     data.set(pos, object);
-                    cnt++;
                 }
             }
             break;
             }
         }
-
-        return cnt > 0;
     }
 
     public void sync(final DaoBase<T> dao, final Account acc) {
