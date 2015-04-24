@@ -16,7 +16,6 @@ import com.j256.ormlite.support.CompiledStatement;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.support.DatabaseConnection;
 import com.j256.ormlite.table.TableInfo;
-import de.greenrobot.event.EventBus;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.object.ObjectBase;
@@ -34,6 +33,7 @@ public abstract class DaoBase<T extends ObjectBase> {
     private MappedUpdate<T, Long> updater;
     private MappedDelete<T, Long> deleter;
     private PreparedQuery<T> selectAll;
+    private PreparedQuery<T> selectId;
     private String checker;
     private String countof;
     private EventDaoBase<T> event;
@@ -226,4 +226,40 @@ public abstract class DaoBase<T extends ObjectBase> {
     }
 
     protected abstract EventDaoBase<T> createEvent();
+
+    public T get(long id) throws SQLException {
+        if (selectId == null) {
+            selectId = new QueryBuilder<>(type, info, null).where().eq(ObjectBase.FIELD_ID, id).prepare();
+        }
+
+        DatabaseConnection conn = source.getReadOnlyConnection();
+        CompiledStatement compiledStatement = null;
+        SelectIterator<T, Long> it;
+
+        try {
+            compiledStatement = selectId.compile(conn, StatementBuilder.StatementType.SELECT, -1);
+            it = new SelectIterator<>(info.getDataClass(), null, selectId, source, conn, compiledStatement,
+                    selectId.getStatement(), cache);
+            conn = null;
+            compiledStatement = null;
+        } finally {
+            if (compiledStatement != null) {
+                compiledStatement.close();
+            }
+
+            if (conn != null) {
+                source.releaseConnection(conn);
+            }
+        }
+
+        try {
+            if (it.hasNext()) {
+                return it.nextThrow();
+            }
+        } finally {
+            it.closeQuietly();
+        }
+
+        return null;
+    }
 }

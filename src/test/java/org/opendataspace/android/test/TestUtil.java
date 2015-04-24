@@ -53,7 +53,7 @@ public class TestUtil {
         TestApp app = (TestApp) RuntimeEnvironment.application;
         Account acc = TestUtil.getDefaultAccount();
         app.getDatabase().getAccounts().create(acc);
-        app.getPrefs().setLastAccount(acc);
+        app.getPrefs().setLastAccountId(acc);
         app.testStartSync();
         return Robolectric.setupActivity(ActivityMain.class);
     }
@@ -62,7 +62,7 @@ public class TestUtil {
         TestApp app = (TestApp) RuntimeEnvironment.application;
         Account acc = TestUtil.getDefaultAccount();
         app.getDatabase().getAccounts().create(acc);
-        app.getPrefs().setLastAccount(acc);
+        app.getPrefs().setLastAccountId(acc);
         app.testStartSync();
         ActivityMain ac = Robolectric.setupActivity(TestActivity.class);
         replaceFragment(ac, fragment);

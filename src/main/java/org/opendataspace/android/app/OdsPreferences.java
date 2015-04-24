@@ -14,7 +14,6 @@ public class OdsPreferences {
 
     private final Context context;
     private final SharedPreferences prefs;
-    private Account lastAccount;
 
     public OdsPreferences(Context context) {
         this.context = context;
@@ -48,6 +47,14 @@ public class OdsPreferences {
         prefs.edit().putString(key, val).apply();
     }
 
+    private long getLong(final String key, final long def) {
+        return prefs.getLong(key, def);
+    }
+
+    private void setLong(final String key, final long val) {
+        prefs.edit().putLong(key, val).apply();
+    }
+
     public String getInstallId() {
         String res = getString("install-id", "");
 
@@ -59,20 +66,11 @@ public class OdsPreferences {
         return res;
     }
 
-    public Account getLastAccount() {
-        if (lastAccount == null) {
-            lastAccount = OdsApp.gson.fromJson(getString("last-acc", ""), Account.class);
-        }
-
-        return lastAccount;
+    public long getLastAccountId() {
+        return getLong("last-acc", -1);
     }
 
-    public void setLastAccount(Account val) {
-        if (lastAccount == val) { // not equals!
-            return;
-        }
-
-        lastAccount = val;
-        setString("last-acc", OdsApp.gson.toJson(val, Account.class));
+    public void setLastAccountId(Account val) {
+        setLong("last-acc", val != null ? val.getId() : -1);
     }
 }

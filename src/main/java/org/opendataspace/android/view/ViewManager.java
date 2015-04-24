@@ -41,7 +41,7 @@ public class ViewManager implements CompatDisposable {
         }
 
         DataBase db = OdsApp.get().getDatabase();
-        OdsApp.get().getPrefs().setLastAccount(current);
+        OdsApp.get().getPrefs().setLastAccountId(current);
 
         if (this.current == null) {
             accounts.sync(db.getAccounts(), null);

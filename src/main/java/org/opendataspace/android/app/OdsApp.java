@@ -100,6 +100,10 @@ public class OdsApp extends Application {
     }
 
     protected void performSync() {
-        vm.setCurrentAccount(prefs.getLastAccount());
+        try {
+            vm.setCurrentAccount(database.getAccounts().get(prefs.getLastAccountId()));
+        } catch (Exception ex) {
+            OdsLog.ex(getClass(), ex);
+        }
     }
 }

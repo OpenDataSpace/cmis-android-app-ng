@@ -5,8 +5,10 @@ import com.j256.ormlite.field.DatabaseField;
 
 public class ObjectBase {
 
+    public static final String FIELD_ID = "id";
+
     @Expose
-    @DatabaseField(generatedId = true, columnName = "id")
+    @DatabaseField(generatedId = true, columnName = FIELD_ID)
     private long id = -1;
 
     public long getId() {
