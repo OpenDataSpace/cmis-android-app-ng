@@ -2,7 +2,7 @@ package org.opendataspace.android.navigation;
 
 import com.google.gson.annotations.Expose;
 import org.opendataspace.android.app.ClassWrapper;
-import org.opendataspace.android.operations.OperationBase;
+import org.opendataspace.android.operation.OperationBase;
 import org.opendataspace.android.ui.FragmentBase;
 
 public class NavigationState {

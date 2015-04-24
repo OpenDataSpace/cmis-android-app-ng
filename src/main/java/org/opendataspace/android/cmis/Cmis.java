@@ -4,7 +4,7 @@ import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
-import org.opendataspace.android.objects.Account;
+import org.opendataspace.android.object.Account;
 
 import java.util.HashMap;
 import java.util.Map;

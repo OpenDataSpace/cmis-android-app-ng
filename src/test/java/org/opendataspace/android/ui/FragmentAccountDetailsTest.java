@@ -1,6 +1,7 @@
 package org.opendataspace.android.ui;
 
 import android.app.AlertDialog;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
@@ -9,8 +10,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.objects.Account;
-import org.opendataspace.android.operations.OperationAccountUpdate;
+import org.opendataspace.android.object.Account;
+import org.opendataspace.android.operation.OperationAccountUpdate;
 import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -21,18 +22,21 @@ import org.robolectric.shadows.ShadowView;
 @RunWith(TestRunner.class)
 public class FragmentAccountDetailsTest {
 
+    @SuppressWarnings("ConstantConditions")
     @Test
     public void checkDefaults() throws Exception {
         Account acc = TestUtil.getDefaultAccount();
         OperationAccountUpdate op = new OperationAccountUpdate(acc);
         FragmentAccountDetails fgm1 = new FragmentAccountDetails(op);
         ActivityMain ac = TestUtil.setupFragment(fgm1);
+        View vw = fgm1.getView();
+        Assert.assertEquals(true, vw != null);
 
-        EditText etl = (EditText) ac.findViewById(R.id.edit_account_username);
-        EditText etp = (EditText) ac.findViewById(R.id.edit_account_password);
-        EditText etu = (EditText) ac.findViewById(R.id.edit_account_host);
-        EditText etd = (EditText) ac.findViewById(R.id.edit_account_description);
-        CheckBox cbp = (CheckBox) ac.findViewById(R.id.check_account_json);
+        EditText etl = (EditText) vw.findViewById(R.id.edit_account_username);
+        EditText etp = (EditText) vw.findViewById(R.id.edit_account_password);
+        EditText etu = (EditText) vw.findViewById(R.id.edit_account_host);
+        EditText etd = (EditText) vw.findViewById(R.id.edit_account_description);
+        CheckBox cbp = (CheckBox) vw.findViewById(R.id.check_account_json);
 
         Assert.assertEquals(acc.getLogin(), etl.getText().toString());
         Assert.assertEquals(acc.getPassword(), etp.getText().toString());
@@ -66,6 +70,7 @@ public class FragmentAccountDetailsTest {
         TestUtil.dismisActivity(ac);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Test
     public void performActions() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
@@ -81,7 +86,9 @@ public class FragmentAccountDetailsTest {
 
         FragmentAccountDetails fgm2 = new FragmentAccountDetails(op);
         TestUtil.replaceFragment(ac, fgm2);
-        EditText etd = (EditText) ac.findViewById(R.id.edit_account_description);
+        View vw = fgm2.getView();
+        Assert.assertEquals(true, vw != null);
+        EditText etd = (EditText) vw.findViewById(R.id.edit_account_description);
         etd.setText(acc.getName() + "xxx");
         fgm2.onOptionsItemSelected(new RoboMenuItem(R.id.menu_account_apply));
         TestUtil.waitRunnable();

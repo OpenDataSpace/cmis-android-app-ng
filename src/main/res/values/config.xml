@@ -7,4 +7,8 @@
     <item name="internal_progress" type="id"/>
     <item name="internal_listcontainer" type="id"/>
 
+    <item name="action_nav_manage" type="id"/>
+    <item name="action_nav_settings" type="id"/>
+    <item name="action_nav_addaccount" type="id"/>
+
 </resources>

@@ -6,15 +6,28 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
+import org.opendataspace.android.app.CompatEvent;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.objects.AccountAdapter;
+import org.opendataspace.android.data.DataAdapterMerge;
+import org.opendataspace.android.event.EventSelectAccount;
+import org.opendataspace.android.object.Account;
+import org.opendataspace.android.object.AccountAdapter;
+import org.opendataspace.android.object.Action;
+import org.opendataspace.android.object.ActionAdapter;
+import org.opendataspace.android.object.RepoAdapter;
+import org.opendataspace.android.operation.OperationAccountUpdate;
+import org.opendataspace.android.view.ViewManager;
 
 public class FragmentNavigation extends FragmentBase {
 
     private AccountAdapter accounts;
+    private RepoAdapter repos;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -26,23 +39,36 @@ public class FragmentNavigation extends FragmentBase {
         super.onActivityCreated(savedInstanceState);
 
         Activity ac = getActivity();
-        Spinner spin = (Spinner) ac.findViewById(R.id.spin_nav_accounts);
-        accounts = new AccountAdapter(OdsApp.get().getViewManager().getAccounts(), ac);
-        spin.setAdapter(accounts);
+        ViewManager vm = OdsApp.get().getViewManager();
+        ListView lva = widget(R.id.list_nav_accounts);
+        ListView lvf = widget(R.id.list_nav_folders);
 
-        ac.findViewById(R.id.action_nav_settings).setOnClickListener(view -> actionSettings());
-        ac.findViewById(R.id.action_nav_manage).setOnClickListener(view -> actionManage());
+        DataAdapterMerge adpa = new DataAdapterMerge();
+        adpa.addAdapter(accounts = new AccountAdapter(vm.getAccounts(), ac));
+        adpa.addAdapter(new ActionAdapter(ac, Action.listOf(ac, R.id.action_nav_addaccount, R.id.action_nav_manage)));
+        lva.setAdapter(adpa);
+        lva.setOnItemClickListener((adapterView, view1, i, l) -> selectAccount(adapterView, i));
+
+        DataAdapterMerge adpf = new DataAdapterMerge();
+        adpf.addAdapter(repos = new RepoAdapter(vm.getRepos(), ac));
+        adpf.addAdapter(new ActionAdapter(ac, Action.listOf(ac, R.id.action_nav_settings)));
+        lvf.setAdapter(adpf);
+        lvf.setOnItemClickListener((adapterView, view1, i, l) -> selectFolder(adapterView, i));
+
+        widget(R.id.action_nav_account).setOnClickListener(view -> toggleView());
+        OdsApp.bus.register(this, CompatEvent.PRIORITY_UI);
+        updateCurrentAccount();
     }
 
     @Override
     public void onDestroyView() {
+        OdsApp.bus.unregister(this);
         accounts.dispose();
         super.onDestroyView();
     }
 
     private void actionManage() {
-        ActivityMain ac = getMainActivity();
-        ac.getNavigation().openRootFolder(FragmentAccountList.class, null);
+        getMainActivity().getNavigation().openRootFolder(FragmentAccountList.class, null);
     }
 
     @Override
@@ -76,5 +102,63 @@ public class FragmentNavigation extends FragmentBase {
 
     private void actionSettings() {
         getMainActivity().getNavigation().openDialog(FragmentSettings.class, null);
+    }
+
+    public void onEventMainThread(EventSelectAccount val) {
+        updateCurrentAccount();
+    }
+
+    private void updateCurrentAccount() {
+        TextView tv = widget(R.id.action_nav_account);
+        Account acc = OdsApp.get().getViewManager().getCurrentAccount();
+        tv.setText(acc == null ? getString(R.string.nav_noaccount) : acc.getName());
+    }
+
+    private void toggleView() {
+        ViewSwitcher vs = widget(R.id.view_nav_switch);
+        TextView tv = widget(R.id.action_nav_account);
+        vs.showNext();
+        tv.setCompoundDrawablesWithIntrinsicBounds(0, 0,
+                vs.getDisplayedChild() == 1 ? R.drawable.ic_arrow_up : R.drawable.ic_arrow_down, 0);
+    }
+
+    private void selectAccount(AdapterView<?> view, int idx) {
+        Object obj = view.getAdapter().getItem(idx);
+
+        if (obj instanceof Account) {
+            OdsApp.get().getViewManager().setCurrentAccount((Account) obj);
+            toggleView();
+        } else if (obj instanceof Action) {
+            executeAction((Action) obj);
+        }
+    }
+
+    private void executeAction(Action action) {
+        switch (action.getId()) {
+        case R.id.action_nav_manage:
+            actionManage();
+            break;
+
+        case R.id.action_nav_settings:
+            actionSettings();
+            break;
+
+        case R.id.action_nav_addaccount:
+            actionAddAccount();
+            break;
+        }
+    }
+
+    private void selectFolder(AdapterView<?> view, int idx) {
+        Object obj = view.getAdapter().getItem(idx);
+
+        if (obj instanceof Action) {
+            executeAction((Action) obj);
+        }
+    }
+
+    private void actionAddAccount() {
+        getMainActivity().getNavigation()
+                .openFile(FragmentAccountDetails.class, new OperationAccountUpdate(new Account()));
     }
 }

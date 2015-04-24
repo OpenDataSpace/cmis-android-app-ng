@@ -26,7 +26,7 @@ public class FragmentAbout extends FragmentBase {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TextView tva = (TextView) getActivity().findViewById(R.id.text_about_info);
+        TextView tva = widget(R.id.text_about_info);
         tva.setMovementMethod(new LinkMovementMethod());
 
         try {

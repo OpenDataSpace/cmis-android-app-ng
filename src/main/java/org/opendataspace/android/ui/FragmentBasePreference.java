@@ -239,7 +239,7 @@ abstract class FragmentBasePreference extends FragmentBase
         if (root == null) {
             throw new IllegalStateException("Content view not yet created");
         }
-        View rawListView = root.findViewById(android.R.id.list);
+        View rawListView = widget(android.R.id.list);
         if (rawListView == null) {
             throw new RuntimeException(
                     "Your content must have a ListView whose id attribute is " + "'android.R.id.list'");

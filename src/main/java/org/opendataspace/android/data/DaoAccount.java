@@ -4,7 +4,7 @@ import com.j256.ormlite.dao.ObjectCache;
 import com.j256.ormlite.support.ConnectionSource;
 import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.event.EventDaoAccount;
-import org.opendataspace.android.objects.Account;
+import org.opendataspace.android.object.Account;
 
 import java.sql.SQLException;
 

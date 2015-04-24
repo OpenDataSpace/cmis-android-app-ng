@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.objects.Account;
+import org.opendataspace.android.object.Account;
 import org.opendataspace.android.ui.ActivityMain;
 import org.opendataspace.android.ui.FragmentBase;
 import org.robolectric.Robolectric;
@@ -72,6 +72,13 @@ public class TestUtil {
     public static ActivityMain replaceFragment(ActivityMain ac, FragmentBase fragment) throws Exception {
         FragmentTransaction t = ac.getSupportFragmentManager().beginTransaction();
         t.replace(R.id.main_view_frame, fragment, "main");
+        t.commit();
+        return ac;
+    }
+
+    public static ActivityMain replaceSecondaryFragment(ActivityMain ac, FragmentBase fragment) throws Exception {
+        FragmentTransaction t = ac.getSupportFragmentManager().beginTransaction();
+        t.replace(R.id.main_view_drawer, fragment, "secondary");
         t.commit();
         return ac;
     }

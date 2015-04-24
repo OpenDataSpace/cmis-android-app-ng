@@ -15,7 +15,7 @@ import org.opendataspace.android.app.CompatKeyboard;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.operations.OperationBase;
+import org.opendataspace.android.operation.OperationBase;
 import org.opendataspace.android.ui.ActivityDialog;
 import org.opendataspace.android.ui.ActivityMain;
 import org.opendataspace.android.ui.FragmentAccountList;

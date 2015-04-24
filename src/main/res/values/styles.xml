@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <dimen name="pad">6dp</dimen>
-    <dimen name="drawer">400dp</dimen>
+    <dimen name="drawer">300dp</dimen>
     <dimen name="preference_padbottom">0dp</dimen>
     <dimen name="preference_padside">0dp</dimen>
 

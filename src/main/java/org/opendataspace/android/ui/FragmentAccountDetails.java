@@ -15,11 +15,11 @@ import android.view.ViewGroup;
 import android.webkit.URLUtil;
 
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.objects.Account;
-import org.opendataspace.android.operations.OperationAccountDelete;
-import org.opendataspace.android.operations.OperationAccountUpdate;
-import org.opendataspace.android.operations.OperationLoader;
-import org.opendataspace.android.operations.OperationStatus;
+import org.opendataspace.android.object.Account;
+import org.opendataspace.android.operation.OperationAccountDelete;
+import org.opendataspace.android.operation.OperationAccountUpdate;
+import org.opendataspace.android.operation.OperationLoader;
+import org.opendataspace.android.operation.OperationStatus;
 
 @SuppressLint("ValidFragment")
 public class FragmentAccountDetails extends FragmentBaseInput
@@ -144,7 +144,7 @@ public class FragmentAccountDetails extends FragmentBaseInput
         ActivityMain ac = getMainActivity();
 
         new AlertDialog.Builder(ac)
-                .setMessage(String.format(getString(R.string.text_accout_delete), op.getAccount().getName()))
+                .setMessage(String.format(getString(R.string.accout_delete), op.getAccount().getName()))
                 .setCancelable(true).setPositiveButton(R.string.common_ok, (dialogInterface, i) -> {
             startLoader(LOADER_DELETE);
         }).setNegativeButton(R.string.common_cancel, (dialogInterface, i) -> {

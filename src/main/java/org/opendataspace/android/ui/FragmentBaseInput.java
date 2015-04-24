@@ -19,13 +19,13 @@ class FragmentBaseInput extends FragmentBase {
 
     private interface InputEntry {
 
-        void apply(ActivityBase ac);
+        void apply(View vw);
 
-        boolean read(ActivityBase ac, Dirty dirty);
+        boolean read(View vw, Dirty dirty);
 
-        void highlightError(ActivityBase ac);
+        void highlightError(View vw, ActivityBase ac);
 
-        void init(ActivityBase ac);
+        void init(View vw);
     }
 
     private static class TextInputEntry implements InputEntry {
@@ -46,7 +46,7 @@ class FragmentBaseInput extends FragmentBase {
         }
 
         @Override
-        public void apply(ActivityBase ac) {
+        public void apply(View ac) {
             View vw = ac.findViewById(resource);
 
             if (vw instanceof EditText) {
@@ -55,7 +55,7 @@ class FragmentBaseInput extends FragmentBase {
         }
 
         @Override
-        public boolean read(ActivityBase ac, Dirty dirty) {
+        public boolean read(View ac, Dirty dirty) {
             View vw = ac.findViewById(resource);
 
             if (vw instanceof EditText) {
@@ -80,17 +80,17 @@ class FragmentBaseInput extends FragmentBase {
         }
 
         @Override
-        public void highlightError(ActivityBase ac) {
-            EditText et = (EditText) ac.findViewById(resource);
+        public void highlightError(View vw, ActivityBase ac) {
+            EditText et = (EditText) vw.findViewById(resource);
             CompatKeyboard.request(et, ac);
             et.selectAll();
             ac.showToast(R.string.common_invalidvalue);
         }
 
         @Override
-        public void init(ActivityBase ac) {
+        public void init(View vw) {
             if (imeDone != null) {
-                EditText et = (EditText) ac.findViewById(resource);
+                EditText et = (EditText) vw.findViewById(resource);
 
                 et.setOnEditorActionListener((v, actionId, event) -> {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -118,7 +118,7 @@ class FragmentBaseInput extends FragmentBase {
         }
 
         @Override
-        public void apply(ActivityBase ac) {
+        public void apply(View ac) {
             View vw = ac.findViewById(resource);
 
             if (vw instanceof CompoundButton) {
@@ -127,7 +127,7 @@ class FragmentBaseInput extends FragmentBase {
         }
 
         @Override
-        public boolean read(ActivityBase ac, Dirty dirty) {
+        public boolean read(View ac, Dirty dirty) {
             View vw = ac.findViewById(resource);
 
             if (!(vw instanceof CompoundButton)) {
@@ -152,12 +152,12 @@ class FragmentBaseInput extends FragmentBase {
         }
 
         @Override
-        public void highlightError(ActivityBase ac) {
+        public void highlightError(View vw, ActivityBase ac) {
             throw new IllegalStateException();
         }
 
         @Override
-        public void init(ActivityBase ac) {
+        public void init(View vw) {
             // nothing
         }
     }
@@ -183,31 +183,32 @@ class FragmentBaseInput extends FragmentBase {
     }
 
     void apply() {
-        ActivityBase ac = (ActivityBase) getActivity();
+        View vw = getView();
 
         for (InputEntry cur : entries) {
-            cur.apply(ac);
+            cur.apply(vw);
         }
 
         dirty.value = false;
     }
 
     void read() {
-        ActivityBase ac = (ActivityBase) getActivity();
+        View vw = getView();
 
         for (InputEntry cur : entries) {
-            cur.read(ac, dirty);
+            cur.read(vw, dirty);
         }
     }
 
     boolean readAndValidate() {
+        View vw = getView();
         ActivityBase ac = (ActivityBase) getActivity();
         boolean res = true;
 
         for (InputEntry cur : entries) {
-            if (!cur.read(ac, dirty) && res) {
+            if (!cur.read(vw, dirty) && res) {
                 res = false;
-                cur.highlightError(ac);
+                cur.highlightError(vw, ac);
             }
         }
 
@@ -218,10 +219,10 @@ class FragmentBaseInput extends FragmentBase {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ActivityBase ac = (ActivityBase) getActivity();
+        View vw = getView();
 
         for (InputEntry cur : entries) {
-            cur.init(ac);
+            cur.init(vw);
         }
 
         apply();

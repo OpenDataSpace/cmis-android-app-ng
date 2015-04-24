@@ -10,8 +10,8 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.support.DatabaseConnection;
 import com.j256.ormlite.table.TableUtils;
 import org.opendataspace.android.app.OdsLog;
-import org.opendataspace.android.objects.Account;
-import org.opendataspace.android.objects.Repo;
+import org.opendataspace.android.object.Account;
+import org.opendataspace.android.object.Repo;
 
 import java.sql.SQLException;
 import java.util.concurrent.Callable;

@@ -1,6 +1,6 @@
 package org.opendataspace.android.event;
 
-import org.opendataspace.android.objects.ObjectBase;
+import org.opendataspace.android.object.ObjectBase;
 
 import java.util.ArrayList;
 import java.util.Collections;

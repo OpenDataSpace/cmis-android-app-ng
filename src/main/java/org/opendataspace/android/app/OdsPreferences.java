@@ -6,7 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.text.TextUtils;
 
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.objects.Account;
+import org.opendataspace.android.object.Account;
 
 import java.util.UUID;
 
@@ -14,6 +14,7 @@ public class OdsPreferences {
 
     private final Context context;
     private final SharedPreferences prefs;
+    private Account lastAccount;
 
     public OdsPreferences(Context context) {
         this.context = context;
@@ -59,10 +60,19 @@ public class OdsPreferences {
     }
 
     public Account getLastAccount() {
-        return OdsApp.gson.fromJson(getString("last-acc", ""), Account.class);
+        if (lastAccount == null) {
+            lastAccount = OdsApp.gson.fromJson(getString("last-acc", ""), Account.class);
+        }
+
+        return lastAccount;
     }
 
     public void setLastAccount(Account val) {
+        if (lastAccount == val) { // not equals!
+            return;
+        }
+
+        lastAccount = val;
         setString("last-acc", OdsApp.gson.toJson(val, Account.class));
     }
 }

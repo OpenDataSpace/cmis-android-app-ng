@@ -7,9 +7,9 @@ import android.view.MenuItem;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.objects.Account;
-import org.opendataspace.android.objects.AccountAdapter;
-import org.opendataspace.android.operations.OperationAccountUpdate;
+import org.opendataspace.android.object.Account;
+import org.opendataspace.android.object.AccountAdapter;
+import org.opendataspace.android.operation.OperationAccountUpdate;
 
 import java.sql.SQLException;
 

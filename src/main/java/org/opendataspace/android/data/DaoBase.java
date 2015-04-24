@@ -17,8 +17,9 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.support.DatabaseConnection;
 import com.j256.ormlite.table.TableInfo;
 import de.greenrobot.event.EventBus;
+import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.event.EventDaoBase;
-import org.opendataspace.android.objects.ObjectBase;
+import org.opendataspace.android.object.ObjectBase;
 
 import java.sql.SQLException;
 
@@ -200,7 +201,7 @@ public abstract class DaoBase<T extends ObjectBase> {
 
     protected void fire(DatabaseConnection conn) throws SQLException {
         if (conn.isAutoCommit() && !event.isEmpty()) {
-            EventBus.getDefault().post(event);
+            OdsApp.bus.post(event);
             event = createEvent();
         }
     }

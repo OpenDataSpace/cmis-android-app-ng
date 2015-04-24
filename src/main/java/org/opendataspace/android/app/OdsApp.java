@@ -6,17 +6,23 @@ import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import de.greenrobot.event.EventBus;
 import io.fabric.sdk.android.Fabric;
 import org.opendataspace.android.data.DataBase;
-import org.opendataspace.android.views.ViewManager;
+import org.opendataspace.android.view.ViewManager;
 
 public class OdsApp extends Application {
 
     private static OdsApp instance;
     private static boolean crashl = false;
+
     public static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
             .registerTypeAdapter(Class.class, new ClassSerializer())
             .registerTypeAdapter(ClassWrapper.class, new ClassWrapperSerializer()).create();
+
+    public static final EventBus bus =
+            EventBus.builder().eventInheritance(false).sendNoSubscriberEvent(false).sendSubscriberExceptionEvent(false).
+                    throwSubscriberException(false).build();
 
     private OdsPreferences prefs;
     private DataBase database;
@@ -94,6 +100,6 @@ public class OdsApp extends Application {
     }
 
     protected void performSync() {
-        vm.sync(database);
+        vm.setCurrentAccount(prefs.getLastAccount());
     }
 }

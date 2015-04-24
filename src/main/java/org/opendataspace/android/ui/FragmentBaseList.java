@@ -228,15 +228,15 @@ class FragmentBaseList extends FragmentBase {
         if (root instanceof ListView) {
             list = (ListView) root;
         } else {
-            standardEmptyView = (TextView) root.findViewById(R.id.internal_empty);
+            standardEmptyView = widget(R.id.internal_empty);
             if (standardEmptyView == null) {
-                emptyView = root.findViewById(android.R.id.empty);
+                emptyView = widget(android.R.id.empty);
             } else {
                 standardEmptyView.setVisibility(View.GONE);
             }
-            progressContainer = root.findViewById(R.id.internal_progress);
-            listContainer = root.findViewById(R.id.internal_listcontainer);
-            View rawListView = root.findViewById(android.R.id.list);
+            progressContainer = widget(R.id.internal_progress);
+            listContainer = widget(R.id.internal_listcontainer);
+            View rawListView = widget(android.R.id.list);
             if (!(rawListView instanceof ListView)) {
                 if (rawListView == null) {
                     throw new RuntimeException(

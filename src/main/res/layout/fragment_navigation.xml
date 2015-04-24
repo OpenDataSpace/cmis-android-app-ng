@@ -7,57 +7,32 @@
               tools:context="org.opendataspace.android.ui.FragmentNavigation">
 
     <TextView
-        style="@style/OdsSectionHeader"
+        android:id="@+id/action_nav_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/nav_accounts"/>
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="?android:attr/textColorPrimary"
+        android:drawablePadding="@dimen/pad"
+        android:drawableEnd="@drawable/ic_arrow_down"
+        android:drawableRight="@drawable/ic_arrow_down"
+        android:background="@drawable/underline"
+        android:padding="@dimen/pad"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Spinner
-            android:id="@+id/spin_nav_accounts"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center"/>
-
-        <ImageButton
-            android:id="@+id/action_nav_manage"
-            style="@style/OdsBorderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_gear"
-            android:contentDescription="@string/nav_manage"/>
-    </LinearLayout>
-
-    <ScrollView
+    <ViewSwitcher
+        android:id="@+id/view_nav_switch"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/pad">
 
-        <TextView
-            style="@style/OdsSectionHeader"
+        <ListView
+            android:id="@+id/list_nav_folders"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/nav_views"/>
-    </ScrollView>
+            android:layout_height="match_parent"/>
 
-    <TextView
-        style="@style/OdsSectionHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/action_nav_settings"
-        style="@style/OdsBorderless"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_settings"
-        android:drawableStart="@drawable/ic_settings"
-        android:text="@string/nav_settings"/>
-
+        <ListView
+            android:id="@+id/list_nav_accounts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </ViewSwitcher>
 </LinearLayout>

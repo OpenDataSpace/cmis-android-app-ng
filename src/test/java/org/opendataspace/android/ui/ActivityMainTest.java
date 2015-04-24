@@ -1,6 +1,7 @@
 package org.opendataspace.android.ui;
 
 import android.os.Bundle;
+import android.widget.ListView;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,7 +10,7 @@ import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.navigation.NavigationState;
-import org.opendataspace.android.operations.OperationAccountUpdate;
+import org.opendataspace.android.operation.OperationAccountUpdate;
 import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 import org.robolectric.Robolectric;
@@ -34,7 +35,7 @@ public class ActivityMainTest {
         Assert.assertEquals(FragmentNavigation.class, ac.getNavigation().getTopFragment().getClass());
 
         // settings
-        navigateClick(R.id.action_nav_settings, FragmentSettings.class, ac);
+        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_settings), FragmentSettings.class, ac);
         navigateBack(FragmentNavigation.class, ac);
         navigateMenu(R.id.menu_main_settings, FragmentSettings.class, ac);
         navigateBack(FragmentNavigation.class, ac);
@@ -44,9 +45,11 @@ public class ActivityMainTest {
         navigateBack(FragmentNavigation.class, ac);
 
         // accounts
-        navigateClick(R.id.action_nav_manage, FragmentAccountList.class, ac);
+        navigateList(R.id.list_nav_accounts, ac.getString(R.string.nav_manage), FragmentAccountList.class, ac);
         navigateMenu(R.id.menu_account_add, FragmentAccountDetails.class, ac);
         navigateBack(FragmentAccountList.class, ac);
+        navigateBack(FragmentNavigation.class, ac);
+        navigateList(R.id.list_nav_accounts, ac.getString(R.string.nav_addaccount), FragmentAccountDetails.class, ac);
         navigateBack(FragmentNavigation.class, ac);
 
         // exit
@@ -56,6 +59,13 @@ public class ActivityMainTest {
 
     private void navigateClick(int resId, Class<?> cls, ActivityMain ac) {
         ac.findViewById(resId).performClick();
+        Assert.assertEquals(cls, ac.getNavigation().getTopFragment().getClass());
+        ac.getSupportFragmentManager().executePendingTransactions();
+    }
+
+    private void navigateList(int resId, String item, Class<?> cls, ActivityMain ac) {
+        ListView lv = (ListView) ac.findViewById(resId);
+        Shadows.shadowOf(lv).clickFirstItemContainingText(item);
         Assert.assertEquals(cls, ac.getNavigation().getTopFragment().getClass());
         ac.getSupportFragmentManager().executePendingTransactions();
     }

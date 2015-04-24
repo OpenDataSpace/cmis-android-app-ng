@@ -2,7 +2,7 @@ package org.opendataspace.android.navigation;
 
 import android.os.Bundle;
 
-import org.opendataspace.android.operations.OperationBase;
+import org.opendataspace.android.operation.OperationBase;
 import org.opendataspace.android.ui.FragmentBase;
 
 public interface NavigationInterface {

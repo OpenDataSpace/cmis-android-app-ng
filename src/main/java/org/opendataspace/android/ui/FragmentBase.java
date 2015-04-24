@@ -6,6 +6,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.NavigationInterface;
@@ -52,5 +53,11 @@ public class FragmentBase extends Fragment {
 
     int getMenuResource() {
         return 0;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T extends View> T widget(int id) {
+        View v = getView();
+        return v != null ? (T) v.findViewById(id) : null;
     }
 }
