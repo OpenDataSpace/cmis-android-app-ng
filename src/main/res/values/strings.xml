@@ -25,6 +25,9 @@
     <string name="nav_views">Views</string>
     <string name="nav_noaccount">Account unavailable</string>
     <string name="nav_addaccount">New account…</string>
+    <string name="nav_personal">My Folders</string>
+    <string name="nav_shared">Shared</string>
+    <string name="nav_global">Global</string>
 
     <!-- about -->
     <string name="about_info">
@@ -51,7 +54,7 @@
     <string name="accounts_add">Add account</string>
     <string name="accounts_title">Accounts</string>
 
-    <!--account info -->
+    <!-- account info -->
     <string name="account_title">Account Authetication</string>
     <string name="account_general">Account Information</string>
     <string name="account_username">Username</string>

@@ -27,7 +27,7 @@ public class FragmentNavigationTest {
         ListView lv = (ListView) fgm.getView().findViewById(R.id.list_nav_accounts);
         TextView tv = (TextView) fgm.getView().findViewById(R.id.action_nav_account);
         Assert.assertEquals(3, lv.getCount());
-        Assert.assertEquals(app.getViewManager().getCurrentAccount().getName(), tv.getText());
+        Assert.assertEquals(app.getViewManager().getCurrentAccount().getDisplayName(), tv.getText());
         TestUtil.dismisActivity(ac);
     }
 
@@ -47,20 +47,20 @@ public class FragmentNavigationTest {
         TextView tv2 = (TextView) fgm2.getView().findViewById(R.id.action_nav_account);
         Assert.assertEquals(3, lv1.getCount());
         Assert.assertEquals(3, lv2.getCount());
-        Assert.assertEquals(app.getViewManager().getCurrentAccount().getName(), tv1.getText());
-        Assert.assertEquals(app.getViewManager().getCurrentAccount().getName(), tv2.getText());
+        Assert.assertEquals(app.getViewManager().getCurrentAccount().getDisplayName(), tv1.getText());
+        Assert.assertEquals(app.getViewManager().getCurrentAccount().getDisplayName(), tv2.getText());
 
         Account acc = TestUtil.getDefaultAccount();
         acc.setName("xxx");
         app.getDatabase().getAccounts().create(acc);
         Assert.assertEquals(4, lv1.getCount());
         Assert.assertEquals(4, lv2.getCount());
-        Assert.assertEquals(app.getViewManager().getCurrentAccount().getName(), tv1.getText());
-        Assert.assertEquals(app.getViewManager().getCurrentAccount().getName(), tv2.getText());
+        Assert.assertEquals(app.getViewManager().getCurrentAccount().getDisplayName(), tv1.getText());
+        Assert.assertEquals(app.getViewManager().getCurrentAccount().getDisplayName(), tv2.getText());
 
         Shadows.shadowOf(lv2).performItemClick(1);
-        Assert.assertEquals(app.getViewManager().getCurrentAccount().getName(), tv1.getText());
-        Assert.assertEquals(app.getViewManager().getCurrentAccount().getName(), tv2.getText());
+        Assert.assertEquals(app.getViewManager().getCurrentAccount().getDisplayName(), tv1.getText());
+        Assert.assertEquals(app.getViewManager().getCurrentAccount().getDisplayName(), tv2.getText());
         Assert.assertEquals(acc.getName(), tv1.getText());
         Assert.assertEquals(acc.getName(), tv2.getText());
     }

@@ -1,9 +1,12 @@
 package org.opendataspace.android.object;
 
+import android.content.Context;
+
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import org.apache.chemistry.opencmis.client.api.Repository;
+import org.opendataspace.android.app.beta.R;
 
 @DatabaseTable(tableName = "repo")
 public class Repo extends ObjectBase {
@@ -60,5 +63,34 @@ public class Repo extends ObjectBase {
 
     public long getAccountId() {
         return accountId;
+    }
+
+    public String getDisplayName(Context context) {
+        switch (info.name) {
+        case "my":
+            return context.getString(R.string.nav_personal);
+
+        case "shared":
+            return context.getString(R.string.nav_shared);
+
+        case "global":
+            return context.getString(R.string.nav_global);
+
+        default:
+            return info.name;
+        }
+    }
+
+    public int getIcon() {
+        switch (info.name) {
+        case "shared":
+            return R.drawable.ic_shared;
+
+        case "global":
+            return R.drawable.ic_global;
+
+        default:
+            return R.drawable.ic_folder;
+        }
     }
 }

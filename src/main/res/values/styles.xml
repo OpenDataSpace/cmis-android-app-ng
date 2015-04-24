@@ -8,6 +8,8 @@
 
     <integer name="preference_scrollstyle">0x02000000</integer>
 
+    <color name="azure">#e5e5e5</color>
+
     <style name="OdsApp" parent="@style/Theme.AppCompat.Light">
         <item name="actionBarStyle">@style/OdsActionBar</item>
     </style>
@@ -27,6 +29,11 @@
 
     <style name="OdsPanel">
         <item name="android:background">@android:color/white</item>
+        <item name="android:padding">@dimen/pad</item>
+    </style>
+
+    <style name="OdsStyledPanel">
+        <item name="android:background">@color/azure</item>
         <item name="android:padding">@dimen/pad</item>
     </style>
 

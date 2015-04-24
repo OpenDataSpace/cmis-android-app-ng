@@ -13,7 +13,7 @@ import org.opendataspace.android.view.ViewBase;
 public class RepoAdapter extends ViewAdapter<Repo> {
 
     public RepoAdapter(ViewBase<Repo> view, Context context) {
-        super(view, context, R.layout.delegate_list_item2);
+        super(view, context, R.layout.delegate_list_item1);
     }
 
     @Override
@@ -22,7 +22,8 @@ public class RepoAdapter extends ViewAdapter<Repo> {
         TextView tw1 = (TextView) vw.findViewById(R.id.text_listitem_primary);
         Repo repo = getObject(position);
 
-        tw1.setText(repo.getName());
+        tw1.setText(repo.getDisplayName(inf.getContext()));
+        tw1.setCompoundDrawablesWithIntrinsicBounds(repo.getIcon(), 0, 0, 0);
         return vw;
     }
 

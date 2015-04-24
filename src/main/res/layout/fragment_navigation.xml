@@ -3,29 +3,27 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              android:padding="@dimen/pad"
               tools:context="org.opendataspace.android.ui.FragmentNavigation">
 
     <TextView
         android:id="@+id/action_nav_account"
+        style="@style/OdsStyledPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="?android:attr/textColorPrimary"
         android:drawablePadding="@dimen/pad"
         android:drawableEnd="@drawable/ic_arrow_down"
-        android:drawableRight="@drawable/ic_arrow_down"
-        android:padding="@dimen/pad"/>
+        android:drawableRight="@drawable/ic_arrow_down"/>
 
     <TextView
         android:id="@+id/action_nav_accdesc"
+        style="@style/OdsStyledPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearance"
         android:textColor="?android:attr/textColorSecondary"
-        android:drawablePadding="@dimen/pad"
-        android:background="@drawable/underline"
-        android:padding="@dimen/pad"/>
+        android:drawablePadding="@dimen/pad"/>
 
     <ViewSwitcher
         android:id="@+id/view_nav_switch"

@@ -51,7 +51,6 @@ public class FragmentNavigation extends FragmentBase {
 
         DataAdapterMerge adpf = new DataAdapterMerge();
         adpf.addAdapter(repos = new RepoAdapter(vm.getRepos(), ac));
-        adpf.addAdapter(new ActionAdapter(ac, Action.listOf(ac, R.id.action_nav_settings)));
         lvf.setAdapter(adpf);
         lvf.setOnItemClickListener((adapterView, view1, i, l) -> selectFolder(adapterView, i));
 

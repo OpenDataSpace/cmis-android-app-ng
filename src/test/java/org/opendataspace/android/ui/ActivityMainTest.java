@@ -35,8 +35,6 @@ public class ActivityMainTest {
         Assert.assertEquals(FragmentNavigation.class, ac.getNavigation().getTopFragment().getClass());
 
         // settings
-        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_settings), FragmentSettings.class, ac);
-        navigateBack(FragmentNavigation.class, ac);
         navigateMenu(R.id.menu_main_settings, FragmentSettings.class, ac);
         navigateBack(FragmentNavigation.class, ac);
 
