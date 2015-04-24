@@ -23,8 +23,8 @@ public class AccountAdapter extends ViewAdapter<Account> {
         TextView tw2 = (TextView) vw.findViewById(R.id.text_listitem_secondary);
         Account acc = getObject(position);
 
-        tw1.setText(acc.getName());
-        tw2.setText(acc.getDisplayUri());
+        tw1.setText(acc.getDisplayName());
+        tw2.setText(acc.getDescription());
         return vw;
     }
 

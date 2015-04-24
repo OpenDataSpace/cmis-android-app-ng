@@ -124,4 +124,12 @@ public class Account extends ObjectBase {
         info.path = path;
         info.port = url.getPort();
     }
+
+    public String getDescription() {
+        return TextUtils.isEmpty(info.name) ? "" : getDisplayUri();
+    }
+
+    public String getDisplayName() {
+        return TextUtils.isEmpty(info.name) ? getDisplayUri() : info.name;
+    }
 }

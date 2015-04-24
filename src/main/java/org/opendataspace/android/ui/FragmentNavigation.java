@@ -56,6 +56,7 @@ public class FragmentNavigation extends FragmentBase {
         lvf.setOnItemClickListener((adapterView, view1, i, l) -> selectFolder(adapterView, i));
 
         widget(R.id.action_nav_account).setOnClickListener(view -> toggleView());
+        widget(R.id.action_nav_accdesc).setOnClickListener(view -> toggleView());
         OdsApp.bus.register(this, CompatEvent.PRIORITY_UI);
         updateCurrentAccount();
     }
@@ -109,16 +110,18 @@ public class FragmentNavigation extends FragmentBase {
     }
 
     private void updateCurrentAccount() {
-        TextView tv = widget(R.id.action_nav_account);
+        TextView tva = widget(R.id.action_nav_account);
+        TextView tvd = widget(R.id.action_nav_accdesc);
         Account acc = OdsApp.get().getViewManager().getCurrentAccount();
-        tv.setText(acc == null ? getString(R.string.nav_noaccount) : acc.getName());
+        tva.setText(acc == null ? getString(R.string.nav_noaccount) : acc.getDisplayName());
+        tvd.setText(acc == null ? "" : acc.getDescription());
     }
 
     private void toggleView() {
         ViewSwitcher vs = widget(R.id.view_nav_switch);
-        TextView tv = widget(R.id.action_nav_account);
+        TextView tva = widget(R.id.action_nav_account);
         vs.showNext();
-        tv.setCompoundDrawablesWithIntrinsicBounds(0, 0,
+        tva.setCompoundDrawablesWithIntrinsicBounds(0, 0,
                 vs.getDisplayedChild() == 1 ? R.drawable.ic_arrow_up : R.drawable.ic_arrow_down, 0);
     }
 

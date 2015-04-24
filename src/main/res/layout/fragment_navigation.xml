@@ -15,6 +15,15 @@
         android:drawablePadding="@dimen/pad"
         android:drawableEnd="@drawable/ic_arrow_down"
         android:drawableRight="@drawable/ic_arrow_down"
+        android:padding="@dimen/pad"/>
+
+    <TextView
+        android:id="@+id/action_nav_accdesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearance"
+        android:textColor="?android:attr/textColorSecondary"
+        android:drawablePadding="@dimen/pad"
         android:background="@drawable/underline"
         android:padding="@dimen/pad"/>
 
