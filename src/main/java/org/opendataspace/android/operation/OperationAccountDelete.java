@@ -29,7 +29,8 @@ public class OperationAccountDelete extends OperationBase {
             }
 
             DaoRepo repos = db.getRepos();
-            CloseableIterator<Repo> it = repos.forAccount(account);
+            CloseableIterator<Repo> it =
+                    repos.iterate(repos.queryBuilder().where().eq(Repo.FIELD_ACCID, account.getId()).prepare());
 
             try {
                 while (it.hasNext()) {

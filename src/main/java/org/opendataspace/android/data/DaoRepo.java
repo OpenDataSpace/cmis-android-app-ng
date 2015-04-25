@@ -20,7 +20,9 @@ public class DaoRepo extends DaoBase<Repo> {
     DaoRepo(ConnectionSource source, ObjectCache cache) throws SQLException {
         super(source, cache, Repo.class);
         byAccountArg = new SelectArg();
-        byAccount = queryBuilder().where().eq(Repo.FIELD_ACCID, byAccountArg).prepare();
+        byAccount =
+                queryBuilder().where().eq(Repo.FIELD_ACCID, byAccountArg).and().ne(Repo.FIELD_TYPE, Repo.Type.CONFIG)
+                        .prepare();
     }
 
     public CloseableIterator<Repo> forAccount(Account account) throws SQLException {

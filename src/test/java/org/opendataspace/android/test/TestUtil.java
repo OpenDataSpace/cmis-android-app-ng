@@ -3,8 +3,11 @@ package org.opendataspace.android.test;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
+import com.j256.ormlite.dao.CloseableIterator;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.object.Account;
+import org.opendataspace.android.object.ObjectBase;
 import org.opendataspace.android.ui.ActivityMain;
 import org.opendataspace.android.ui.FragmentBase;
 import org.robolectric.Robolectric;
@@ -16,6 +19,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class TestUtil {
@@ -99,5 +105,20 @@ public class TestUtil {
         Bundle bu = new Bundle();
         con.pause().stop().saveInstanceState(bu).destroy();
         return bu;
+    }
+
+    public static <T extends ObjectBase> List<T> allOf(DaoBase<T> dao) throws SQLException {
+        CloseableIterator<T> it = dao.iterate();
+        List<T> ls = new ArrayList<>();
+
+        try {
+            while (it.hasNext()) {
+                ls.add(it.nextThrow());
+            }
+        } finally {
+            it.closeQuietly();
+        }
+
+        return ls;
     }
 }

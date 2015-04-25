@@ -3,6 +3,7 @@ package org.opendataspace.android.object;
 import android.content.Context;
 
 import com.google.gson.annotations.Expose;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import org.apache.chemistry.opencmis.client.api.Repository;
@@ -12,10 +13,18 @@ import org.opendataspace.android.app.beta.R;
 public class Repo extends ObjectBase {
 
     public static final String FIELD_ACCID = "aid";
+    public static final String FIELD_TYPE = "t";
+
+    public enum Type {DEFAULT, PRIVATE, SHARED, GLOBAL, CONFIG}
 
     @Expose
     @DatabaseField(index = true, columnName = FIELD_ACCID, canBeNull = false)
     private long accountId;
+
+    @Expose
+    @DatabaseField(columnName = FIELD_TYPE, canBeNull = false, dataType = DataType.ENUM_INTEGER,
+            unknownEnumName = "DEFAULT")
+    private final Type type;
 
     @Expose
     @DatabaseField(columnName = "data", canBeNull = false, persisterClass = RepoSerializer.class)
@@ -26,6 +35,7 @@ public class Repo extends ObjectBase {
     public Repo() {
         info = new RepoInfo();
         cmis = null;
+        type = Type.DEFAULT;
     }
 
     public Repo(Repository repo, Account account) {
@@ -40,6 +50,27 @@ public class Repo extends ObjectBase {
         }
 
         cmis = repo;
+
+        switch (info.name) {
+        case "my":
+            type = Type.PRIVATE;
+            break;
+
+        case "shared":
+            type = Type.SHARED;
+            break;
+
+        case "global":
+            type = Type.GLOBAL;
+            break;
+
+        case "config":
+            type = Type.CONFIG;
+            break;
+
+        default:
+            type = Type.DEFAULT;
+        }
     }
 
     public Repo(Repo other) {
@@ -47,6 +78,7 @@ public class Repo extends ObjectBase {
         accountId = other.accountId;
         info = new RepoInfo(other.info);
         cmis = other.cmis;
+        type = other.type;
     }
 
     public String getName() {
@@ -66,14 +98,14 @@ public class Repo extends ObjectBase {
     }
 
     public String getDisplayName(Context context) {
-        switch (info.name) {
-        case "my":
+        switch (type) {
+        case PRIVATE:
             return context.getString(R.string.nav_personal);
 
-        case "shared":
+        case SHARED:
             return context.getString(R.string.nav_shared);
 
-        case "global":
+        case GLOBAL:
             return context.getString(R.string.nav_global);
 
         default:
@@ -82,15 +114,19 @@ public class Repo extends ObjectBase {
     }
 
     public int getIcon() {
-        switch (info.name) {
-        case "shared":
+        switch (type) {
+        case SHARED:
             return R.drawable.ic_shared;
 
-        case "global":
+        case GLOBAL:
             return R.drawable.ic_global;
 
         default:
             return R.drawable.ic_folder;
         }
+    }
+
+    public Type getType() {
+        return type;
     }
 }

@@ -38,10 +38,6 @@ public class RepoCollection {
 
         db.transact(() -> {
             for (Repository cur : Cmis.factory.getRepositories(Cmis.createSessionSettings(acc))) {
-                if (cur.getName().equals("config")) {
-                    continue;
-                }
-
                 Repo repo = findByUuid(cur.getId(), copy);
 
                 if (repo == null) {
