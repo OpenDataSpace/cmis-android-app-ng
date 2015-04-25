@@ -9,6 +9,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -162,5 +163,16 @@ public class FragmentAccountDetails extends FragmentBaseInput
                 di -> getLoaderManager().destroyLoader(id));
 
         getLoaderManager().restartLoader(id, null, this);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem mi = menu.findItem(R.id.menu_account_delete);
+
+        if (mi != null) {
+            mi.setVisible(op.getAccount().isValidId());
+        }
     }
 }

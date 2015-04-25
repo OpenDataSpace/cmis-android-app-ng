@@ -20,7 +20,10 @@ public class OperationAccountUpdate extends OperationBase {
 
     @Override
     protected void doExecute(OperationStatus status) throws Exception {
-        final DataBase db = OdsApp.get().getDatabase();
+        final OdsApp app = OdsApp.get();
+        final DataBase db = app.getDatabase();
+
+        boolean isFirst = db.getAccounts().countOf() == 0;
 
         db.transact(() -> {
             db.getAccounts().createOrUpdate(account);
@@ -35,8 +38,13 @@ public class OperationAccountUpdate extends OperationBase {
                 throw new InterruptedException();
             }
 
+            if (isFirst || app.getPrefs().getLastAccountId() == account.getId()) {
+                app.getViewManager().setCurrentAccount(account);
+            }
+
             return null;
         });
+
 
         status.setOk();
     }

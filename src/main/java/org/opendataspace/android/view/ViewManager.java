@@ -36,10 +36,6 @@ public class ViewManager implements CompatDisposable {
     }
 
     public void setCurrentAccount(Account current) {
-        if (current != null && current.equals(this.current)) {
-            return;
-        }
-
         DataBase db = OdsApp.get().getDatabase();
         OdsApp.get().getPrefs().setLastAccountId(current);
 

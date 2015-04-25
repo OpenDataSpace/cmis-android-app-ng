@@ -80,6 +80,7 @@ public class FragmentAccountDetailsTest {
         ActivityMain ac = TestUtil.setupFragment(fgm1);
         fgm1.onOptionsItemSelected(new RoboMenuItem(R.id.menu_account_apply));
         TestUtil.waitRunnable();
+        TestUtil.waitRunnable();
         long cnt = app.getDatabase().getRepos().countOf();
         Assert.assertEquals(2, app.getDatabase().getAccounts().countOf());
         Assert.assertEquals(true, cnt > 0);
@@ -92,6 +93,7 @@ public class FragmentAccountDetailsTest {
         etd.setText(acc.getName() + "xxx");
         fgm2.onOptionsItemSelected(new RoboMenuItem(R.id.menu_account_apply));
         TestUtil.waitRunnable();
+        TestUtil.waitRunnable();
         Assert.assertEquals(2, app.getDatabase().getAccounts().countOf());
         Assert.assertEquals(cnt, app.getDatabase().getRepos().countOf());
 
@@ -100,6 +102,7 @@ public class FragmentAccountDetailsTest {
         fgm3.onOptionsItemSelected(new RoboMenuItem(R.id.menu_account_delete));
         AlertDialog alert = ShadowAlertDialog.getLatestAlertDialog();
         ShadowView.clickOn(alert.getButton(AlertDialog.BUTTON_POSITIVE));
+        TestUtil.waitRunnable();
         TestUtil.waitRunnable();
         Assert.assertEquals(1, app.getDatabase().getAccounts().countOf());
         Assert.assertEquals(0, app.getDatabase().getRepos().countOf());

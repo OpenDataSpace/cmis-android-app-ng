@@ -18,6 +18,7 @@ public class OperationAccountDeleteTest {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         Account acc = TestUtil.getDefaultAccount();
         app.getDatabase().getAccounts().create(acc);
+        app.getPrefs().setLastAccountId(acc);
         app.getDatabase().getRepos().create(new Repo(null, acc));
         app.getDatabase().getRepos().create(new Repo(null, acc));
         Assert.assertEquals(1, app.getDatabase().getAccounts().countOf());
@@ -28,5 +29,6 @@ public class OperationAccountDeleteTest {
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(0, app.getDatabase().getAccounts().countOf());
         Assert.assertEquals(0, app.getDatabase().getRepos().countOf());
+        Assert.assertEquals(-1, app.getPrefs().getLastAccountId());
     }
 }

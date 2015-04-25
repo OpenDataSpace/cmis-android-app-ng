@@ -1,10 +1,11 @@
 package org.opendataspace.android.app;
 
 import android.os.Handler;
+import android.os.Looper;
 
 public abstract class Task implements Runnable {
 
-    private final Handler handler = new Handler();
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     public abstract void onExecute() throws Exception;
 
