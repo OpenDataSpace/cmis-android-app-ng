@@ -23,4 +23,8 @@ public class TaskPool {
     public void cancel(Task task) {
         service.remove(task);
     }
+
+    public boolean hasTasks() {
+        return service.getActiveCount() > 0;
+    }
 }

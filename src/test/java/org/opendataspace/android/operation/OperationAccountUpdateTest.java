@@ -23,6 +23,7 @@ public class OperationAccountUpdateTest {
         OperationStatus st = op.execute();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(op.getAccount().getId(), app.getPrefs().getLastAccountId());
+        TestUtil.waitRunnable();
         checkDb(app.getDatabase());
     }
 
@@ -34,6 +35,7 @@ public class OperationAccountUpdateTest {
         OperationStatus st = op.execute();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(op.getAccount().getId(), app.getPrefs().getLastAccountId());
+        TestUtil.waitRunnable();
         checkDb(app.getDatabase());
     }
 
@@ -45,7 +47,7 @@ public class OperationAccountUpdateTest {
         boolean hasShared = false;
         boolean hasGlobal = false;
         boolean hasConfig = false;
-        List<Repo> ls = TestUtil.allOf(db.getRepos());
+        List<Repo> ls = TestUtil.allOf(db.getRepos().iterate());
 
         for (Repo cur : ls) {
             switch (cur.getType()) {

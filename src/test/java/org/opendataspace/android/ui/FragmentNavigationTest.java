@@ -65,6 +65,7 @@ public class FragmentNavigationTest {
         Assert.assertEquals(acc.getName(), tv1.getText());
         Assert.assertEquals(acc.getName(), tv2.getText());
 
+        TestUtil.waitRunnable();
         TestUtil.dismisActivity(ac);
     }
 

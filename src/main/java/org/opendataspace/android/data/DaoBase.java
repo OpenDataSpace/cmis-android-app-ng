@@ -37,6 +37,7 @@ public abstract class DaoBase<T extends ObjectBase> {
     private String checker;
     private String countof;
     private EventDaoBase<T> event;
+    private SelectArg selectIdArg;
 
     DaoBase(ConnectionSource source, ObjectCache cache, Class<T> dataClass) throws SQLException {
         this.source = source;
@@ -229,28 +230,12 @@ public abstract class DaoBase<T extends ObjectBase> {
 
     public T get(long id) throws SQLException {
         if (selectId == null) {
-            selectId = new QueryBuilder<>(type, info, null).where().eq(ObjectBase.FIELD_ID, id).prepare();
+            selectIdArg = new SelectArg(id);
+            selectId = new QueryBuilder<>(type, info, null).where().eq(ObjectBase.FIELD_ID, selectIdArg).prepare();
         }
 
-        DatabaseConnection conn = source.getReadOnlyConnection();
-        CompiledStatement compiledStatement = null;
-        SelectIterator<T, Long> it;
-
-        try {
-            compiledStatement = selectId.compile(conn, StatementBuilder.StatementType.SELECT, -1);
-            it = new SelectIterator<>(info.getDataClass(), null, selectId, source, conn, compiledStatement,
-                    selectId.getStatement(), cache);
-            conn = null;
-            compiledStatement = null;
-        } finally {
-            if (compiledStatement != null) {
-                compiledStatement.close();
-            }
-
-            if (conn != null) {
-                source.releaseConnection(conn);
-            }
-        }
+        selectIdArg.setValue(id);
+        CloseableIterator<T> it = iterate(selectId);
 
         try {
             if (it.hasNext()) {

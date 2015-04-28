@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
 import com.j256.ormlite.dao.CloseableIterator;
+import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.object.Account;
@@ -92,10 +93,9 @@ public class TestUtil {
     public static void waitRunnable() throws InterruptedException {
         int cnt = 0;
 
-        while (!ShadowLooper.getUiThreadScheduler().areAnyRunnable() && cnt < 20) {
-            Thread.sleep(10);
-            cnt++;
-        }
+        do {
+            Thread.sleep(100);
+        } while (++cnt < 60 && OdsApp.get().getPool().hasTasks());
 
         ShadowLooper.runUiThreadTasks();
     }
@@ -107,8 +107,7 @@ public class TestUtil {
         return bu;
     }
 
-    public static <T extends ObjectBase> List<T> allOf(DaoBase<T> dao) throws SQLException {
-        CloseableIterator<T> it = dao.iterate();
+    public static <T extends ObjectBase> List<T> allOf(CloseableIterator<T> it) throws SQLException {
         List<T> ls = new ArrayList<>();
 
         try {

@@ -34,29 +34,26 @@ public class RepoCollection {
         final Account acc = account.get();
         final DataBase db = OdsApp.get().getDatabase();
         final DaoRepo dao = db.getRepos();
-        final List<Repo> copy = new ArrayList<>(data);
+        final List<Repo> copy = new ArrayList<>();
 
-        db.transact(() -> {
-            for (Repository cur : Cmis.factory.getRepositories(Cmis.createSessionSettings(acc))) {
-                Repo repo = findByUuid(cur.getId(), copy);
+        for (Repository cur : Cmis.factory.getRepositories(Cmis.createSessionSettings(acc))) {
+            Repo repo = findByUuid(cur.getId(), data);
 
-                if (repo == null) {
-                    repo = new Repo(cur, acc);
-                    dao.create(repo);
-                    copy.add(repo);
-                } else if (repo.merge(cur)) {
-                    dao.update(repo);
-                }
+            if (repo == null) {
+                repo = new Repo(cur, acc);
+                dao.create(repo);
+            } else if (repo.merge(cur)) {
+                dao.update(repo);
             }
 
-            for (Repo cur : data) {
-                if (findByUuid(cur.getUuid(), copy) == null) {
-                    dao.delete(cur);
-                }
-            }
+            copy.add(repo);
+        }
 
-            return null;
-        });
+        for (Repo cur : data) {
+            if (findByUuid(cur.getUuid(), copy) == null) {
+                dao.delete(cur);
+            }
+        }
 
         data.clear();
         data.addAll(copy);

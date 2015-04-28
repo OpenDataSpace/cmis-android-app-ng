@@ -32,9 +32,16 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
             }
 
             switch (cur.getOperation()) {
-            case INSERT:
-                data.add(object);
-                break;
+            case INSERT: {
+                int pos = data.indexOf(object);
+
+                if (pos != -1) {
+                    data.set(pos, object);
+                } else {
+                    data.add(object);
+                }
+            }
+            break;
 
             case DELETE:
                 data.remove(object);

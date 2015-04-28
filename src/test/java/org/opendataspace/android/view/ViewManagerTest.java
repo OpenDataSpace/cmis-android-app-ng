@@ -23,12 +23,16 @@ public class ViewManagerTest {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         Account acc = TestUtil.getDefaultAccount();
         app.getDatabase().getAccounts().create(acc);
-        app.getDatabase().getRepos().create(new Repo(null, acc));
-        app.getDatabase().getRepos().create(new Repo(null, acc));
+        Repo r1 = new Repo(null, acc);
+        app.getDatabase().getRepos().create(r1);
+        Repo r2 = new Repo(null, acc);
+        app.getDatabase().getRepos().create(r2);
         app.getViewManager().setCurrentAccount(acc);
         TestUtil.waitRunnable();
         Assert.assertEquals(1, app.getViewManager().getAccounts().getCount());
-        Assert.assertEquals(2, app.getViewManager().getRepos().getCount());
+        Assert.assertEquals(true, app.getViewManager().getRepos().getCount() > 0);
+        Assert.assertEquals(-1, app.getViewManager().getRepos().getObjects().indexOf(r1));
+        Assert.assertEquals(-1, app.getViewManager().getRepos().getObjects().indexOf(r2));
     }
 
     @Test
