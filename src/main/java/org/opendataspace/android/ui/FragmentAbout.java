@@ -1,5 +1,6 @@
 package org.opendataspace.android.ui;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -11,6 +12,9 @@ import android.widget.TextView;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.event.EventAccountConfig;
+import org.opendataspace.android.operation.OperationAccountConfig;
+import org.opendataspace.android.storage.Storage;
 
 import java.util.Calendar;
 
@@ -32,6 +36,37 @@ public class FragmentAbout extends FragmentBase {
         try {
             tva.setText(Html.fromHtml(String.format(getString(R.string.about_info), OdsApp.get().getPrefs().version(),
                     Calendar.getInstance().get(Calendar.YEAR), getString(R.string.app_mailto))));
+        } catch (Exception ex) {
+            OdsLog.ex(getClass(), ex);
+        }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        OdsApp.bus.register(this);
+        updateBranding();
+    }
+
+    @Override
+    public void onDestroyView() {
+        OdsApp.bus.unregister(this);
+        super.onDestroyView();
+    }
+
+    public void onEventMainThread(EventAccountConfig val) {
+        updateBranding();
+    }
+
+    private void updateBranding() {
+        try {
+            Drawable d = Storage.getBrandingDrawable(getActivity(), OperationAccountConfig.BRAND_LARGE,
+                    OdsApp.get().getViewManager().getCurrentAccount());
+
+            if (d != null) {
+                TextView tva = widget(R.id.text_about_info);
+                tva.setCompoundDrawables(null, d, null, null);
+            }
         } catch (Exception ex) {
             OdsLog.ex(getClass(), ex);
         }

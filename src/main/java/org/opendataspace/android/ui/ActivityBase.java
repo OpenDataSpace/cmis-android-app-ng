@@ -2,13 +2,18 @@ package org.opendataspace.android.ui;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.Toast;
 
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.event.EventAccountConfig;
+import org.opendataspace.android.operation.OperationAccountConfig;
+import org.opendataspace.android.storage.Storage;
 
 @SuppressLint("Registered")
 class ActivityBase extends ActionBarActivity {
@@ -21,6 +26,9 @@ class ActivityBase extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
+
+        OdsApp.bus.register(this);
+        updateBranding();
 
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
@@ -44,5 +52,28 @@ class ActivityBase extends ActionBarActivity {
     void showToast(final String message) {
         toast.setText(message);
         toast.show();
+    }
+
+    @Override
+    public void onDestroy() {
+        OdsApp.bus.unregister(this);
+        super.onDestroy();
+    }
+
+    public void onEventMainThread(EventAccountConfig val) {
+        updateBranding();
+    }
+
+    private void updateBranding() {
+        try {
+            Drawable d = Storage.getBrandingDrawable(this, OperationAccountConfig.BRAND_ICON,
+                    OdsApp.get().getViewManager().getCurrentAccount());
+
+            if (d != null) {
+                getSupportActionBar().setIcon(d);
+            }
+        } catch (Exception ex) {
+            OdsLog.ex(getClass(), ex);
+        }
     }
 }

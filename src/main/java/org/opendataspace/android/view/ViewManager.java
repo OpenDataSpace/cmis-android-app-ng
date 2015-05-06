@@ -2,10 +2,11 @@ package org.opendataspace.android.view;
 
 import org.opendataspace.android.app.CompatDisposable;
 import org.opendataspace.android.app.OdsApp;
-import org.opendataspace.android.app.Task;
+import org.opendataspace.android.app.TaskPool;
 import org.opendataspace.android.data.DataBase;
-import org.opendataspace.android.event.EventSelectAccount;
+import org.opendataspace.android.event.EventAccountSelect;
 import org.opendataspace.android.object.Account;
+import org.opendataspace.android.operation.OperationAccountConfig;
 import org.opendataspace.android.operation.OperationRepoSync;
 
 public class ViewManager implements CompatDisposable {
@@ -48,17 +49,13 @@ public class ViewManager implements CompatDisposable {
 
         this.current = current;
         repos.sync(db.getRepos(), current);
-        OdsApp.bus.post(new EventSelectAccount());
+        OdsApp.bus.post(new EventAccountSelect());
 
         if (this.current != null) {
-            app.getPool().execute(new Task() {
+            TaskPool pool = app.getPool();
 
-                @Override
-                public void onExecute() throws Exception {
-                    OperationRepoSync sync = new OperationRepoSync(current);
-                    sync.execute();
-                }
-            });
+            pool.execute(new OperationRepoSync(current));
+            pool.execute(new OperationAccountConfig(current));
         }
     }
 }

@@ -130,6 +130,7 @@ public abstract class DaoBase<T extends ObjectBase> {
             compiledStatement = querry.compile(conn, StatementBuilder.StatementType.SELECT, -1);
             it = new SelectIterator<>(info.getDataClass(), null, querry, source, conn, compiledStatement,
                     querry.getStatement(), cache);
+
             conn = null;
             compiledStatement = null;
         } finally {

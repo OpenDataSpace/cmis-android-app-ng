@@ -85,7 +85,7 @@ public class Repo extends ObjectBase {
         return info.name;
     }
 
-    String getUuid() {
+    public String getUuid() {
         return info.uuid;
     }
 

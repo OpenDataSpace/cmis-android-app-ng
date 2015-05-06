@@ -15,7 +15,7 @@ import org.opendataspace.android.app.CompatEvent;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.data.DataAdapterMerge;
-import org.opendataspace.android.event.EventSelectAccount;
+import org.opendataspace.android.event.EventAccountSelect;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.AccountAdapter;
 import org.opendataspace.android.object.Action;
@@ -104,7 +104,7 @@ public class FragmentNavigation extends FragmentBase {
         getMainActivity().getNavigation().openDialog(FragmentSettings.class, null);
     }
 
-    public void onEventMainThread(EventSelectAccount val) {
+    public void onEventMainThread(EventAccountSelect val) {
         updateCurrentAccount();
     }
 

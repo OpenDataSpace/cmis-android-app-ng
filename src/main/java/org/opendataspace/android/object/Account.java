@@ -132,4 +132,8 @@ public class Account extends ObjectBase {
     public String getDisplayName() {
         return TextUtils.isEmpty(info.name) ? getDisplayUri() : info.name;
     }
+
+    public String getFolderName() {
+        return info.login + "-" + info.host;
+    }
 }

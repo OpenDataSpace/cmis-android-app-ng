@@ -5,6 +5,7 @@ import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.opendataspace.android.object.Account;
+import org.opendataspace.android.object.Repo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,12 @@ public class Cmis {
             settings.put(SessionParameter.ATOMPUB_URL, account.getUri().toString());
         }
 
+        return settings;
+    }
+
+    public static Map<String, String> createSessionSettings(Account account, Repo repo) {
+        Map<String, String> settings = createSessionSettings(account);
+        settings.put(SessionParameter.REPOSITORY_ID, repo.getUuid());
         return settings;
     }
 }

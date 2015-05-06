@@ -1,5 +1,7 @@
 package org.opendataspace.android.app;
 
+import org.opendataspace.android.operation.OperationBase;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -26,5 +28,15 @@ public class TaskPool {
 
     public boolean hasTasks() {
         return service.getActiveCount() > 0;
+    }
+
+    public void execute(final OperationBase op) {
+        execute(new Task() {
+
+            @Override
+            public void onExecute() throws Exception {
+                op.execute();
+            }
+        });
     }
 }

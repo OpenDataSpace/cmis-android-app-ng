@@ -58,6 +58,7 @@ public class ActivityMain extends ActivityBase {
         return nav;
     }
 
+    @Override
     public void onDestroy() {
         nav = null;
         super.onDestroy();

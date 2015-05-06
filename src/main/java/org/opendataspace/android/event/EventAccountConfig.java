@@ -1,4 +1,4 @@
 package org.opendataspace.android.event;
 
-public class EventSelectAccount {
+public class EventAccountConfig {
 }
