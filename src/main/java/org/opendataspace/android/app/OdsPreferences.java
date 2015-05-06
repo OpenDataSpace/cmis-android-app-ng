@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.object.Account;
+import org.opendataspace.android.object.ObjectBase;
 
 import java.util.UUID;
 
@@ -67,10 +68,10 @@ public class OdsPreferences {
     }
 
     public long getLastAccountId() {
-        return getLong("last-acc", -1);
+        return getLong("last-acc", ObjectBase.INVALID_ID);
     }
 
     public void setLastAccountId(Account val) {
-        setLong("last-acc", val != null ? val.getId() : -1);
+        setLong("last-acc", val != null ? val.getId() : ObjectBase.INVALID_ID);
     }
 }

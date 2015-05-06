@@ -19,28 +19,31 @@ public class Repo extends ObjectBase {
 
     @Expose
     @DatabaseField(index = true, columnName = FIELD_ACCID, canBeNull = false)
-    private long accountId;
+    private final long accountId;
 
     @Expose
     @DatabaseField(columnName = FIELD_TYPE, canBeNull = false, dataType = DataType.ENUM_INTEGER,
             unknownEnumName = "DEFAULT")
-    private final Type type;
+    private Type type;
 
     @Expose
     @DatabaseField(columnName = "data", canBeNull = false, persisterClass = RepoSerializer.class)
     private final RepoInfo info;
 
-    private final transient Repository cmis;
+    private transient Repository cmis;
 
     public Repo() {
         info = new RepoInfo();
         cmis = null;
         type = Type.DEFAULT;
+        accountId = INVALID_ID;
     }
 
     public Repo(Repository repo, Account account) {
         if (account != null) {
             accountId = account.getId();
+        } else {
+            accountId = INVALID_ID;
         }
 
         info = new RepoInfo();
@@ -50,27 +53,7 @@ public class Repo extends ObjectBase {
         }
 
         cmis = repo;
-
-        switch (info.name) {
-        case "my":
-            type = Type.PRIVATE;
-            break;
-
-        case "shared":
-            type = Type.SHARED;
-            break;
-
-        case "global":
-            type = Type.GLOBAL;
-            break;
-
-        case "config":
-            type = Type.CONFIG;
-            break;
-
-        default:
-            type = Type.DEFAULT;
-        }
+        updateType();
     }
 
     public Repo(Repo other) {
@@ -90,7 +73,19 @@ public class Repo extends ObjectBase {
     }
 
     public boolean merge(Repository repo) {
-        return info.update(repo);
+        if (cmis == null) {
+            cmis = repo;
+        } else if (!cmis.getId().equals(repo.getId())) {
+            return false;
+        }
+
+        boolean res = info.update(repo);
+
+        if (res) {
+            updateType();
+        }
+
+        return res;
     }
 
     public long getAccountId() {
@@ -128,5 +123,28 @@ public class Repo extends ObjectBase {
 
     public Type getType() {
         return type;
+    }
+
+    private void updateType() {
+        switch (info.name) {
+        case "my":
+            type = Type.PRIVATE;
+            break;
+
+        case "shared":
+            type = Type.SHARED;
+            break;
+
+        case "global":
+            type = Type.GLOBAL;
+            break;
+
+        case "config":
+            type = Type.CONFIG;
+            break;
+
+        default:
+            type = Type.DEFAULT;
+        }
     }
 }

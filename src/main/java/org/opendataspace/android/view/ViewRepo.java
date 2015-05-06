@@ -6,13 +6,14 @@ import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.data.DaoRepo;
 import org.opendataspace.android.event.EventDaoRepo;
 import org.opendataspace.android.object.Account;
+import org.opendataspace.android.object.ObjectBase;
 import org.opendataspace.android.object.Repo;
 
 import java.sql.SQLException;
 
 public class ViewRepo extends ViewBase<Repo> {
 
-    private long accId = -1;
+    private long accId = ObjectBase.INVALID_ID;
 
     public void onEventMainThread(EventDaoRepo event) {
         processEvent(event);
@@ -36,6 +37,6 @@ public class ViewRepo extends ViewBase<Repo> {
     }
 
     public void setAccount(Account acc) {
-        accId = acc != null ? acc.getId() : -1;
+        accId = acc != null ? acc.getId() : ObjectBase.INVALID_ID;
     }
 }

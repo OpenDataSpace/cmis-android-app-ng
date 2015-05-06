@@ -5,6 +5,7 @@ import org.opendataspace.android.operation.OperationBase;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TaskPool {
 
@@ -14,20 +15,28 @@ public class TaskPool {
             new ThreadPoolExecutor(NUMBER_OF_CORES, NUMBER_OF_CORES, 1, TimeUnit.MINUTES,
                     new ArrayBlockingQueue<>(100, true), new ThreadPoolExecutor.CallerRunsPolicy());
 
+    private AtomicInteger counter = new AtomicInteger();
+
     public void execute(final Task task) {
+        counter.incrementAndGet();
+        task.setDecrement(counter);
         service.execute(task);
     }
 
     public void stop() {
         service.shutdown();
+        counter.set(0);
     }
 
     public void cancel(Task task) {
-        service.remove(task);
+        if (service.remove(task)) {
+            task.setDecrement(null);
+            counter.decrementAndGet();
+        }
     }
 
     public boolean hasTasks() {
-        return service.getActiveCount() > 0 || service.getQueue().size() > 0;
+        return counter.get() > 0;
     }
 
     public void execute(final OperationBase op) {

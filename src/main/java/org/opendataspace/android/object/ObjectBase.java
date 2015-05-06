@@ -7,9 +7,11 @@ public class ObjectBase {
 
     public static final String FIELD_ID = "id";
 
+    public static final long INVALID_ID = -1;
+
     @Expose
     @DatabaseField(generatedId = true, columnName = FIELD_ID)
-    private long id = -1;
+    private long id = INVALID_ID;
 
     public long getId() {
         return id;
@@ -39,6 +41,6 @@ public class ObjectBase {
     }
 
     public boolean isValidId() {
-        return id != -1;
+        return id != INVALID_ID;
     }
 }

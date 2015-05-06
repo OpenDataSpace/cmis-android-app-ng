@@ -11,6 +11,7 @@ import com.j256.ormlite.support.DatabaseConnection;
 import com.j256.ormlite.table.TableUtils;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.object.Account;
+import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.Repo;
 
 import java.sql.SQLException;
@@ -25,6 +26,7 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
 
     private DaoAccount accounts;
     private DaoRepo repos;
+    private DaoNode nodes;
 
     public DataBase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -35,6 +37,7 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
         try {
             TableUtils.createTable(connectionSource, Account.class);
             TableUtils.createTable(connectionSource, Repo.class);
+            TableUtils.createTable(connectionSource, Node.class);
         } catch (Exception ex) {
             OdsLog.ex(getClass(), ex);
         }
@@ -50,6 +53,7 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
         super.close();
         accounts = null;
         repos = null;
+        nodes = null;
     }
 
     public DaoAccount getAccounts() {
@@ -76,6 +80,18 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
         return repos;
     }
 
+    public DaoNode getNodes() {
+        if (nodes == null) {
+            try {
+                nodes = new DaoNode(getConnectionSource(), cache);
+            } catch (SQLException ex) {
+                OdsLog.ex(getClass(), ex);
+            }
+        }
+
+        return nodes;
+    }
+
     public <T> T transact(Callable<T> action) throws SQLException {
         ConnectionSource source = getConnectionSource();
         DatabaseConnection conn = source.getReadWriteConnection();
@@ -91,6 +107,10 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
 
             if (repos != null) {
                 repos.fire(conn);
+            }
+
+            if (nodes != null) {
+                nodes.fire(conn);
             }
         } finally {
             connectionSource.clearSpecialConnection(conn);

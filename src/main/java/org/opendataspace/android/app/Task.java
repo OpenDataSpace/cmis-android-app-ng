@@ -3,9 +3,12 @@ package org.opendataspace.android.app;
 import android.os.Handler;
 import android.os.Looper;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public abstract class Task implements Runnable {
 
     private final Handler handler = new Handler(Looper.getMainLooper());
+    private AtomicInteger decrement;
 
     public abstract void onExecute() throws Exception;
 
@@ -32,5 +35,13 @@ public abstract class Task implements Runnable {
                 }
             }
         });
+
+        if (decrement != null) {
+            decrement.decrementAndGet();
+        }
+    }
+
+    public void setDecrement(AtomicInteger value) {
+        decrement = value;
     }
 }
