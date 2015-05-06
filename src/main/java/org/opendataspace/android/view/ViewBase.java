@@ -13,11 +13,14 @@ import org.opendataspace.android.object.ObjectBase;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable {
 
     private final List<T> data = new ArrayList<>();
+    private final Set<Long> deleted = new HashSet<>();
 
     public ViewBase() {
         OdsApp.bus.register(this, CompatEvent.PRIORITY_VIEW);
@@ -33,6 +36,10 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
 
             switch (cur.getOperation()) {
             case INSERT: {
+                if (deleted.contains(object.getId())) {
+                    continue;
+                }
+
                 int pos = data.indexOf(object);
 
                 if (pos != -1) {
@@ -44,7 +51,9 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
             break;
 
             case DELETE:
-                data.remove(object);
+                if (!data.remove(object)) {
+                    deleted.add(object.getId());
+                }
                 break;
 
             case UPDATE: {

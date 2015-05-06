@@ -1,10 +1,12 @@
 package org.opendataspace.android.storage;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.operation.OperationAccountConfig;
@@ -14,6 +16,10 @@ import java.io.File;
 public class Storage {
 
     public static File getConfigFile(Context context, String name, Account account) {
+        if (account == null) {
+            return null;
+        }
+
         File ext = context.getExternalFilesDir(null);
 
         if (ext == null) {
@@ -47,12 +53,19 @@ public class Storage {
             return null;
         }
 
+        Resources res = context.getResources();
+
         if (name.equals(OperationAccountConfig.BRAND_ICON)) {
-            bmp = Bitmap.createScaledBitmap(bmp, 192, 192, false);
+            int sz = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, res.getDisplayMetrics());
+            bmp = Bitmap.createScaledBitmap(bmp, sz, sz, false);
         } else if (name.equals(OperationAccountConfig.BRAND_LARGE)) {
-            bmp = Bitmap.createScaledBitmap(bmp, 1100, 250, false);
+            int w = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 400, res.getDisplayMetrics());
+            int h = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, res.getDisplayMetrics());
+            bmp = Bitmap.createScaledBitmap(bmp, w, h, false);
         }
 
-        return new BitmapDrawable(context.getResources(), bmp);
+        BitmapDrawable dr = new BitmapDrawable(res, bmp);
+        dr.setBounds(0, 0, bmp.getWidth(), bmp.getHeight());
+        return dr;
     }
 }

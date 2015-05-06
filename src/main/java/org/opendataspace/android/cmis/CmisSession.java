@@ -35,10 +35,10 @@ public class CmisSession {
 
         try {
             ObjectData objectData = objectService
-                    .getObjectByPath(session.getRepositoryInfo().getId(), !root.equals("/") ? root + "/" + path : path,
-                            context.getFilterString(), context.isIncludeAllowableActions(),
-                            context.getIncludeRelationships(), context.getRenditionFilterString(),
-                            context.isIncludePolicies(), context.isIncludeAcls(), null);
+                    .getObjectByPath(session.getRepositoryInfo().getId(), root + "/" + path, context.getFilterString(),
+                            context.isIncludeAllowableActions(), context.getIncludeRelationships(),
+                            context.getRenditionFilterString(), context.isIncludePolicies(), context.isIncludeAcls(),
+                            null);
 
             return objectFactory.convertObject(objectData, context);
         } catch (CmisObjectNotFoundException ex) {

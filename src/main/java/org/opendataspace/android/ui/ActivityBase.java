@@ -16,7 +16,7 @@ import org.opendataspace.android.operation.OperationAccountConfig;
 import org.opendataspace.android.storage.Storage;
 
 @SuppressLint("Registered")
-class ActivityBase extends ActionBarActivity {
+public class ActivityBase extends ActionBarActivity {
 
     private Toast toast;
 
@@ -26,13 +26,11 @@ class ActivityBase extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
-
         OdsApp.bus.register(this);
-        updateBranding();
 
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
-        bar.setIcon(R.drawable.ic_logo);
+        updateBranding();
 
         getSupportActionBar().setElevation(getResources().getDimensionPixelSize(R.dimen.pad) / 2);
         setRequestedOrientation(OdsApp.get().getPrefs().isTablet() ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
@@ -71,6 +69,8 @@ class ActivityBase extends ActionBarActivity {
 
             if (d != null) {
                 getSupportActionBar().setIcon(d);
+            } else {
+                getSupportActionBar().setIcon(R.drawable.ic_logo_small);
             }
         } catch (Exception ex) {
             OdsLog.ex(getClass(), ex);

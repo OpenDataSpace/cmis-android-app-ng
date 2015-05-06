@@ -27,7 +27,7 @@ public class TaskPool {
     }
 
     public boolean hasTasks() {
-        return service.getActiveCount() > 0;
+        return service.getActiveCount() > 0 || service.getQueue().size() > 0;
     }
 
     public void execute(final OperationBase op) {
