@@ -86,15 +86,15 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
 
                 try {
                     data.clear();
+                    deleted.clear();
 
                     while (it.hasNext()) {
                         data.add(it.nextThrow());
                     }
                 } finally {
                     it.closeQuietly();
+                    notifyAdapters();
                 }
-
-                notifyAdapters();
             }
         });
     }
