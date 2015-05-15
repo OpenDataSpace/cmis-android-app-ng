@@ -15,7 +15,7 @@ import java.sql.SQLException;
 
 public class FragmentAccountList extends FragmentBaseList {
 
-    private AccountAdapter accounts;
+    private AccountAdapter adapter;
 
     public FragmentAccountList() {
     }
@@ -23,14 +23,14 @@ public class FragmentAccountList extends FragmentBaseList {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        accounts = new AccountAdapter(OdsApp.get().getViewManager().getAccounts(), getActivity());
-        setListAdapter(accounts);
+        adapter = new AccountAdapter(OdsApp.get().getViewManager().getAccounts(), getActivity());
+        setListAdapter(adapter);
         setEmptyText(getString(R.string.accounts_empty));
     }
 
     @Override
     public void onDestroyView() {
-        accounts.dispose();
+        adapter.dispose();
         super.onDestroyView();
     }
 
@@ -77,6 +77,6 @@ public class FragmentAccountList extends FragmentBaseList {
     @Override
     void onListItemClick(int position) {
         getMainActivity().getNavigation()
-                .openFile(FragmentAccountDetails.class, new OperationAccountUpdate((Account) accounts.getItem(position)));
+                .openFile(FragmentAccountDetails.class, new OperationAccountUpdate(adapter.getObject(position)));
     }
 }

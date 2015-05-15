@@ -1,5 +1,6 @@
 package org.opendataspace.android.operation;
 
+import com.google.gson.annotations.Expose;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.data.DataBase;
 import org.opendataspace.android.event.EventAccountSelect;
@@ -9,6 +10,7 @@ import org.opendataspace.android.view.ViewManager;
 
 public class OperationAccountSelect extends OperationBase {
 
+    @Expose
     private Account account;
 
     public OperationAccountSelect(Account account) {

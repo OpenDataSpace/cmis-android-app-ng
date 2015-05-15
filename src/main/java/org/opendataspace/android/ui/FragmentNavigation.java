@@ -181,8 +181,8 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
         Object obj = view.getAdapter().getItem(idx);
 
         if (obj instanceof Repo) {
-            getMainActivity().getNavigation()
-                    .openRootFolder(FragmentFolder.class, new OperationFolderBrowse((Repo) obj));
+            getMainActivity().getNavigation().openRootFolder(FragmentFolder.class,
+                    new OperationFolderBrowse(OdsApp.get().getViewManager().getCurrentAccount(), (Repo) obj));
         } else if (obj instanceof Action) {
             executeAction((Action) obj);
         }

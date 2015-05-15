@@ -8,15 +8,18 @@ import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.data.DataAdapter;
 import org.opendataspace.android.object.ObjectBase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ViewAdapter<T extends ObjectBase> extends DataAdapter implements CompatDisposable {
 
-    private final List<T> data;
+    private final List<T> data = new ArrayList<>();
+    private final ViewBase<T> view;
 
     public ViewAdapter(ViewBase<T> view, Context context, int resId) {
         super(context, resId);
-        this.data = view.getObjects();
+        this.view = view;
+        data.addAll(view.getObjects());
         OdsApp.bus.register(this, CompatEvent.PRIORITY_ADAPTER);
     }
 
@@ -46,5 +49,12 @@ public class ViewAdapter<T extends ObjectBase> extends DataAdapter implements Co
 
     public int getPosition(T val) {
         return data.indexOf(val);
+    }
+
+    @Override
+    public void invalidate() {
+        data.clear();
+        data.addAll(view.getObjects());
+        super.invalidate();
     }
 }

@@ -6,6 +6,7 @@ import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.data.DaoNode;
 import org.opendataspace.android.event.EventDaoNode;
 import org.opendataspace.android.object.Node;
+import org.opendataspace.android.object.ObjectBase;
 import org.opendataspace.android.object.Repo;
 
 import java.sql.SQLException;
@@ -13,7 +14,7 @@ import java.sql.SQLException;
 public class ViewNode extends ViewBase<Node> {
 
     private Repo repo;
-    private Node parent;
+    private long parentId = ObjectBase.INVALID_ID;
 
     public void onEventMainThread(EventDaoNode event) {
         processEvent(event);
@@ -27,16 +28,16 @@ public class ViewNode extends ViewBase<Node> {
     @Override
     protected CloseableIterator<Node> iterate(DaoBase<Node> dao) throws SQLException {
         DaoNode rep = (DaoNode) dao;
-        return rep.forParent(repo, parent);
+        return rep.forParent(repo, parentId);
     }
 
     @Override
     protected boolean isValid(Node val) {
-        return parent != null && repo != null && val.getParentId() != parent.getId() && val.getRepoId() == repo.getId();
+        return repo != null && val.getParentId() != parentId && val.getRepoId() == repo.getId();
     }
 
     public void setScope(Repo repo, Node parent) {
         this.repo = repo;
-        this.parent = parent;
+        parentId = parent != null ? parent.getId() : ObjectBase.INVALID_ID;
     }
 }
