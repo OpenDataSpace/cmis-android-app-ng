@@ -13,7 +13,6 @@ public class FragmentAccountListTest {
     public void checkDefaults() throws Exception {
         FragmentAccountList fgm = new FragmentAccountList();
         ActivityMain ac = TestUtil.setupFragment(fgm);
-        TestUtil.waitRunnable();
         Assert.assertEquals(1, fgm.getList().getCount());
         TestUtil.dismisActivity(ac);
     }

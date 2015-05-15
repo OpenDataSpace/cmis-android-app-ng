@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentTransaction;
 import com.j256.ormlite.dao.CloseableIterator;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.ObjectBase;
 import org.opendataspace.android.ui.ActivityMain;
@@ -61,7 +60,6 @@ public class TestUtil {
         Account acc = TestUtil.getDefaultAccount();
         app.getDatabase().getAccounts().create(acc);
         app.getPrefs().setLastAccountId(acc);
-        app.testStartSync();
         return Robolectric.setupActivity(ActivityMain.class);
     }
 
@@ -70,7 +68,6 @@ public class TestUtil {
         Account acc = TestUtil.getDefaultAccount();
         app.getDatabase().getAccounts().create(acc);
         app.getPrefs().setLastAccountId(acc);
-        app.testStartSync();
         ActivityMain ac = Robolectric.setupActivity(TestActivity.class);
         replaceFragment(ac, fragment);
         return ac;

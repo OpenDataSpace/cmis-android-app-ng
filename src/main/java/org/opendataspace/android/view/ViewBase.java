@@ -4,10 +4,8 @@ import com.j256.ormlite.dao.CloseableIterator;
 import org.opendataspace.android.app.CompatDisposable;
 import org.opendataspace.android.app.CompatEvent;
 import org.opendataspace.android.app.OdsApp;
-import org.opendataspace.android.app.Task;
 import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.event.EventDaoBase;
-import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.ObjectBase;
 
 import java.sql.SQLException;
@@ -68,35 +66,29 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
         }
     }
 
-    public void sync(final DaoBase<T> dao, final Account acc) {
-        OdsApp.get().getPool().execute(new Task() {
+    public void sync(final DaoBase<T> dao) throws SQLException {
+        data.clear();
+        deleted.clear();
 
-            private CloseableIterator<T> it;
+        CloseableIterator<T> it = null;
 
-            @Override
-            public void onExecute() throws Exception {
-                it = iterate(dao, acc);
+        try {
+            it = iterate(dao);
+
+            if (it == null) {
+                return;
             }
 
-            @Override
-            public void onDone() throws Exception {
-                if (it == null) {
-                    return;
-                }
-
-                try {
-                    data.clear();
-                    deleted.clear();
-
-                    while (it.hasNext()) {
-                        data.add(it.nextThrow());
-                    }
-                } finally {
-                    it.closeQuietly();
-                    notifyAdapters();
-                }
+            while (it.hasNext()) {
+                data.add(it.nextThrow());
             }
-        });
+        } finally {
+            if (it != null) {
+                it.closeQuietly();
+            }
+
+            notifyAdapters();
+        }
     }
 
     protected List<T> getObjects() {
@@ -108,7 +100,7 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
         OdsApp.bus.unregister(this);
     }
 
-    protected CloseableIterator<T> iterate(DaoBase<T> dao, Account acc) throws SQLException {
+    protected CloseableIterator<T> iterate(DaoBase<T> dao) throws SQLException {
         return dao.iterate();
     }
 

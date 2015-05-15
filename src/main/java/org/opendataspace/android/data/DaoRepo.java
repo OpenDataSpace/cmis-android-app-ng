@@ -16,6 +16,8 @@ public class DaoRepo extends DaoBase<Repo> {
 
     private PreparedQuery<Repo> byAccount;
     private SelectArg byAccountArg;
+    private PreparedQuery<Repo> byAccountAll;
+    private SelectArg byAccountAllArg;
 
     DaoRepo(ConnectionSource source, ObjectCache cache) throws SQLException {
         super(source, cache, Repo.class);
@@ -23,13 +25,17 @@ public class DaoRepo extends DaoBase<Repo> {
     }
 
     public CloseableIterator<Repo> forAccount(Account account) throws SQLException {
+        return forAccount(account.getId());
+    }
+
+    public CloseableIterator<Repo> forAccount(long id) throws SQLException {
         if (byAccount == null) {
             byAccountArg = new SelectArg();
             byAccount = queryBuilder().where().eq(Repo.FIELD_ACCID, byAccountArg).and()
                     .ne(Repo.FIELD_TYPE, Repo.Type.CONFIG).prepare();
         }
 
-        byAccountArg.setValue(account.getId());
+        byAccountArg.setValue(id);
         return iterate(byAccount);
     }
 
@@ -48,5 +54,15 @@ public class DaoRepo extends DaoBase<Repo> {
         } finally {
             it.close();
         }
+    }
+
+    public CloseableIterator<Repo> allRepos(Account account) throws SQLException {
+        if (byAccountAll == null) {
+            byAccountAllArg = new SelectArg();
+            byAccountAll = queryBuilder().where().eq(Repo.FIELD_ACCID, byAccountAllArg).prepare();
+        }
+
+        byAccountAllArg.setValue(account.getId());
+        return iterate(byAccountAll);
     }
 }

@@ -22,8 +22,8 @@ public class OperationAccountUpdateTest {
         op.getAccount().setUseJson(true);
         OperationStatus st = op.execute();
         Assert.assertEquals(true, st.isOk());
-        Assert.assertEquals(op.getAccount().getId(), app.getPrefs().getLastAccountId());
         TestUtil.waitRunnable();
+        Assert.assertEquals(op.getAccount().getId(), app.getPrefs().getLastAccountId());
         checkDb(app.getDatabase());
     }
 
@@ -34,8 +34,8 @@ public class OperationAccountUpdateTest {
         op.getAccount().setUseJson(false);
         OperationStatus st = op.execute();
         Assert.assertEquals(true, st.isOk());
-        Assert.assertEquals(op.getAccount().getId(), app.getPrefs().getLastAccountId());
         TestUtil.waitRunnable();
+        Assert.assertEquals(op.getAccount().getId(), app.getPrefs().getLastAccountId());
         checkDb(app.getDatabase());
     }
 

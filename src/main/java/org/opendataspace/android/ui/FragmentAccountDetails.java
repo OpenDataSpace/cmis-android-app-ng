@@ -2,7 +2,6 @@ package org.opendataspace.android.ui;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -30,7 +29,6 @@ public class FragmentAccountDetails extends FragmentBaseInput
     private final static int LOADER_DELETE = 2;
 
     private final OperationAccountUpdate op;
-    private ProgressDialog waitDialog;
 
     public FragmentAccountDetails(OperationAccountUpdate op) {
         Account account = op.getAccount();
@@ -82,11 +80,11 @@ public class FragmentAccountDetails extends FragmentBaseInput
     }
 
     private boolean actionApply() {
-        if (waitDialog != null || !readAndValidate()) {
+        ActivityMain ac = getMainActivity();
+
+        if (ac.isWaiting() || !readAndValidate()) {
             return false;
         }
-
-        ActivityMain ac = getMainActivity();
 
         if (!isDirty() && op.getAccount().isValidId()) {
             ac.getNavigation().backPressed();
@@ -105,19 +103,16 @@ public class FragmentAccountDetails extends FragmentBaseInput
 
         case LOADER_DELETE:
             return new OperationLoader(new OperationAccountDelete(op.getAccount()), getActivity());
-        }
 
-        return null;
+        default:
+            return null;
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus data) {
-        if (waitDialog != null) {
-            waitDialog.dismiss();
-            waitDialog = null;
-        }
-
         ActivityMain ac = getMainActivity();
+        ac.stopWait();
 
         if (data.isOk()) {
             ac.getNavigation().backPressed();
@@ -131,18 +126,15 @@ public class FragmentAccountDetails extends FragmentBaseInput
 
     @Override
     public void onLoaderReset(Loader<OperationStatus> loader) {
-        if (waitDialog != null) {
-            waitDialog.hide();
-            waitDialog = null;
-        }
+        getMainActivity().stopWait();
     }
 
     private void actionDelete() {
-        if (waitDialog != null) {
+        ActivityMain ac = getMainActivity();
+
+        if (ac.isWaiting()) {
             return;
         }
-
-        ActivityMain ac = getMainActivity();
 
         new AlertDialog.Builder(ac)
                 .setMessage(String.format(getString(R.string.accout_delete), op.getAccount().getName()))
@@ -154,12 +146,13 @@ public class FragmentAccountDetails extends FragmentBaseInput
     }
 
     private void startLoader(int id) {
-        if (waitDialog != null) {
+        ActivityMain ac = getMainActivity();
+
+        if (ac.isWaiting()) {
             return;
         }
 
-        ActivityMain ac = getMainActivity();
-        waitDialog = ProgressDialog.show(ac, getTile(ac), getString(R.string.common_pleasewait), true, true,
+        ac.startWaitDialog(getTile(ac), getString(R.string.common_pleasewait),
                 di -> getLoaderManager().destroyLoader(id));
 
         getLoaderManager().restartLoader(id, null, this);

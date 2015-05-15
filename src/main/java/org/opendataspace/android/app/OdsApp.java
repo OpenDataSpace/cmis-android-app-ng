@@ -49,8 +49,6 @@ public class OdsApp extends Application {
         database = OpenHelperManager.getHelper(this, DataBase.class);
         pool = new TaskPool();
         vm = new ViewManager();
-
-        performSync();
     }
 
     @Override
@@ -97,13 +95,5 @@ public class OdsApp extends Application {
 
     protected static boolean hasCrahlytics() {
         return crashl;
-    }
-
-    protected void performSync() {
-        try {
-            vm.setCurrentAccount(database.getAccounts().get(prefs.getLastAccountId()));
-        } catch (Exception ex) {
-            OdsLog.ex(getClass(), ex);
-        }
     }
 }

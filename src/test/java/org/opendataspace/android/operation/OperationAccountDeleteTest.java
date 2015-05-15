@@ -26,6 +26,7 @@ public class OperationAccountDeleteTest {
 
         OperationAccountDelete op = new OperationAccountDelete(acc);
         OperationStatus st = op.execute();
+        TestUtil.waitRunnable();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(0, app.getDatabase().getAccounts().countOf());
         Assert.assertEquals(0, app.getDatabase().getRepos().countOf());

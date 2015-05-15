@@ -60,6 +60,7 @@ public class FragmentNavigationTest {
         Assert.assertEquals(app.getViewManager().getCurrentAccount().getDisplayName(), tv2.getText());
 
         Shadows.shadowOf(lv2).performItemClick(1);
+        TestUtil.waitRunnable();
         Assert.assertEquals(app.getViewManager().getCurrentAccount().getDisplayName(), tv1.getText());
         Assert.assertEquals(app.getViewManager().getCurrentAccount().getDisplayName(), tv2.getText());
         Assert.assertEquals(acc.getName(), tv1.getText());
@@ -75,7 +76,6 @@ public class FragmentNavigationTest {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         FragmentNavigation fgm1 = new FragmentNavigation();
         ActivityMain ac = TestUtil.setupFragment(fgm1);
-        TestUtil.waitRunnable();
 
         Account acc = app.getDatabase().getAccounts().get(app.getPrefs().getLastAccountId());
         OperationAccountDelete op = new OperationAccountDelete(acc);

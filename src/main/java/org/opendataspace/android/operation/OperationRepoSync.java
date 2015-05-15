@@ -29,7 +29,7 @@ public class OperationRepoSync extends OperationBase {
             return null;
         });
 
-
+        OdsApp.get().getPool().execute(new OperationAccountConfig(account));
         status.setOk();
     }
 }

@@ -8,13 +8,4 @@ public class TestApp extends OdsApp {
     protected void performHacks() {
         // nothing
     }
-
-    @Override
-    protected void performSync() {
-        // nothing
-    }
-
-    public void testStartSync() {
-        super.performSync();
-    }
 }

@@ -29,7 +29,6 @@ public class FragmentAccountDetailsTest {
         OperationAccountUpdate op = new OperationAccountUpdate(acc);
         FragmentAccountDetails fgm1 = new FragmentAccountDetails(op);
         ActivityMain ac = TestUtil.setupFragment(fgm1);
-        TestUtil.waitRunnable();
         View vw = fgm1.getView();
         Assert.assertEquals(true, vw != null);
 

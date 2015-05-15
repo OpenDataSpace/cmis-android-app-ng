@@ -20,21 +20,21 @@ public abstract class Task implements Runnable {
     public void run() {
         try {
             onExecute();
+
+            handler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        onDone();
+                    } catch (final Exception ex) {
+                        OdsLog.ex(getClass(), ex);
+                    }
+                }
+            });
         } catch (final Exception ex) {
             OdsLog.ex(getClass(), ex);
         }
-
-        handler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    onDone();
-                } catch (final Exception ex) {
-                    OdsLog.ex(getClass(), ex);
-                }
-            }
-        });
 
         if (decrement != null) {
             decrement.decrementAndGet();

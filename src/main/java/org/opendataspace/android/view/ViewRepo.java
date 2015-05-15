@@ -20,15 +20,14 @@ public class ViewRepo extends ViewBase<Repo> {
     }
 
     @Override
-    protected CloseableIterator<Repo> iterate(DaoBase<Repo> dao, Account acc) throws SQLException {
+    protected CloseableIterator<Repo> iterate(DaoBase<Repo> dao) throws SQLException {
         DaoRepo rep = (DaoRepo) dao;
-        setAccount(acc);
-        return acc != null ? rep.forAccount(acc) : null;
+        return accId != ObjectBase.INVALID_ID ? rep.forAccount(accId) : null;
     }
 
     @Override
     protected boolean isValid(Repo val) {
-        return val.getAccountId() == accId;
+        return val.getAccountId() == accId && val.getType() != Repo.Type.CONFIG;
     }
 
     @Override

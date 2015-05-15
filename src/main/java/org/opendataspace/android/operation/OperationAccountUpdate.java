@@ -38,13 +38,12 @@ public class OperationAccountUpdate extends OperationBase {
                 throw new InterruptedException();
             }
 
-            if (isFirst || app.getPrefs().getLastAccountId() == account.getId()) {
-                app.getViewManager().setCurrentAccount(account);
-            }
-
             return null;
         });
 
+        if (isFirst || app.getPrefs().getLastAccountId() == account.getId()) {
+            app.getPool().execute(new OperationAccountSelect(account));
+        }
 
         status.setOk();
     }

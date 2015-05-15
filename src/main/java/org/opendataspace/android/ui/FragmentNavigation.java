@@ -2,6 +2,8 @@ package org.opendataspace.android.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,13 +23,17 @@ import org.opendataspace.android.object.AccountAdapter;
 import org.opendataspace.android.object.Action;
 import org.opendataspace.android.object.ActionAdapter;
 import org.opendataspace.android.object.RepoAdapter;
+import org.opendataspace.android.operation.OperationAccountSelect;
 import org.opendataspace.android.operation.OperationAccountUpdate;
+import org.opendataspace.android.operation.OperationLoader;
+import org.opendataspace.android.operation.OperationStatus;
 import org.opendataspace.android.view.ViewManager;
 
-public class FragmentNavigation extends FragmentBase {
+public class FragmentNavigation extends FragmentBase implements LoaderManager.LoaderCallbacks<OperationStatus> {
 
     private AccountAdapter accounts;
-    private RepoAdapter repos;
+    private OperationAccountSelect op = new OperationAccountSelect(null);
+    private boolean isMain = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,10 +53,10 @@ public class FragmentNavigation extends FragmentBase {
         adpa.addAdapter(accounts = new AccountAdapter(vm.getAccounts(), ac));
         adpa.addAdapter(new ActionAdapter(ac, Action.listOf(ac, R.id.action_nav_addaccount, R.id.action_nav_manage)));
         lva.setAdapter(adpa);
-        lva.setOnItemClickListener((adapterView, view1, i, l) -> selectAccount(adapterView, i));
+        lva.setOnItemClickListener((adapterView, view1, i, l) -> selectItem(adapterView, i));
 
         DataAdapterMerge adpf = new DataAdapterMerge();
-        adpf.addAdapter(repos = new RepoAdapter(vm.getRepos(), ac));
+        adpf.addAdapter(new RepoAdapter(vm.getRepos(), ac));
         lvf.setAdapter(adpf);
         lvf.setOnItemClickListener((adapterView, view1, i, l) -> selectFolder(adapterView, i));
 
@@ -58,6 +64,10 @@ public class FragmentNavigation extends FragmentBase {
         widget(R.id.action_nav_accdesc).setOnClickListener(view -> toggleView());
         OdsApp.bus.register(this, CompatEvent.PRIORITY_UI);
         updateCurrentAccount();
+
+        if (isMain && OdsApp.get().getViewManager().getCurrentAccount() == null) {
+            selectAccount(null);
+        }
     }
 
     @Override
@@ -124,15 +134,29 @@ public class FragmentNavigation extends FragmentBase {
                 vs.getDisplayedChild() == 1 ? R.drawable.ic_arrow_up : R.drawable.ic_arrow_down, 0);
     }
 
-    private void selectAccount(AdapterView<?> view, int idx) {
+    private void selectItem(AdapterView<?> view, int idx) {
         Object obj = view.getAdapter().getItem(idx);
 
         if (obj instanceof Account) {
-            OdsApp.get().getViewManager().setCurrentAccount((Account) obj);
+            selectAccount((Account) obj);
             toggleView();
         } else if (obj instanceof Action) {
             executeAction((Action) obj);
         }
+    }
+
+    private void selectAccount(Account account) {
+        ActivityMain ac = getMainActivity();
+
+        if (ac.isWaiting()) {
+            return;
+        }
+
+        ac.startWaitDialog(getTile(ac), getString(R.string.common_pleasewait),
+                di -> getLoaderManager().destroyLoader(1));
+
+        op.setAccount(account);
+        getLoaderManager().restartLoader(1, null, this);
     }
 
     private void executeAction(Action action) {
@@ -162,5 +186,25 @@ public class FragmentNavigation extends FragmentBase {
     private void actionAddAccount() {
         getMainActivity().getNavigation()
                 .openFile(FragmentAccountDetails.class, new OperationAccountUpdate(new Account()));
+    }
+
+    @Override
+    public Loader<OperationStatus> onCreateLoader(int i, Bundle bundle) {
+        return new OperationLoader(op, getActivity());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus operationStatus) {
+        getMainActivity().stopWait();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<OperationStatus> loader) {
+        getMainActivity().stopWait();
+    }
+
+    public void setIsMain(boolean val) {
+        isMain = val;
+        setHasOptionsMenu(isMain);
     }
 }

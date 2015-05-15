@@ -19,7 +19,7 @@ public class RepoCollection {
 
     RepoCollection(Account account) throws SQLException {
         this.account = new WeakReference<>(account);
-        CloseableIterator<Repo> it = OdsApp.get().getDatabase().getRepos().forAccount(account);
+        CloseableIterator<Repo> it = OdsApp.get().getDatabase().getRepos().allRepos(account);
 
         try {
             while (it.hasNext()) {

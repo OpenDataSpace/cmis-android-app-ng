@@ -5,7 +5,6 @@ import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.data.DaoNode;
 import org.opendataspace.android.event.EventDaoNode;
-import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.Repo;
 
@@ -26,9 +25,9 @@ public class ViewNode extends ViewBase<Node> {
     }
 
     @Override
-    protected CloseableIterator<Node> iterate(DaoBase<Node> dao, Account acc) throws SQLException {
+    protected CloseableIterator<Node> iterate(DaoBase<Node> dao) throws SQLException {
         DaoNode rep = (DaoNode) dao;
-        return acc != null ? rep.forParent(repo, parent) : null;
+        return rep.forParent(repo, parent);
     }
 
     @Override
@@ -39,6 +38,5 @@ public class ViewNode extends ViewBase<Node> {
     public void setScope(Repo repo, Node parent) {
         this.repo = repo;
         this.parent = parent;
-        sync(OdsApp.get().getDatabase().getNodes(), null);
     }
 }

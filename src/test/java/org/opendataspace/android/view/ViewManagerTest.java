@@ -7,6 +7,7 @@ import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.AccountAdapter;
 import org.opendataspace.android.object.Repo;
+import org.opendataspace.android.operation.OperationAccountSelect;
 import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -27,7 +28,7 @@ public class ViewManagerTest {
         app.getDatabase().getRepos().create(r1);
         Repo r2 = new Repo(null, acc);
         app.getDatabase().getRepos().create(r2);
-        app.getViewManager().setCurrentAccount(acc);
+        app.getPool().execute(new OperationAccountSelect(acc));
         TestUtil.waitRunnable();
         Assert.assertEquals(1, app.getViewManager().getAccounts().getCount());
         Assert.assertEquals(true, app.getViewManager().getRepos().getCount() > 0);

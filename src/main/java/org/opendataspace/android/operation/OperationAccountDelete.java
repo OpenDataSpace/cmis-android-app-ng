@@ -7,7 +7,6 @@ import org.opendataspace.android.data.DaoAccount;
 import org.opendataspace.android.data.DaoRepo;
 import org.opendataspace.android.data.DataBase;
 import org.opendataspace.android.object.Account;
-import org.opendataspace.android.object.ObjectBase;
 import org.opendataspace.android.object.Repo;
 
 public class OperationAccountDelete extends OperationBase {
@@ -23,9 +22,9 @@ public class OperationAccountDelete extends OperationBase {
     protected void doExecute(OperationStatus status) throws Exception {
         final OdsApp app = OdsApp.get();
         final DataBase db = app.getDatabase();
+        DaoAccount accounts = db.getAccounts();
 
         db.transact(() -> {
-            DaoAccount accounts = db.getAccounts();
             accounts.delete(account);
 
             if (isCancel()) {
@@ -33,8 +32,7 @@ public class OperationAccountDelete extends OperationBase {
             }
 
             DaoRepo repos = db.getRepos();
-            CloseableIterator<Repo> itr =
-                    repos.iterate(repos.queryBuilder().where().eq(Repo.FIELD_ACCID, account.getId()).prepare());
+            CloseableIterator<Repo> itr = repos.allRepos(account);
 
             try {
                 while (itr.hasNext()) {
@@ -48,23 +46,18 @@ public class OperationAccountDelete extends OperationBase {
                 itr.closeQuietly();
             }
 
-            if (app.getPrefs().getLastAccountId() == account.getId()) {
-                CloseableIterator<Account> ita = accounts.iterate(
-                        accounts.queryBuilder().limit(1l).where().ne(ObjectBase.FIELD_ID, account.getId()).prepare());
-
-                try {
-                    if (isCancel()) {
-                        throw new InterruptedException();
-                    }
-
-                    app.getViewManager().setCurrentAccount(ita.hasNext() ? ita.nextThrow() : null);
-                } finally {
-                    ita.closeQuietly();
-                }
-            }
-
             return null;
         });
+
+        if (app.getPrefs().getLastAccountId() == account.getId()) {
+            CloseableIterator<Account> ita = accounts.iterate(accounts.queryBuilder().limit(1l).prepare());
+
+            try {
+                app.getPool().execute(new OperationAccountSelect(ita.hasNext() ? ita.nextThrow() : null));
+            } finally {
+                ita.closeQuietly();
+            }
+        }
 
         status.setOk();
     }
