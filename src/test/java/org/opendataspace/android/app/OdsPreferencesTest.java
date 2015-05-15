@@ -11,6 +11,7 @@ import org.robolectric.RuntimeEnvironment;
 @RunWith(TestRunner.class)
 public class OdsPreferencesTest {
 
+    @SuppressWarnings("ConstantConditions")
     @Test
     public void checkDefaults() throws InterruptedException {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
