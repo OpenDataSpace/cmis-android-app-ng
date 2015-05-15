@@ -62,7 +62,7 @@ public class OperationFolderFetch extends OperationBaseFetch<Node, CmisObject> {
 
     @Override
     protected Node createObject(CmisObject val) {
-        return new Node(val, session.getRepo());
+        return folder != null ? new Node(val, folder) : new Node(val, session.getRepo());
     }
 
     @Override

@@ -23,6 +23,7 @@ public class NodeAdapter extends ViewAdapter<Node> {
         Node node = getObject(position);
 
         tw1.setText(node.getName());
+        tw1.setCompoundDrawablesWithIntrinsicBounds(node.getIcon(), 0, 0, 0);
         return vw;
     }
 

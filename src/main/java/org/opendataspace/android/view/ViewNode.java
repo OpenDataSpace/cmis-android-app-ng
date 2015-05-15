@@ -36,7 +36,7 @@ public class ViewNode extends ViewBase<Node> {
 
     @Override
     protected boolean isValid(Node val) {
-        return repo != null && val.getParentId() != parentId && val.getRepoId() == repo.getId();
+        return repo != null && val.getParentId() == parentId && val.getRepoId() == repo.getId();
     }
 
     public CmisSession setScope(Account account, Repo repo, Node parent) {

@@ -3,8 +3,10 @@ package org.opendataspace.android.operation;
 import com.google.gson.annotations.Expose;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.cmis.CmisSession;
+import org.opendataspace.android.data.DaoNode;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Node;
+import org.opendataspace.android.object.ObjectBase;
 import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.view.ViewNode;
 
@@ -12,10 +14,15 @@ public class OperationFolderBrowse extends OperationBase {
 
     @Expose
     private final Account account;
+
     @Expose
     private final Repo repo;
+
     @Expose
     private Node folder;
+
+    @Expose
+    private boolean cdup;
 
     public OperationFolderBrowse(Account account, Repo repo) {
         this.repo = repo;
@@ -26,8 +33,15 @@ public class OperationFolderBrowse extends OperationBase {
     protected void doExecute(OperationStatus status) throws Exception {
         OdsApp app = OdsApp.get();
         ViewNode nodes = app.getViewManager().getNodes();
+        DaoNode dao = app.getDatabase().getNodes();
+
+        if (folder != null && cdup) {
+            long id = folder.getParentId();
+            folder = id != ObjectBase.INVALID_ID ? dao.get(id) : null;
+        }
+
         CmisSession session = nodes.setScope(account, repo, folder);
-        nodes.sync(app.getDatabase().getNodes());
+        nodes.sync(dao);
 
         if (!isCancel()) {
             app.getPool().execute(new OperationFolderFetch(session, folder));
@@ -38,5 +52,13 @@ public class OperationFolderBrowse extends OperationBase {
 
     public void setFolder(Node folder) {
         this.folder = folder;
+    }
+
+    public Node getFolder() {
+        return folder;
+    }
+
+    public void setCdup(boolean val) {
+        cdup = val;
     }
 }

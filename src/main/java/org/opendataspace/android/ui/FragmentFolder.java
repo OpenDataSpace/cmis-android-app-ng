@@ -29,7 +29,7 @@ public class FragmentFolder extends FragmentBaseList implements LoaderManager.Lo
         super.onActivityCreated(savedInstanceState);
         adapter = new NodeAdapter(OdsApp.get().getViewManager().getNodes(), getActivity());
         setListAdapter(adapter);
-        selectNode(null);
+        selectNode(null, false);
     }
 
     @Override
@@ -67,18 +67,31 @@ public class FragmentFolder extends FragmentBaseList implements LoaderManager.Lo
         }
     }
 
-    private void selectNode(Node node) {
+    private void selectNode(Node node, boolean cdup) {
         if (node != null && node.getType() != Node.Type.FOLDER) {
             return;
         }
 
         setEmptyText(getString(R.string.common_pleasewait));
         op.setFolder(node);
+        op.setCdup(cdup);
         getLoaderManager().restartLoader(1, null, this);
     }
 
     @Override
     void onListItemClick(int position) {
-        selectNode(adapter.getObject(position));
+        selectNode(adapter.getObject(position), false);
+    }
+
+    @Override
+    public boolean backPressed() {
+        Node node = op.getFolder();
+
+        if (node != null) {
+            selectNode(node, true);
+            return true;
+        }
+
+        return false;
     }
 }

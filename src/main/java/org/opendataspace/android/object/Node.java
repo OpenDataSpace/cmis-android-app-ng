@@ -7,6 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
+import org.opendataspace.android.app.beta.R;
 
 @DatabaseTable(tableName = "node")
 public class Node extends ObjectBase {
@@ -135,5 +136,15 @@ public class Node extends ObjectBase {
 
     public long getParentId() {
         return parentId;
+    }
+
+    public int getIcon() {
+        switch (type) {
+        case FOLDER:
+            return R.drawable.ic_folder;
+
+        default:
+            return R.drawable.ic_file;
+        }
     }
 }

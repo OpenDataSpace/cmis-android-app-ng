@@ -74,5 +74,4 @@ public class OperationRepoFetch extends OperationBaseFetch<Repo, Repository> {
     protected boolean merge(Repo obj, Repository val) {
         return obj.merge(val);
     }
-
 }
