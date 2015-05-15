@@ -14,6 +14,7 @@ import org.opendataspace.android.operation.OperationAccountUpdate;
 import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.util.ActivityController;
@@ -31,8 +32,10 @@ public class ActivityMainTest {
 
     @Test
     public void checkNavigation() throws Exception {
+        OdsApp app = (OdsApp) RuntimeEnvironment.application;
         ActivityMain ac = TestUtil.setupActivity();
         Assert.assertEquals(FragmentNavigation.class, ac.getNavigation().getTopFragment().getClass());
+        TestUtil.waitRunnable();
 
         // settings
         navigateMenu(R.id.menu_main_settings, FragmentSettings.class, ac);
@@ -48,6 +51,14 @@ public class ActivityMainTest {
         navigateBack(FragmentAccountList.class, ac);
         navigateBack(FragmentNavigation.class, ac);
         navigateList(R.id.list_nav_accounts, ac.getString(R.string.nav_addaccount), FragmentAccountDetails.class, ac);
+        navigateBack(FragmentNavigation.class, ac);
+
+        // folders
+        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_personal), FragmentFolder.class, ac);
+        navigateBack(FragmentNavigation.class, ac);
+        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_shared), FragmentFolder.class, ac);
+        navigateBack(FragmentNavigation.class, ac);
+        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_global), FragmentFolder.class, ac);
         navigateBack(FragmentNavigation.class, ac);
 
         // exit

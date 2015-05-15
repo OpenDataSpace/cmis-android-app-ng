@@ -91,7 +91,7 @@ public class ActivityBase extends AppCompatActivity {
 
     public void startWaitDialog(String title, String message, DialogInterface.OnCancelListener callback) {
         if (!isWaiting()) {
-            waitDialog = ProgressDialog.show(this, title, message, true, true, callback);
+            waitDialog = ProgressDialog.show(this, title, message, true, callback != null, callback);
         }
     }
 

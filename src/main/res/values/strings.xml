@@ -69,4 +69,8 @@
     <string name="account_delete">Delete</string>
     <string name="accout_delete">Are you sure you want to delete \'%1$s\'?</string>
 
+    <!-- folder -->
+    <string name="folder_title">Folder</string>
+    <string name="folder_empty">No files…</string>
+
 </resources>

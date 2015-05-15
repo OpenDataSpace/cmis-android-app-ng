@@ -22,9 +22,11 @@ import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.AccountAdapter;
 import org.opendataspace.android.object.Action;
 import org.opendataspace.android.object.ActionAdapter;
+import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.object.RepoAdapter;
 import org.opendataspace.android.operation.OperationAccountSelect;
 import org.opendataspace.android.operation.OperationAccountUpdate;
+import org.opendataspace.android.operation.OperationFolderBrowse;
 import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationStatus;
 import org.opendataspace.android.view.ViewManager;
@@ -32,6 +34,7 @@ import org.opendataspace.android.view.ViewManager;
 public class FragmentNavigation extends FragmentBase implements LoaderManager.LoaderCallbacks<OperationStatus> {
 
     private AccountAdapter accounts;
+    private RepoAdapter repos;
     private OperationAccountSelect op = new OperationAccountSelect(null);
     private boolean isMain = true;
 
@@ -56,7 +59,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
         lva.setOnItemClickListener((adapterView, view1, i, l) -> selectItem(adapterView, i));
 
         DataAdapterMerge adpf = new DataAdapterMerge();
-        adpf.addAdapter(new RepoAdapter(vm.getRepos(), ac));
+        adpf.addAdapter(repos = new RepoAdapter(vm.getRepos(), ac));
         lvf.setAdapter(adpf);
         lvf.setOnItemClickListener((adapterView, view1, i, l) -> selectFolder(adapterView, i));
 
@@ -74,6 +77,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
     public void onDestroyView() {
         OdsApp.bus.unregister(this);
         accounts.dispose();
+        repos.dispose();
         super.onDestroyView();
     }
 
@@ -152,9 +156,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
             return;
         }
 
-        ac.startWaitDialog(getTile(ac), getString(R.string.common_pleasewait),
-                di -> getLoaderManager().destroyLoader(1));
-
+        ac.startWaitDialog(getTile(ac), getString(R.string.common_pleasewait), null);
         op.setAccount(account);
         getLoaderManager().restartLoader(1, null, this);
     }
@@ -178,7 +180,10 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
     private void selectFolder(AdapterView<?> view, int idx) {
         Object obj = view.getAdapter().getItem(idx);
 
-        if (obj instanceof Action) {
+        if (obj instanceof Repo) {
+            getMainActivity().getNavigation()
+                    .openRootFolder(FragmentFolder.class, new OperationFolderBrowse((Repo) obj));
+        } else if (obj instanceof Action) {
             executeAction((Action) obj);
         }
     }
