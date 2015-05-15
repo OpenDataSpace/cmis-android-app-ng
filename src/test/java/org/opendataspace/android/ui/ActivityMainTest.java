@@ -14,7 +14,6 @@ import org.opendataspace.android.operation.OperationAccountUpdate;
 import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.util.ActivityController;
@@ -32,7 +31,6 @@ public class ActivityMainTest {
 
     @Test
     public void checkNavigation() throws Exception {
-        OdsApp app = (OdsApp) RuntimeEnvironment.application;
         ActivityMain ac = TestUtil.setupActivity();
         Assert.assertEquals(FragmentNavigation.class, ac.getNavigation().getTopFragment().getClass());
         TestUtil.waitRunnable();

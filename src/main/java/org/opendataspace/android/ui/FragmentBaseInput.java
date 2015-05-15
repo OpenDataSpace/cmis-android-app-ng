@@ -167,7 +167,7 @@ class FragmentBaseInput extends FragmentBase {
     }
 
     private final ArrayList<InputEntry> entries = new ArrayList<>();
-    private Dirty dirty = new Dirty();
+    private final Dirty dirty = new Dirty();
 
     void addText(int resource, CompatLambda.Supplier<String> getter, CompatLambda.Consumer<String> setter,
                  CompatLambda.Predicate<String> validator) {

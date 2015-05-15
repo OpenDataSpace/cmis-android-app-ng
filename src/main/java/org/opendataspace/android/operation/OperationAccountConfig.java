@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
-import org.opendataspace.android.cmis.Cmis;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.event.EventAccountConfig;
 import org.opendataspace.android.object.Account;
@@ -19,7 +18,7 @@ public class OperationAccountConfig extends OperationBase {
     public static final String BRAND_LARGE = "logo_large.png";
 
     @Expose
-    private Account account;
+    private final Account account;
 
     public OperationAccountConfig(Account account) {
         this.account = account;
@@ -33,7 +32,7 @@ public class OperationAccountConfig extends OperationBase {
             return;
         }
 
-        CmisSession ses = new CmisSession(Cmis.factory.createSession(Cmis.createSessionSettings(account, repo)));
+        CmisSession ses = new CmisSession(account, repo);
         boolean res = checkFile(ses, BRAND_ICON);
         res = checkFile(ses, BRAND_LARGE) && res;
 

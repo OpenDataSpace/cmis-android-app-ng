@@ -13,6 +13,9 @@ class RepoInfo {
     @Expose
     public String uuid = "";
 
+    @Expose
+    public String rootUuid = "";
+
     public RepoInfo() {
         // nothing
     }
@@ -20,6 +23,7 @@ class RepoInfo {
     public RepoInfo(RepoInfo other) {
         name = other.name;
         uuid = other.uuid;
+        rootUuid = other.rootUuid;
     }
 
     boolean update(Repository repo) {
@@ -32,6 +36,11 @@ class RepoInfo {
 
         if (!TextUtils.equals(uuid, repo.getId())) {
             uuid = repo.getId();
+            res = true;
+        }
+
+        if (!TextUtils.equals(rootUuid, repo.getRootFolderId())) {
+            rootUuid = repo.getRootFolderId();
             res = true;
         }
 

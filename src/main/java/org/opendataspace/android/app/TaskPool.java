@@ -15,7 +15,7 @@ public class TaskPool {
             new ThreadPoolExecutor(NUMBER_OF_CORES, NUMBER_OF_CORES, 1, TimeUnit.MINUTES,
                     new ArrayBlockingQueue<>(100, true), new ThreadPoolExecutor.CallerRunsPolicy());
 
-    private AtomicInteger counter = new AtomicInteger();
+    private final AtomicInteger counter = new AtomicInteger();
 
     public void execute(final Task task) {
         counter.incrementAndGet();

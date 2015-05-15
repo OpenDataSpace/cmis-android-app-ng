@@ -7,11 +7,9 @@ import android.webkit.URLUtil;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import org.opendataspace.android.app.OdsLog;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.SQLException;
 
 @DatabaseTable(tableName = "acc")
 public class Account extends ObjectBase {
@@ -22,8 +20,6 @@ public class Account extends ObjectBase {
     @Expose
     @DatabaseField(columnName = "data", canBeNull = false, persisterClass = AccountSerializer.class)
     private final AccountInfo info = new AccountInfo();
-
-    private transient RepoCollection repositories = null;
 
     public String getLogin() {
         return info.login;
@@ -97,18 +93,6 @@ public class Account extends ObjectBase {
         }
 
         return b.toString();
-    }
-
-    public RepoCollection getRepositories() {
-        if (repositories == null) {
-            try {
-                repositories = new RepoCollection(this);
-            } catch (SQLException ex) {
-                OdsLog.ex(getClass(), ex);
-            }
-        }
-
-        return repositories;
     }
 
     public void setUri(String val) throws MalformedURLException {

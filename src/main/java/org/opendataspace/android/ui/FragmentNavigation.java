@@ -35,7 +35,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
 
     private AccountAdapter accounts;
     private RepoAdapter repos;
-    private OperationAccountSelect op = new OperationAccountSelect(null);
+    private final OperationAccountSelect op = new OperationAccountSelect(null);
     private boolean isMain = true;
 
     @Override

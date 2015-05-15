@@ -53,7 +53,7 @@ public class Node extends ObjectBase {
         parentId = other.parentId;
     }
 
-    public Node(Repo repo, CmisObject val) {
+    public Node(CmisObject val, Repo repo) {
         info = new NodeInfo();
         cmis = val;
         parentId = INVALID_ID;

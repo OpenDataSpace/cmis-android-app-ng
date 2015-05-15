@@ -44,7 +44,7 @@ public class OperationAccountSelect extends OperationBase {
         vm.getRepos().setAccount(account);
         vm.getRepos().sync(db.getRepos());
         OdsApp.bus.post(new EventAccountSelect());
-        app.getPool().execute(new OperationRepoSync(account));
+        app.getPool().execute(new OperationRepoFetch(account));
         status.setOk();
     }
 

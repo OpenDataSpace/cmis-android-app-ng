@@ -32,7 +32,7 @@ public class Cmis {
         return settings;
     }
 
-    public static Map<String, String> createSessionSettings(Account account, Repo repo) {
+    protected static Map<String, String> createSessionSettings(Account account, Repo repo) {
         Map<String, String> settings = createSessionSettings(account);
         settings.put(SessionParameter.REPOSITORY_ID, repo.getUuid());
         return settings;

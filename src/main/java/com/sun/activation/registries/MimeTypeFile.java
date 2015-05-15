@@ -47,9 +47,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Hashtable;
-import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 public class MimeTypeFile {
     private final Hashtable<String, MimeTypeEntry> type_hash = new Hashtable<>();

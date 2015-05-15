@@ -32,7 +32,8 @@ public class OperationAccountUpdate extends OperationBase {
                 throw new InterruptedException();
             }
 
-            account.getRepositories().sync();
+            OperationRepoFetch fetch = new OperationRepoFetch(account);
+            fetch.execute();
 
             if (isCancel()) {
                 throw new InterruptedException();
@@ -41,7 +42,7 @@ public class OperationAccountUpdate extends OperationBase {
             return null;
         });
 
-        if (isFirst || app.getPrefs().getLastAccountId() == account.getId()) {
+        if ((isFirst || app.getPrefs().getLastAccountId() == account.getId()) && !isCancel()) {
             app.getPool().execute(new OperationAccountSelect(account));
         }
 

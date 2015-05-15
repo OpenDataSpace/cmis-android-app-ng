@@ -1,7 +1,6 @@
 package org.opendataspace.android.view;
 
 import org.opendataspace.android.app.CompatDisposable;
-import org.opendataspace.android.app.CompatObjects;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.object.Account;
 

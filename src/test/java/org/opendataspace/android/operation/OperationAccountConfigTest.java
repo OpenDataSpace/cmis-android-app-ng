@@ -21,7 +21,7 @@ public class OperationAccountConfigTest {
         Account acc = TestUtil.getDefaultAccount();
         app.getDatabase().getAccounts().create(acc);
 
-        OperationRepoSync sync = new OperationRepoSync(acc);
+        OperationRepoFetch sync = new OperationRepoFetch(acc);
         OperationStatus st = sync.execute();
         Assert.assertEquals(true, st.isOk());
 

@@ -147,4 +147,8 @@ public class Repo extends ObjectBase {
             type = Type.DEFAULT;
         }
     }
+
+    public String getRootFolderUuid() {
+        return info.rootUuid;
+    }
 }

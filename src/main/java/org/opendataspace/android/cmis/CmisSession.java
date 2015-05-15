@@ -1,14 +1,23 @@
 package org.opendataspace.android.cmis;
 
+import com.google.gson.annotations.Expose;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.ObjectFactory;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Session;
+import org.apache.chemistry.opencmis.client.runtime.OperationContextImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ObjectData;
+import org.apache.chemistry.opencmis.commons.data.ObjectInFolderData;
+import org.apache.chemistry.opencmis.commons.data.ObjectInFolderList;
+import org.apache.chemistry.opencmis.commons.enums.IncludeRelationships;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
+import org.apache.chemistry.opencmis.commons.spi.NavigationService;
 import org.apache.chemistry.opencmis.commons.spi.ObjectService;
+import org.opendataspace.android.object.Account;
+import org.opendataspace.android.object.Node;
+import org.opendataspace.android.object.Repo;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -17,17 +26,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class CmisSession {
 
-    private final Session session;
-    private Folder root;
+    private transient Session session;
+    private transient Folder root;
 
-    public CmisSession(Session session) {
-        this.session = session;
+    @Expose
+    private final Map<String, String> config;
+
+    @Expose
+    private final Repo repo;
+
+    public CmisSession(Account account, Repo repo) {
+        config = Cmis.createSessionSettings(account, repo);
+        this.repo = repo;
     }
 
     public CmisObject getObject(String path) {
+        Session session = getSession();
         OperationContext context = session.getDefaultContext();
         ObjectService objectService = session.getBinding().getObjectService();
         ObjectFactory objectFactory = session.getObjectFactory();
@@ -48,7 +68,7 @@ public class CmisSession {
 
     public Folder getRoot() {
         if (root == null) {
-            root = session.getRootFolder();
+            root = getSession().getRootFolder();
         }
 
         return root;
@@ -60,6 +80,7 @@ public class CmisSession {
 
         try {
             long downloaded = 0, sz = size(cmo);
+            Session session = getSession();
             os = new BufferedOutputStream(new FileOutputStream(f));
             src = session.getBinding().getObjectService()
                     .getContentStream(session.getRepositoryInfo().getId(), cmo.getId(), null, null, null, null)
@@ -89,5 +110,52 @@ public class CmisSession {
 
     public long size(CmisObject obj) {
         return obj.<BigInteger>getPropertyValue(PropertyIds.CONTENT_STREAM_LENGTH).longValue();
+    }
+
+    private Session getSession() {
+        if (session == null) {
+            session = Cmis.factory.createSession(config);
+        }
+
+        return session;
+    }
+
+    public boolean same(Repo repo) {
+        return this.repo.equals(repo);
+    }
+
+    public Repo getRepo() {
+        return repo;
+    }
+
+    public List<CmisObject> children(Node folder) {
+        Session session = getSession();
+        NavigationService ns = session.getBinding().getNavigationService();
+        ObjectFactory objectFactory = session.getObjectFactory();
+        OperationContext context = new OperationContextImpl(session.getDefaultContext());
+        ObjectInFolderList children;
+        List<CmisObject> res = new ArrayList<>();
+        long pos = 0;
+
+        do {
+            children =
+                    ns.getChildren(repo.getUuid(), folder != null ? folder.getUuid() : repo.getRootFolderUuid(), null,
+                            null, false, IncludeRelationships.NONE, null, false, BigInteger.valueOf(50),
+                            BigInteger.valueOf(pos), null);
+
+            List<ObjectInFolderData> ls = children.getObjects();
+
+            if (ls == null) {
+                break;
+            }
+
+            for (ObjectInFolderData cur : ls) {
+                res.add(objectFactory.convertObject(cur.getObject(), context));
+            }
+
+            pos += ls.size();
+        } while (children.hasMoreItems());
+
+        return res;
     }
 }

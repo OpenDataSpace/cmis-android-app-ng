@@ -2,6 +2,7 @@ package org.opendataspace.android.operation;
 
 import com.google.gson.annotations.Expose;
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.Repo;
@@ -25,8 +26,13 @@ public class OperationFolderBrowse extends OperationBase {
     protected void doExecute(OperationStatus status) throws Exception {
         OdsApp app = OdsApp.get();
         ViewNode nodes = app.getViewManager().getNodes();
-        nodes.setScope(repo, folder);
+        CmisSession session = nodes.setScope(account, repo, folder);
         nodes.sync(app.getDatabase().getNodes());
+
+        if (!isCancel()) {
+            app.getPool().execute(new OperationFolderFetch(session, folder));
+        }
+
         status.setOk();
     }
 

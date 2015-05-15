@@ -28,7 +28,7 @@ public class EventDaoBase<T extends ObjectBase> {
         }
     }
 
-    private final List<Event<T>> data = new ArrayList<Event<T>>();
+    private final List<Event<T>> data = new ArrayList<>();
 
     public EventDaoBase() {
     }
