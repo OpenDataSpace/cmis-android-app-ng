@@ -11,6 +11,7 @@ import org.opendataspace.android.test.TestUtil;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @RunWith(TestRunner.class)
 public class RepoTest {
 

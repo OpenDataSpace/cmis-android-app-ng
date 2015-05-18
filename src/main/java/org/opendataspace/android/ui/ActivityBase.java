@@ -17,6 +17,7 @@ import org.opendataspace.android.event.EventAccountConfig;
 import org.opendataspace.android.operation.OperationAccountConfig;
 import org.opendataspace.android.storage.Storage;
 
+@SuppressWarnings("WeakerAccess")
 @SuppressLint("Registered")
 public class ActivityBase extends AppCompatActivity {
 
@@ -53,7 +54,7 @@ public class ActivityBase extends AppCompatActivity {
         showToast(getString(messageCode));
     }
 
-    void showToast(final String message) {
+    private void showToast(final String message) {
         toast.setText(message);
         toast.show();
     }
@@ -64,6 +65,7 @@ public class ActivityBase extends AppCompatActivity {
         super.onDestroy();
     }
 
+    @SuppressWarnings({"UnusedParameters", "unused"})
     public void onEventMainThread(EventAccountConfig val) {
         updateBranding();
     }

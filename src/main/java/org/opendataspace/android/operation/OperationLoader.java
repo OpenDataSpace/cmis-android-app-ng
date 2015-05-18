@@ -20,6 +20,11 @@ public class OperationLoader extends TaskLoader<OperationStatus> {
     }
 
     @Override
+    protected boolean isCmis() {
+        return op instanceof OperationBaseCmis;
+    }
+
+    @Override
     public void deliverResult(OperationStatus status) {
         if (isReset()) {
             return;

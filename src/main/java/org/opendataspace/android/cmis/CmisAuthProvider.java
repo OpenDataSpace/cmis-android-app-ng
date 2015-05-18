@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("WeakerAccess")
 public class CmisAuthProvider extends AbstractAuthenticationProvider {
 
     private CmisCookieManager cookieManager;

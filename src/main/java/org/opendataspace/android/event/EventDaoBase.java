@@ -30,9 +30,6 @@ public class EventDaoBase<T extends ObjectBase> {
 
     private final List<Event<T>> data = new ArrayList<>();
 
-    public EventDaoBase() {
-    }
-
     public List<Event<T>> getEvents() {
         return Collections.unmodifiableList(data);
     }

@@ -77,6 +77,11 @@ class FragmentBaseList extends FragmentBase {
         pframe.addView(progress,
                 new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
+        TextView pw = new TextView(context);
+        pw.setText(getString(R.string.common_pleasewait));
+        pframe.addView(pw,
+                new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
         root.addView(pframe,
                 new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
@@ -185,7 +190,7 @@ class FragmentBaseList extends FragmentBase {
      * @param animate If true, an animation will be used to transition to the
      *                new state.
      */
-    private void setListShown(boolean shown, boolean animate) {
+    void setListShown(boolean shown, boolean animate) {
         ensureList();
         if (progressContainer == null) {
             throw new IllegalStateException("Can't be used with a custom content view");

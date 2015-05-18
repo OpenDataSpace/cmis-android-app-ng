@@ -12,6 +12,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @RunWith(TestRunner.class)
 public class OperationAccountUpdateTest {
 

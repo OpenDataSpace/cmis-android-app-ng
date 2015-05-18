@@ -15,11 +15,12 @@ import org.robolectric.RuntimeEnvironment;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 @RunWith(TestRunner.class)
 public class CmisAuthProviderTest {
 
     @Test
-    public void checkHeaders() throws Exception {
+    public void checkHeaders() {
         CmisAuthProvider provider = new CmisAuthProvider();
         SessionImpl ses = new SessionImpl();
 

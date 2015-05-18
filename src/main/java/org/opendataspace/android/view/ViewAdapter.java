@@ -16,7 +16,7 @@ public class ViewAdapter<T extends ObjectBase> extends DataAdapter implements Co
     private final List<T> data = new ArrayList<>();
     private final ViewBase<T> view;
 
-    public ViewAdapter(ViewBase<T> view, Context context, int resId) {
+    protected ViewAdapter(ViewBase<T> view, Context context, int resId) {
         super(context, resId);
         this.view = view;
         data.addAll(view.getObjects());
@@ -45,10 +45,6 @@ public class ViewAdapter<T extends ObjectBase> extends DataAdapter implements Co
     @Override
     public void dispose() {
         OdsApp.bus.unregister(this);
-    }
-
-    public int getPosition(T val) {
-        return data.indexOf(val);
     }
 
     @Override

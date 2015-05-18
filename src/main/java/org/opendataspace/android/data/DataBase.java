@@ -92,14 +92,13 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
         return nodes;
     }
 
-    public <T> T transact(Callable<T> action) throws SQLException {
+    public <T> void transact(Callable<T> action) throws SQLException {
         ConnectionSource source = getConnectionSource();
         DatabaseConnection conn = source.getReadWriteConnection();
-        T res;
 
         try {
             boolean saved = source.saveSpecialConnection(conn);
-            res = TransactionManager.callInTransaction(conn, saved, source.getDatabaseType(), action);
+            TransactionManager.callInTransaction(conn, saved, source.getDatabaseType(), action);
 
             if (accounts != null) {
                 accounts.fire(conn);
@@ -116,7 +115,5 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
             connectionSource.clearSpecialConnection(conn);
             connectionSource.releaseConnection(conn);
         }
-
-        return res;
     }
 }

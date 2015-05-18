@@ -49,6 +49,7 @@ import java.io.InputStreamReader;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
+@SuppressWarnings("WeakerAccess")
 public class MimeTypeFile {
     private final Hashtable<String, MimeTypeEntry> type_hash = new Hashtable<>();
 
@@ -83,6 +84,7 @@ public class MimeTypeFile {
     /**
      * get the MimeTypeEntry based on the file extension
      */
+    @SuppressWarnings("WeakerAccess")
     MimeTypeEntry getMimeTypeEntry(String file_ext) {
         return type_hash.get(file_ext);
     }

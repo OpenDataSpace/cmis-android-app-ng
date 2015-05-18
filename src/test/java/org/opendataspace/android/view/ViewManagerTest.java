@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@SuppressWarnings("unused")
 @RunWith(TestRunner.class)
 public class ViewManagerTest {
 
@@ -41,6 +42,7 @@ public class ViewManagerTest {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         AtomicBoolean invalidated = new AtomicBoolean(false);
 
+        //noinspection UnusedAssignment
         AccountAdapter adp = new AccountAdapter(app.getViewManager().getAccounts(), app.getApplicationContext()) {
             @Override
             public void invalidate() {
@@ -64,6 +66,7 @@ public class ViewManagerTest {
         app.getViewManager().getRepos().setAccount(acc);
         AtomicInteger invalidated = new AtomicInteger(0);
 
+        //noinspection UnusedAssignment
         AccountAdapter adp = new AccountAdapter(app.getViewManager().getAccounts(), app.getApplicationContext()) {
             @Override
             public void invalidate() {
@@ -72,6 +75,7 @@ public class ViewManagerTest {
             }
         };
 
+        //noinspection Convert2Lambda
         app.getDatabase().transact(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
@@ -79,6 +83,7 @@ public class ViewManagerTest {
                 app.getDatabase().getAccounts().create(TestUtil.getDefaultAccount());
                 app.getDatabase().getAccounts().create(TestUtil.getDefaultAccount());
 
+                //noinspection Convert2Lambda
                 app.getDatabase().transact(new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {

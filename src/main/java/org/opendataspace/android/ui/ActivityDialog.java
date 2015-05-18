@@ -2,6 +2,7 @@ package org.opendataspace.android.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
@@ -32,7 +33,11 @@ public class ActivityDialog extends ActivityBase {
             ft.replace(R.id.dialog_view_frame, fgm, TAG_CONTENT);
             ft.commitAllowingStateLoss();
 
-            getSupportActionBar().setTitle(fgm.getTile(this));
+            ActionBar bar = getSupportActionBar();
+
+            if (bar != null) {
+                bar.setTitle(fgm.getTile(this));
+            }
         } catch (Exception ex) {
             OdsLog.ex(getClass(), ex);
             finish();

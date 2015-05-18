@@ -66,6 +66,7 @@ abstract class FileTypeMap {
      * @param file A file to be typed.
      * @return The content type.
      */
+    @SuppressWarnings("unused")
     abstract public String getContentType(File file);
 
     /**
@@ -75,6 +76,7 @@ abstract class FileTypeMap {
      * @param filename the pathname of the file.
      * @return The content type.
      */
+    @SuppressWarnings("unused")
     abstract public String getContentType(String filename);
 
 }

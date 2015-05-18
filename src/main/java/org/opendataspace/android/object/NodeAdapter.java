@@ -27,6 +27,7 @@ public class NodeAdapter extends ViewAdapter<Node> {
         return vw;
     }
 
+    @SuppressWarnings({"UnusedParameters", "unused"})
     public void onEventMainThread(EventDaoNode event) {
         invalidate();
     }

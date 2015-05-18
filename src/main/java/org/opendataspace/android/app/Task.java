@@ -12,6 +12,7 @@ public abstract class Task implements Runnable {
 
     public abstract void onExecute() throws Exception;
 
+    @SuppressWarnings("RedundantThrows")
     public void onDone() throws Exception {
         // nothing
     }

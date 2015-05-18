@@ -82,6 +82,7 @@ import java.util.Vector;
  * @author Bart Calder
  * @author Bill Shannon
  */
+@SuppressWarnings("unused")
 public class MimetypesFileTypeMap extends FileTypeMap {
     /*
      * We manage a collection of databases, searched in order.

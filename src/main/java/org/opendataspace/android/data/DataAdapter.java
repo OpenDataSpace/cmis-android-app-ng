@@ -11,7 +11,7 @@ public abstract class DataAdapter extends BaseAdapter {
     protected final LayoutInflater inf;
     private final int resId;
 
-    public DataAdapter(final Context context, final int resId) {
+    protected DataAdapter(final Context context, final int resId) {
         inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.resId = resId;
     }
@@ -25,7 +25,7 @@ public abstract class DataAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void invalidate() {
+    protected void invalidate() {
         notifyDataSetChanged();
     }
 }

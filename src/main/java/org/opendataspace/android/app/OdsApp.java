@@ -93,7 +93,7 @@ public class OdsApp extends Application {
         return vm;
     }
 
-    protected static boolean hasCrahlytics() {
+    static boolean hasCrahlytics() {
         return crashl;
     }
 }

@@ -230,8 +230,10 @@ public class Navigation implements NavigationInterface {
                           boolean needHome) {
         closeDrawer();
         CompatKeyboard.hide(context);
+        FragmentBase top = getTopFragment();
 
-        if (getTopFragment().getClass().equals(cls)) {
+        if (top.getClass().equals(cls)) {
+            top.navigationRequest(op);
             return;
         }
 

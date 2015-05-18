@@ -28,6 +28,7 @@ public class AccountAdapter extends ViewAdapter<Account> {
         return vw;
     }
 
+    @SuppressWarnings({"UnusedParameters", "unused"})
     public void onEventMainThread(EventDaoAccount event) {
         invalidate();
     }

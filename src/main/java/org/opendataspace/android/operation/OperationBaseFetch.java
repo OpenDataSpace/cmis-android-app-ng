@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class OperationBaseFetch<T extends ObjectBase, U> extends OperationBase {
+public abstract class OperationBaseFetch<T extends ObjectBase, U> extends OperationBaseCmis {
 
     @Override
     protected void doExecute(OperationStatus status) throws Exception {

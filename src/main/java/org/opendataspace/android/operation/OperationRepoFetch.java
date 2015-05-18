@@ -22,10 +22,6 @@ public class OperationRepoFetch extends OperationBaseFetch<Repo, Repository> {
         this.account = account;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
     @Override
     protected void doExecute(OperationStatus status) throws Exception {
         super.doExecute(status);

@@ -14,8 +14,6 @@ import java.lang.reflect.Proxy;
 
 public class CompatPreferenceManager {
 
-    private static final String TAG = CompatPreferenceManager.class.getSimpleName();
-
     /**
      * Interface definition for a callback to be invoked when a
      * {@link Preference} in the hierarchy rooted at this {@link PreferenceScreen} is

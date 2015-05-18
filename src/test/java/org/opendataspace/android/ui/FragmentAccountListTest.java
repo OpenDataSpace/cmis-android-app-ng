@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 
+@SuppressWarnings("unused")
 @RunWith(TestRunner.class)
 public class FragmentAccountListTest {
 

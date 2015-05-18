@@ -14,7 +14,7 @@ public class Action {
     private final String name;
     private final int iconId;
 
-    public Action(int id, Context context) {
+    private Action(int id, Context context) {
         this.id = id;
 
         switch (id) {

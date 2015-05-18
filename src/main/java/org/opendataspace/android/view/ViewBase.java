@@ -20,11 +20,11 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
     private final List<T> data = new ArrayList<>();
     private final Set<Long> deleted = new HashSet<>();
 
-    public ViewBase() {
+    ViewBase() {
         OdsApp.bus.register(this, CompatEvent.PRIORITY_VIEW);
     }
 
-    protected void processEvent(EventDaoBase<T> event) {
+    void processEvent(EventDaoBase<T> event) {
         for (EventDaoBase.Event<T> cur : event.getEvents()) {
             final T object = cur.getObject();
 
@@ -91,7 +91,7 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
         }
     }
 
-    protected List<T> getObjects() {
+    List<T> getObjects() {
         return Collections.unmodifiableList(data);
     }
 
@@ -100,7 +100,7 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
         OdsApp.bus.unregister(this);
     }
 
-    protected CloseableIterator<T> iterate(DaoBase<T> dao) throws SQLException {
+    CloseableIterator<T> iterate(DaoBase<T> dao) throws SQLException {
         return dao.iterate();
     }
 
@@ -108,7 +108,7 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
         return data.size();
     }
 
-    protected boolean isValid(T val) {
+    boolean isValid(T val) {
         return true;
     }
 

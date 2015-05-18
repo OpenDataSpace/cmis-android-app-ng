@@ -15,6 +15,11 @@ public class ViewRepo extends ViewBase<Repo> {
 
     private long accId = ObjectBase.INVALID_ID;
 
+    public ViewRepo() {
+        super();
+    }
+
+    @SuppressWarnings("unused")
     public void onEventMainThread(EventDaoRepo event) {
         processEvent(event);
     }

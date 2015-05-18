@@ -5,6 +5,7 @@ import android.os.Bundle;
 import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.ui.ActivityMain;
 
+@SuppressWarnings("unused")
 public class TestActivity extends ActivityMain {
 
     @Override

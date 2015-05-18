@@ -27,7 +27,7 @@ public abstract class OperationBase {
         cancelled = val;
     }
 
-    protected synchronized boolean isCancel() {
+    synchronized boolean isCancel() {
         return cancelled;
     }
 }

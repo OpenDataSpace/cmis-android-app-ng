@@ -10,6 +10,7 @@ public class AccountSerializer extends DataGsonSerializer<AccountInfo> {
         super(AccountInfo.class);
     }
 
+    @SuppressWarnings("unused")
     public static AccountSerializer getSingleton() {
         return instance;
     }

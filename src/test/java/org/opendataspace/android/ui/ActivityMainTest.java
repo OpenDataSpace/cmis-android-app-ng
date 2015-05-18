@@ -18,6 +18,7 @@ import org.robolectric.Shadows;
 import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.util.ActivityController;
 
+@SuppressWarnings("unused")
 @RunWith(TestRunner.class)
 public class ActivityMainTest {
 
@@ -62,12 +63,6 @@ public class ActivityMainTest {
         // exit
         ac.onBackPressed();
         Assert.assertEquals(true, Shadows.shadowOf(ac).isFinishing());
-    }
-
-    private void navigateClick(int resId, Class<?> cls, ActivityMain ac) {
-        ac.findViewById(resId).performClick();
-        Assert.assertEquals(cls, ac.getNavigation().getTopFragment().getClass());
-        ac.getSupportFragmentManager().executePendingTransactions();
     }
 
     private void navigateList(int resId, String item, Class<?> cls, ActivityMain ac) {

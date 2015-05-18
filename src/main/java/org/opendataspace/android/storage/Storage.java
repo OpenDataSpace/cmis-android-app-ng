@@ -29,7 +29,7 @@ public class Storage {
         return new File(createFolder(ext.getParentFile(), "config" + File.separator + account.getFolderName()), name);
     }
 
-    public static File createFolder(File f, String extendedPath) {
+    private static File createFolder(File f, String extendedPath) {
         File tmpFolder = new File(f, extendedPath);
 
         if (!tmpFolder.exists()) {

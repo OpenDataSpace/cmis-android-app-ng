@@ -19,6 +19,7 @@ import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.shadows.ShadowAlertDialog;
 import org.robolectric.shadows.ShadowView;
 
+@SuppressWarnings("unused")
 @RunWith(TestRunner.class)
 public class FragmentAccountDetailsTest {
 

@@ -35,13 +35,18 @@ public abstract class TaskLoader<T> extends Loader<T> {
         super(context);
     }
 
+    @SuppressWarnings("RedundantThrows")
     protected abstract T loadInBackground() throws Exception;
+
+    protected boolean isCmis() {
+        return false;
+    }
 
     @Override
     protected void onForceLoad() {
         cancelLoad();
         current = new InternalTask();
-        OdsApp.get().getPool().execute(current);
+        OdsApp.get().getPool().execute(current, isCmis());
     }
 
     protected void cancelLoad() {

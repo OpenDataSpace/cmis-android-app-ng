@@ -10,6 +10,7 @@ import android.view.View;
 
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.NavigationInterface;
+import org.opendataspace.android.operation.OperationBase;
 
 @SuppressLint("ValidFragment")
 public class FragmentBase extends Fragment {
@@ -56,8 +57,12 @@ public class FragmentBase extends Fragment {
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends View> T widget(int id) {
+    <T extends View> T widget(int id) {
         View v = getView();
         return v != null ? (T) v.findViewById(id) : null;
+    }
+
+    public void navigationRequest(OperationBase op) {
+        // nothing
     }
 }

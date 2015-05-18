@@ -19,6 +19,11 @@ public class ViewNode extends ViewBase<Node> {
     private long parentId = ObjectBase.INVALID_ID;
     private CmisSession session;
 
+    public ViewNode() {
+        super();
+    }
+
+    @SuppressWarnings("unused")
     public void onEventMainThread(EventDaoNode event) {
         processEvent(event);
     }

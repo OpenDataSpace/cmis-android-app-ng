@@ -10,6 +10,7 @@ import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.NodeAdapter;
+import org.opendataspace.android.operation.OperationBase;
 import org.opendataspace.android.operation.OperationFolderBrowse;
 import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationStatus;
@@ -17,8 +18,9 @@ import org.opendataspace.android.operation.OperationStatus;
 @SuppressLint("ValidFragment")
 public class FragmentFolder extends FragmentBaseList implements LoaderManager.LoaderCallbacks<OperationStatus> {
 
-    private final OperationFolderBrowse op;
+    private OperationFolderBrowse op;
     private NodeAdapter adapter;
+    private boolean inProgress;
 
     public FragmentFolder(OperationFolderBrowse op) {
         this.op = op;
@@ -29,6 +31,7 @@ public class FragmentFolder extends FragmentBaseList implements LoaderManager.Lo
         super.onActivityCreated(savedInstanceState);
         adapter = new NodeAdapter(OdsApp.get().getViewManager().getNodes(), getActivity());
         setListAdapter(adapter);
+        setEmptyText(getString(R.string.folder_empty));
         selectNode(null, false);
     }
 
@@ -55,24 +58,29 @@ public class FragmentFolder extends FragmentBaseList implements LoaderManager.Lo
 
     @Override
     public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus data) {
-        if (getView() != null) {
-            setEmptyText(getString(R.string.folder_empty));
-        }
+        loadingDone();
     }
 
     @Override
     public void onLoaderReset(Loader<OperationStatus> loader) {
+        loadingDone();
+    }
+
+    private void loadingDone() {
         if (getView() != null) {
-            setEmptyText(getString(R.string.folder_empty));
+            setListShown(true, false);
         }
+
+        inProgress = false;
     }
 
     private void selectNode(Node node, boolean cdup) {
-        if (node != null && node.getType() != Node.Type.FOLDER) {
+        if (inProgress || (node != null && node.getType() != Node.Type.FOLDER)) {
             return;
         }
 
-        setEmptyText(getString(R.string.common_pleasewait));
+        inProgress = true;
+        setListShown(false, false);
         op.setFolder(node);
         op.setCdup(cdup);
         getLoaderManager().restartLoader(1, null, this);
@@ -93,5 +101,13 @@ public class FragmentFolder extends FragmentBaseList implements LoaderManager.Lo
         }
 
         return false;
+    }
+
+    @Override
+    public void navigationRequest(OperationBase op) {
+        if (op instanceof OperationFolderBrowse) {
+            this.op = (OperationFolderBrowse) op;
+            selectNode(null, false);
+        }
     }
 }

@@ -174,15 +174,11 @@ class FragmentBaseInput extends FragmentBase {
         entries.add(new TextInputEntry(resource, getter, setter, validator, null));
     }
 
-    void addText(int resource, CompatLambda.Supplier<String> getter, CompatLambda.Consumer<String> setter) {
-        addText(resource, getter, setter, null);
-    }
-
     void addBool(int resource, CompatLambda.Supplier<Boolean> getter, CompatLambda.Consumer<Boolean> setter) {
         entries.add(new CheckInputEntry(resource, getter, setter));
     }
 
-    void apply() {
+    private void apply() {
         View vw = getView();
 
         for (InputEntry cur : entries) {
@@ -192,7 +188,7 @@ class FragmentBaseInput extends FragmentBase {
         dirty.value = false;
     }
 
-    void read() {
+    private void read() {
         View vw = getView();
 
         for (InputEntry cur : entries) {

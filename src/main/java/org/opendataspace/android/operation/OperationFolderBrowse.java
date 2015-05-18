@@ -2,6 +2,8 @@ package org.opendataspace.android.operation;
 
 import com.google.gson.annotations.Expose;
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.app.Task;
+import org.opendataspace.android.app.TaskPool;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.data.DaoNode;
 import org.opendataspace.android.object.Account;
@@ -24,6 +26,8 @@ public class OperationFolderBrowse extends OperationBase {
     @Expose
     private boolean cdup;
 
+    private transient Task lastTask;
+
     public OperationFolderBrowse(Account account, Repo repo) {
         this.repo = repo;
         this.account = account;
@@ -44,7 +48,9 @@ public class OperationFolderBrowse extends OperationBase {
         nodes.sync(dao);
 
         if (!isCancel()) {
-            app.getPool().execute(new OperationFolderFetch(session, folder));
+            TaskPool pool = app.getPool();
+            pool.cancel(lastTask);
+            lastTask = pool.execute(new OperationFolderFetch(session, folder));
         }
 
         status.setOk();

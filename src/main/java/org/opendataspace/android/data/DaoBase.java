@@ -47,16 +47,15 @@ public abstract class DaoBase<T extends ObjectBase> {
         event = createEvent();
     }
 
-    public int create(T val) throws SQLException {
+    public void create(T val) throws SQLException {
         if (creator == null) {
             creator = MappedCreate.build(type, info);
         }
 
         DatabaseConnection conn = source.getReadWriteConnection();
-        int res;
 
         try {
-            res = creator.insert(type, conn, val, cache);
+            int res = creator.insert(type, conn, val, cache);
 
             if (res > 0) {
                 event.addInsert(val);
@@ -65,20 +64,17 @@ public abstract class DaoBase<T extends ObjectBase> {
         } finally {
             source.releaseConnection(conn);
         }
-
-        return res;
     }
 
-    public int update(T val) throws SQLException {
+    public void update(T val) throws SQLException {
         if (updater == null) {
             updater = MappedUpdate.build(type, info);
         }
 
         DatabaseConnection conn = source.getReadWriteConnection();
-        int res;
 
         try {
-            res = updater.update(conn, val, cache);
+            int res = updater.update(conn, val, cache);
 
             if (res > 0) {
                 event.addUpdate(val);
@@ -87,20 +83,17 @@ public abstract class DaoBase<T extends ObjectBase> {
         } finally {
             source.releaseConnection(conn);
         }
-
-        return res;
     }
 
-    public int delete(T val) throws SQLException {
+    public void delete(T val) throws SQLException {
         if (deleter == null) {
             deleter = MappedDelete.build(type, info);
         }
 
         DatabaseConnection conn = source.getReadWriteConnection();
-        int res;
 
         try {
-            res = deleter.delete(conn, val, cache);
+            int res = deleter.delete(conn, val, cache);
 
             if (res > 0) {
                 event.addDelete(val);
@@ -109,8 +102,6 @@ public abstract class DaoBase<T extends ObjectBase> {
         } finally {
             source.releaseConnection(conn);
         }
-
-        return res;
     }
 
     public CloseableIterator<T> iterate() throws SQLException {
@@ -201,7 +192,7 @@ public abstract class DaoBase<T extends ObjectBase> {
         return res != 0;
     }
 
-    protected void fire(DatabaseConnection conn) throws SQLException {
+    void fire(DatabaseConnection conn) throws SQLException {
         if (conn.isAutoCommit() && !event.isEmpty()) {
             OdsApp.bus.post(event);
             event = createEvent();

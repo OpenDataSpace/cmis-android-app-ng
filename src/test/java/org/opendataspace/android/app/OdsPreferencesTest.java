@@ -8,12 +8,13 @@ import org.junit.runner.RunWith;
 import org.opendataspace.android.test.TestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+@SuppressWarnings("unused")
 @RunWith(TestRunner.class)
 public class OdsPreferencesTest {
 
     @SuppressWarnings("ConstantConditions")
     @Test
-    public void checkDefaults() throws InterruptedException {
+    public void checkDefaults() {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         OdsPreferences pref = app.getPrefs();
 

@@ -15,6 +15,7 @@ import org.opendataspace.android.test.TestUtil;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 
+@SuppressWarnings("unused")
 @RunWith(TestRunner.class)
 public class FragmentNavigationTest {
 

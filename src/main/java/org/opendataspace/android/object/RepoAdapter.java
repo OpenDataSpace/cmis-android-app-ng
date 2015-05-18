@@ -27,6 +27,7 @@ public class RepoAdapter extends ViewAdapter<Repo> {
         return vw;
     }
 
+    @SuppressWarnings({"UnusedParameters", "unused"})
     public void onEventMainThread(EventDaoRepo event) {
         invalidate();
     }

@@ -54,6 +54,7 @@ public class FragmentAbout extends FragmentBase {
         super.onDestroyView();
     }
 
+    @SuppressWarnings({"UnusedParameters", "unused"})
     public void onEventMainThread(EventAccountConfig val) {
         updateBranding();
     }

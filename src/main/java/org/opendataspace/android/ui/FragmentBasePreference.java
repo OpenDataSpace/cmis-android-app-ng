@@ -165,7 +165,7 @@ abstract class FragmentBasePreference extends FragmentBase
      *
      * @param preferenceScreen The root {@link PreferenceScreen} of the preference hierarchy.
      */
-    void setPreferenceScreen(PreferenceScreen preferenceScreen) {
+    private void setPreferenceScreen(PreferenceScreen preferenceScreen) {
         if (CompatPreferenceManager.setPreferences(preferenceManager, preferenceScreen) && preferenceScreen != null) {
             havePrefs = true;
             if (initDone) {
@@ -180,7 +180,7 @@ abstract class FragmentBasePreference extends FragmentBase
      * @return The {@link PreferenceScreen} that is the root of the preference
      * hierarchy.
      */
-    PreferenceScreen getPreferenceScreen() {
+    private PreferenceScreen getPreferenceScreen() {
         return CompatPreferenceManager.getPreferenceScreen(preferenceManager);
     }
 
@@ -226,7 +226,7 @@ abstract class FragmentBasePreference extends FragmentBase
         }
     }
 
-    ListView getListView() {
+    private ListView getListView() {
         ensureList();
         return list;
     }

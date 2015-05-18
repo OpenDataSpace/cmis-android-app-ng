@@ -14,7 +14,7 @@ import org.robolectric.shadows.ShadowLog;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-public class TextLifecycle extends DefaultTestLifecycle {
+class TextLifecycle extends DefaultTestLifecycle {
 
     @Override
     public Application createApplication(Method method, AndroidManifest appManifest, Config config) {
@@ -35,7 +35,7 @@ public class TextLifecycle extends DefaultTestLifecycle {
         return app;
     }
 
-    protected Application createApp() {
+    private Application createApp() {
         return new TestApp();
     }
 

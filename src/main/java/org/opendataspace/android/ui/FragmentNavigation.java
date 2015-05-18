@@ -118,6 +118,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
         getMainActivity().getNavigation().openDialog(FragmentSettings.class, null);
     }
 
+    @SuppressWarnings({"UnusedParameters", "unused"})
     public void onEventMainThread(EventAccountSelect val) {
         updateCurrentAccount();
     }

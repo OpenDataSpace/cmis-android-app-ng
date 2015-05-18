@@ -6,6 +6,11 @@ import org.opendataspace.android.object.Account;
 
 public class ViewAccount extends ViewBase<Account> {
 
+    public ViewAccount() {
+        super();
+    }
+
+    @SuppressWarnings("unused")
     public void onEventMainThread(EventDaoAccount event) {
         processEvent(event);
     }

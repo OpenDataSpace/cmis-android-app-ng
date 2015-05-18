@@ -10,6 +10,7 @@ import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 import org.robolectric.RuntimeEnvironment;
 
+@SuppressWarnings("unused")
 @RunWith(TestRunner.class)
 public class OperationAccountDeleteTest {
 

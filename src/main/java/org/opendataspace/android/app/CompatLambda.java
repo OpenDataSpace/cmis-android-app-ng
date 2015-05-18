@@ -18,6 +18,7 @@ public class CompatLambda {
     }
 
     public interface Checker {
+        @SuppressWarnings("BooleanMethodIsAlwaysInverted")
         boolean test();
     }
 }

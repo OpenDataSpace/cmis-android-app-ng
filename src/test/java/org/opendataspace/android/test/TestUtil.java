@@ -73,18 +73,16 @@ public class TestUtil {
         return ac;
     }
 
-    public static ActivityMain replaceFragment(ActivityMain ac, FragmentBase fragment) throws Exception {
+    public static void replaceFragment(ActivityMain ac, FragmentBase fragment) {
         FragmentTransaction t = ac.getSupportFragmentManager().beginTransaction();
         t.replace(R.id.main_view_frame, fragment, "main");
         t.commit();
-        return ac;
     }
 
-    public static ActivityMain replaceSecondaryFragment(ActivityMain ac, FragmentBase fragment) throws Exception {
+    public static void replaceSecondaryFragment(ActivityMain ac, FragmentBase fragment) {
         FragmentTransaction t = ac.getSupportFragmentManager().beginTransaction();
         t.replace(R.id.main_view_drawer, fragment, "secondary");
         t.commit();
-        return ac;
     }
 
     public static void waitRunnable() throws InterruptedException {

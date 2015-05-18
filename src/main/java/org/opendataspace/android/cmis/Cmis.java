@@ -10,6 +10,7 @@ import org.opendataspace.android.object.Repo;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("WeakerAccess")
 public class Cmis {
 
     public static final SessionFactory factory = SessionFactoryImpl.newInstance();

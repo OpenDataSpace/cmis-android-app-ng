@@ -10,6 +10,7 @@ public class RepoSerializer extends DataGsonSerializer<RepoInfo> {
         super(RepoInfo.class);
     }
 
+    @SuppressWarnings("unused")
     public static RepoSerializer getSingleton() {
         return instance;
     }

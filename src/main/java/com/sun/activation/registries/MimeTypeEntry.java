@@ -40,6 +40,7 @@
 
 package com.sun.activation.registries;
 
+@SuppressWarnings("WeakerAccess")
 public class MimeTypeEntry {
     private final String type;
     private final String extension;

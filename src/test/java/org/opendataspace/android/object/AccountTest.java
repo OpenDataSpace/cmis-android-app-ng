@@ -7,6 +7,7 @@ import org.opendataspace.android.test.TestRunner;
 
 import java.io.IOException;
 
+@SuppressWarnings("unused")
 @RunWith(TestRunner.class)
 public class AccountTest {
 

@@ -66,7 +66,7 @@ public class CmisSession {
         }
     }
 
-    public Folder getRoot() {
+    private Folder getRoot() {
         if (root == null) {
             root = getSession().getRootFolder();
         }

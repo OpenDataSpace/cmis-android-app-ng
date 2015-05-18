@@ -6,6 +6,7 @@ import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.operation.OperationBase;
 import org.opendataspace.android.ui.FragmentBase;
 
+@SuppressWarnings("unused")
 public class TestNavigation implements NavigationInterface {
 
     @Override
