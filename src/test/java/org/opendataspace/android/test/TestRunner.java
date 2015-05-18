@@ -5,7 +5,6 @@ import android.os.Build;
 import org.junit.runners.model.InitializationError;
 import org.opendataspace.android.app.beta.BuildConfig;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.TestLifecycle;
 import org.robolectric.annotation.Config;
 import org.robolectric.internal.SdkConfig;
 import org.robolectric.manifest.AndroidManifest;
@@ -82,8 +81,8 @@ public class TestRunner extends RobolectricTestRunner {
     }
 
     @Override
-    protected Class<? extends TestLifecycle> getTestLifecycleClass() {
-        return TextLifecycle.class;
+    protected Class<? extends org.robolectric.TestLifecycle> getTestLifecycleClass() {
+        return TestLifecycle.class;
     }
 
     @Override

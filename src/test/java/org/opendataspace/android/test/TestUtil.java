@@ -57,17 +57,25 @@ public class TestUtil {
 
     public static ActivityMain setupActivity() throws Exception {
         TestApp app = (TestApp) RuntimeEnvironment.application;
-        Account acc = TestUtil.getDefaultAccount();
-        app.getDatabase().getAccounts().create(acc);
-        app.getPrefs().setLastAccountId(acc);
+
+        if (app.getPrefs().getLastAccountId() != ObjectBase.INVALID_ID) {
+            Account acc = TestUtil.getDefaultAccount();
+            app.getDatabase().getAccounts().create(acc);
+            app.getPrefs().setLastAccountId(acc);
+        }
+
         return Robolectric.setupActivity(ActivityMain.class);
     }
 
     public static ActivityMain setupFragment(FragmentBase fragment) throws Exception {
         TestApp app = (TestApp) RuntimeEnvironment.application;
-        Account acc = TestUtil.getDefaultAccount();
-        app.getDatabase().getAccounts().create(acc);
-        app.getPrefs().setLastAccountId(acc);
+
+        if (app.getPrefs().getLastAccountId() != ObjectBase.INVALID_ID) {
+            Account acc = TestUtil.getDefaultAccount();
+            app.getDatabase().getAccounts().create(acc);
+            app.getPrefs().setLastAccountId(acc);
+        }
+
         ActivityMain ac = Robolectric.setupActivity(TestActivity.class);
         replaceFragment(ac, fragment);
         return ac;
