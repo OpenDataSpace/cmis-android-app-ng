@@ -1,4 +1,4 @@
-package org.opendataspace.android.object;
+package org.opendataspace.android.storage;
 
 import android.content.Context;
 import android.view.View;

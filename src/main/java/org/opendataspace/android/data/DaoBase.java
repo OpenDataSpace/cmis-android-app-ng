@@ -57,7 +57,7 @@ public abstract class DaoBase<T extends ObjectBase> {
         try {
             int res = creator.insert(type, conn, val, cache);
 
-            if (res > 0) {
+            if (res > 0 && event != null) {
                 event.addInsert(val);
                 fire(conn);
             }
@@ -76,7 +76,7 @@ public abstract class DaoBase<T extends ObjectBase> {
         try {
             int res = updater.update(conn, val, cache);
 
-            if (res > 0) {
+            if (res > 0 && event != null) {
                 event.addUpdate(val);
                 fire(conn);
             }
@@ -95,7 +95,7 @@ public abstract class DaoBase<T extends ObjectBase> {
         try {
             int res = deleter.delete(conn, val, cache);
 
-            if (res > 0) {
+            if (res > 0 && event != null) {
                 event.addDelete(val);
                 fire(conn);
             }
@@ -193,7 +193,7 @@ public abstract class DaoBase<T extends ObjectBase> {
     }
 
     void fire(DatabaseConnection conn) throws SQLException {
-        if (conn.isAutoCommit() && !event.isEmpty()) {
+        if (conn.isAutoCommit() && event != null && !event.isEmpty()) {
             OdsApp.bus.post(event);
             event = createEvent();
         }

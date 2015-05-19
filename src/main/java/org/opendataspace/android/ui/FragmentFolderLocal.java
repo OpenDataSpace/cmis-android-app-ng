@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Environment;
 
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.object.FileAdapter;
+import org.opendataspace.android.storage.FileAdapter;
 import org.opendataspace.android.operation.OperationFolderLocal;
 
 import java.io.File;

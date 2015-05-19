@@ -11,6 +11,7 @@ import com.j256.ormlite.support.DatabaseConnection;
 import com.j256.ormlite.table.TableUtils;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.object.Account;
+import org.opendataspace.android.object.MimeType;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.Repo;
 
@@ -27,6 +28,7 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
     private DaoAccount accounts;
     private DaoRepo repos;
     private DaoNode nodes;
+    private DaoMime mime;
 
     public DataBase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -38,6 +40,12 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Account.class);
             TableUtils.createTable(connectionSource, Repo.class);
             TableUtils.createTable(connectionSource, Node.class);
+            TableUtils.createTable(connectionSource, MimeType.class);
+
+            transact(() -> {
+                getMime().createDefaults();
+                return null;
+            });
         } catch (Exception ex) {
             OdsLog.ex(getClass(), ex);
         }
@@ -54,6 +62,7 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
         accounts = null;
         repos = null;
         nodes = null;
+        mime = null;
     }
 
     public DaoAccount getAccounts() {
@@ -90,6 +99,18 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
         }
 
         return nodes;
+    }
+
+    public DaoMime getMime() {
+        if (mime == null) {
+            try {
+                mime = new DaoMime(getConnectionSource(), cache);
+            } catch (SQLException ex) {
+                OdsLog.ex(getClass(), ex);
+            }
+        }
+
+        return mime;
     }
 
     public <T> void transact(Callable<T> action) throws SQLException {
