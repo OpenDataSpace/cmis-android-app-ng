@@ -60,6 +60,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
 
         DataAdapterMerge adpf = new DataAdapterMerge();
         adpf.addAdapter(repos = new RepoAdapter(vm.getRepos(), ac));
+        adpf.addAdapter(new ActionAdapter(ac, Action.listOf(ac, R.id.action_nav_localfolder)));
         lvf.setAdapter(adpf);
         lvf.setOnItemClickListener((adapterView, view1, i, l) -> selectFolder(adapterView, i));
 
@@ -79,10 +80,6 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
         accounts.dispose();
         repos.dispose();
         super.onDestroyView();
-    }
-
-    private void actionManage() {
-        getMainActivity().getNavigation().openRootFolder(FragmentAccountList.class, null);
     }
 
     @Override
@@ -165,7 +162,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
     private void executeAction(Action action) {
         switch (action.getId()) {
         case R.id.action_nav_manage:
-            actionManage();
+            getMainActivity().getNavigation().openRootFolder(FragmentAccountList.class, null);
             break;
 
         case R.id.action_nav_settings:
@@ -173,7 +170,12 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
             break;
 
         case R.id.action_nav_addaccount:
-            actionAddAccount();
+            getMainActivity().getNavigation()
+                    .openFile(FragmentAccountDetails.class, new OperationAccountUpdate(new Account()));
+            break;
+
+        case R.id.action_nav_localfolder:
+            getMainActivity().getNavigation().openRootFolder(FragmentFolderLibrary.class, null);
             break;
         }
     }
@@ -182,16 +184,11 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
         Object obj = view.getAdapter().getItem(idx);
 
         if (obj instanceof Repo) {
-            getMainActivity().getNavigation().openRootFolder(FragmentFolder.class,
+            getMainActivity().getNavigation().openRootFolder(FragmentFolderCmis.class,
                     new OperationFolderBrowse(OdsApp.get().getViewManager().getCurrentAccount(), (Repo) obj));
         } else if (obj instanceof Action) {
             executeAction((Action) obj);
         }
-    }
-
-    private void actionAddAccount() {
-        getMainActivity().getNavigation()
-                .openFile(FragmentAccountDetails.class, new OperationAccountUpdate(new Account()));
     }
 
     @Override

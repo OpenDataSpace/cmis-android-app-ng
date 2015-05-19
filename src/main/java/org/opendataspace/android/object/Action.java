@@ -33,6 +33,41 @@ public class Action {
             iconId = R.drawable.ic_add;
             break;
 
+        case R.id.action_nav_localfolder:
+            name = context.getString(R.string.nav_localfolder);
+            iconId = R.drawable.ic_folder;
+            break;
+
+        case R.id.action_local_root:
+            name = context.getString(R.string.folder_root);
+            iconId = R.drawable.ic_phone;
+            break;
+
+        case R.id.action_local_downloads:
+            name = context.getString(R.string.folder_downloads);
+            iconId = R.drawable.ic_downloads;
+            break;
+
+        case R.id.action_local_documents:
+            name = context.getString(R.string.folder_documents);
+            iconId = R.drawable.ic_documents;
+            break;
+
+        case R.id.action_local_pictures:
+            name = context.getString(R.string.folder_pictures);
+            iconId = R.drawable.ic_pictures;
+            break;
+
+        case R.id.action_local_music:
+            name = context.getString(R.string.folder_music);
+            iconId = R.drawable.ic_music;
+            break;
+
+        case R.id.action_local_video:
+            name = context.getString(R.string.folder_video);
+            iconId = R.drawable.ic_videos;
+            break;
+
         default:
             name = "";
             iconId = 0;

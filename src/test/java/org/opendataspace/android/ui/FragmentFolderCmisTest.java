@@ -18,7 +18,7 @@ import org.robolectric.Shadows;
 
 @SuppressWarnings("unused")
 @RunWith(TestRunner.class)
-public class FragmentFolderTest {
+public class FragmentFolderCmisTest {
 
     @Test
     public void navigate() throws Exception {
@@ -41,7 +41,7 @@ public class FragmentFolderTest {
 
         Assert.assertEquals(true, repo != null);
         OperationFolderBrowse op = new OperationFolderBrowse(acc, repo);
-        FragmentFolder fgm = new FragmentFolder(op);
+        FragmentFolderCmis fgm = new FragmentFolderCmis(op);
         ActivityMain ac = TestUtil.setupFragment(fgm);
         TestUtil.waitRunnable();
 

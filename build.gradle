@@ -39,6 +39,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
+            shrinkResources true
             proguardFile 'proguard-project.txt'
             //noinspection GroovyAssignabilityCheck
             signingConfig signingConfigs.release
@@ -54,7 +55,8 @@ android {
         minSdkVersion 9
         targetSdkVersion 22
         versionCode 1
-        versionName '0.1'
+        versionName '2.0.0'
+        resConfigs 'en', 'de', 'fr'
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         manifestPlaceholders = ['ods.key.fabric': props['ods.key.fabric']]
     }

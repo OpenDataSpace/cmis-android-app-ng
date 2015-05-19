@@ -53,11 +53,13 @@ public class ActivityMainTest {
         navigateBack(FragmentNavigation.class, ac);
 
         // folders
-        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_personal), FragmentFolder.class, ac);
+        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_personal), FragmentFolderCmis.class, ac);
         navigateBack(FragmentNavigation.class, ac);
-        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_shared), FragmentFolder.class, ac);
+        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_shared), FragmentFolderCmis.class, ac);
         navigateBack(FragmentNavigation.class, ac);
-        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_global), FragmentFolder.class, ac);
+        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_global), FragmentFolderCmis.class, ac);
+        navigateBack(FragmentNavigation.class, ac);
+        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_localfolder), FragmentFolderLibrary.class, ac);
         navigateBack(FragmentNavigation.class, ac);
 
         // exit

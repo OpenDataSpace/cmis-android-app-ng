@@ -110,14 +110,14 @@ public class Repo extends ObjectBase {
 
     public int getIcon() {
         switch (type) {
-        case SHARED:
-            return R.drawable.ic_shared;
+        case PRIVATE:
+            return R.drawable.ic_favorite;
 
         case GLOBAL:
             return R.drawable.ic_global;
 
         default:
-            return R.drawable.ic_folder;
+            return R.drawable.ic_shared;
         }
     }
 

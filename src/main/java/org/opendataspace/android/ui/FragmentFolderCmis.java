@@ -16,13 +16,13 @@ import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationStatus;
 
 @SuppressLint("ValidFragment")
-public class FragmentFolder extends FragmentBaseList implements LoaderManager.LoaderCallbacks<OperationStatus> {
+public class FragmentFolderCmis extends FragmentBaseList implements LoaderManager.LoaderCallbacks<OperationStatus> {
 
     private OperationFolderBrowse op;
     private NodeAdapter adapter;
     private boolean inProgress;
 
-    public FragmentFolder(OperationFolderBrowse op) {
+    public FragmentFolderCmis(OperationFolderBrowse op) {
         this.op = op;
     }
 

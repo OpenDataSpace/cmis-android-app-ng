@@ -28,6 +28,7 @@
     <string name="nav_personal">My Folders</string>
     <string name="nav_shared">Shared</string>
     <string name="nav_global">Global</string>
+    <string name="nav_localfolder">Local Files</string>
 
     <!-- about -->
     <string name="about_info">
@@ -72,5 +73,11 @@
     <!-- folder -->
     <string name="folder_title">Folder</string>
     <string name="folder_empty">No files…</string>
+    <string name="folder_root">SD Card</string>
+    <string name="folder_downloads">Downloads</string>
+    <string name="folder_documents">Documents</string>
+    <string name="folder_pictures">Images</string>
+    <string name="folder_music">Music</string>
+    <string name="folder_video">Video</string>
 
 </resources>

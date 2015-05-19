@@ -10,5 +10,12 @@
     <item name="action_nav_manage" type="id"/>
     <item name="action_nav_settings" type="id"/>
     <item name="action_nav_addaccount" type="id"/>
+    <item name="action_nav_localfolder" type="id"/>
+    <item name="action_local_root" type="id"/>
+    <item name="action_local_downloads" type="id"/>
+    <item name="action_local_documents" type="id"/>
+    <item name="action_local_pictures" type="id"/>
+    <item name="action_local_music" type="id"/>
+    <item name="action_local_video" type="id"/>
 
 </resources>
