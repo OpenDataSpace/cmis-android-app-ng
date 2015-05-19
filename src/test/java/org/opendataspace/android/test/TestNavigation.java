@@ -30,6 +30,11 @@ public class TestNavigation implements NavigationInterface {
     }
 
     @Override
+    public void openFolder(Class<? extends FragmentBase> cls, OperationBase op) {
+        // nothing
+    }
+
+    @Override
     public void openFile(Class<? extends FragmentBase> cls, OperationBase op) {
         // nothing
     }
@@ -41,6 +46,11 @@ public class TestNavigation implements NavigationInterface {
 
     @Override
     public void openDrawer() {
+        // nothing
+    }
+
+    @Override
+    public void updateTitle() {
         // nothing
     }
 }

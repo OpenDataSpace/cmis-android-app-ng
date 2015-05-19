@@ -11,6 +11,8 @@ import io.fabric.sdk.android.Fabric;
 import org.opendataspace.android.data.DataBase;
 import org.opendataspace.android.view.ViewManager;
 
+import java.io.File;
+
 public class OdsApp extends Application {
 
     private static OdsApp instance;
@@ -18,7 +20,8 @@ public class OdsApp extends Application {
 
     public static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
             .registerTypeAdapter(Class.class, new ClassSerializer())
-            .registerTypeAdapter(ClassWrapper.class, new ClassWrapperSerializer()).create();
+            .registerTypeAdapter(ClassWrapper.class, new ClassWrapperSerializer())
+            .registerTypeAdapter(File.class, new ClassFileSerializer()).create();
 
     public static final EventBus bus =
             EventBus.builder().eventInheritance(false).sendNoSubscriberEvent(false).sendSubscriberExceptionEvent(false).

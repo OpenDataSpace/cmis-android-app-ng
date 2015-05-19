@@ -55,6 +55,8 @@ public class FragmentFolderCmisTest {
         TestUtil.waitRunnable();
         Assert.assertEquals(true, Shadows.shadowOf(lv).findIndexOfItemContainingText("GDS") != -1);
         Assert.assertEquals(true, res);
+        res = fgm.backPressed();
+        Assert.assertEquals(false, res);
 
         TestUtil.dismisActivity(ac);
     }

@@ -15,9 +15,13 @@ public interface NavigationInterface {
 
     void openRootFolder(Class<? extends FragmentBase> cls, OperationBase op);
 
+    void openFolder(Class<? extends FragmentBase> cls, OperationBase op);
+
     void openFile(Class<? extends FragmentBase> cls, OperationBase op);
 
     void save(Bundle state);
 
     void openDrawer();
+
+    void updateTitle();
 }

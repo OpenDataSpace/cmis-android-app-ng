@@ -217,8 +217,22 @@ public class Navigation implements NavigationInterface {
     }
 
     @Override
+    public void openFolder(Class<? extends FragmentBase> cls, OperationBase op) {
+        navigate(cls, op, NavigationScope.MAIN, false);
+    }
+
+    @Override
     public void openDrawer() {
         drawer.openDrawer(Gravity.START);
+    }
+
+    @Override
+    public void updateTitle() {
+        FragmentBase fgm = getTopFragment();
+
+        if (fgm != null) {
+            bar.setTitle(fgm.getTile(context));
+        }
     }
 
     @Override

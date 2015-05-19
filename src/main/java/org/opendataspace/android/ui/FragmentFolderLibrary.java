@@ -9,6 +9,7 @@ import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.object.Action;
 import org.opendataspace.android.object.ActionAdapter;
+import org.opendataspace.android.operation.OperationFolderLocal;
 
 import java.io.File;
 import java.util.List;
@@ -69,8 +70,8 @@ public class FragmentFolderLibrary extends FragmentBaseList {
             OdsLog.ex(getClass(), ex);
         }
 
-        if (f == null) {
-            return;
+        if (f != null) {
+            getMainActivity().getNavigation().openFolder(FragmentFolderLocal.class, new OperationFolderLocal(f));
         }
     }
 }

@@ -58,7 +58,7 @@ public class TestUtil {
     public static ActivityMain setupActivity() throws Exception {
         TestApp app = (TestApp) RuntimeEnvironment.application;
 
-        if (app.getPrefs().getLastAccountId() != ObjectBase.INVALID_ID) {
+        if (app.getPrefs().getLastAccountId() == ObjectBase.INVALID_ID) {
             Account acc = TestUtil.getDefaultAccount();
             app.getDatabase().getAccounts().create(acc);
             app.getPrefs().setLastAccountId(acc);
@@ -70,7 +70,7 @@ public class TestUtil {
     public static ActivityMain setupFragment(FragmentBase fragment) throws Exception {
         TestApp app = (TestApp) RuntimeEnvironment.application;
 
-        if (app.getPrefs().getLastAccountId() != ObjectBase.INVALID_ID) {
+        if (app.getPrefs().getLastAccountId() == ObjectBase.INVALID_ID) {
             Account acc = TestUtil.getDefaultAccount();
             app.getDatabase().getAccounts().create(acc);
             app.getPrefs().setLastAccountId(acc);
