@@ -11,7 +11,7 @@ import com.google.gson.JsonSerializer;
 import java.io.File;
 import java.lang.reflect.Type;
 
-public class ClassFileSerializer implements JsonSerializer<File>, JsonDeserializer<File> {
+class ClassFileSerializer implements JsonSerializer<File>, JsonDeserializer<File> {
 
     @Override
     public File deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws

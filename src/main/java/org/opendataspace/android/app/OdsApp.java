@@ -43,7 +43,15 @@ public class OdsApp extends Application {
         instance = this;
 
         try {
-            performHacks();
+            if (isRealApp()) {
+                CompatPRNG.apply();
+
+                if (!OdsPreferences.isDebug()) {
+                    Fabric.with(this, new Crashlytics());
+                    Crashlytics.setUserIdentifier(prefs.getInstallId());
+                    crashl = true;
+                }
+            }
         } catch (final Exception ex) {
             OdsLog.ex(getClass(), ex);
         }
@@ -82,21 +90,15 @@ public class OdsApp extends Application {
         return pool;
     }
 
-    protected void performHacks() {
-        CompatPRNG.apply();
-
-        if (!OdsPreferences.isDebug()) {
-            Fabric.with(this, new Crashlytics());
-            Crashlytics.setUserIdentifier(prefs.getInstallId());
-            crashl = true;
-        }
-    }
-
     public ViewManager getViewManager() {
         return vm;
     }
 
     static boolean hasCrahlytics() {
         return crashl;
+    }
+
+    public boolean isRealApp() {
+        return true;
     }
 }

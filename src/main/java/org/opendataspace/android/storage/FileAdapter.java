@@ -15,7 +15,7 @@ import java.util.Collections;
 
 public class FileAdapter extends DataAdapter {
 
-    private ArrayList<File> data = new ArrayList<>();
+    private final ArrayList<File> data = new ArrayList<>();
 
     public FileAdapter(Context context, File root) {
         super(context, R.layout.delegate_list_item1);

@@ -9,6 +9,7 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.support.DatabaseConnection;
 import com.j256.ormlite.table.TableUtils;
+import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.MimeType;
@@ -42,10 +43,12 @@ public class DataBase extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Node.class);
             TableUtils.createTable(connectionSource, MimeType.class);
 
-            transact(() -> {
-                getMime().createDefaults();
-                return null;
-            });
+            if (OdsApp.get().isRealApp()) {
+                transact(() -> {
+                    getMime().createDefaults();
+                    return null;
+                });
+            }
         } catch (Exception ex) {
             OdsLog.ex(getClass(), ex);
         }

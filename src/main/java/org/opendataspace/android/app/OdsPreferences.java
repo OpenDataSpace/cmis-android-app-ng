@@ -2,9 +2,9 @@ package org.opendataspace.android.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.text.TextUtils;
 
+import org.opendataspace.android.app.beta.BuildConfig;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.ObjectBase;
@@ -21,9 +21,9 @@ public class OdsPreferences {
         prefs = context.getSharedPreferences("ods", Context.MODE_PRIVATE);
     }
 
+    @SuppressWarnings("SameReturnValue")
     public static boolean isDebug() {
-        return 0 !=
-                (OdsApp.get().getApplicationContext().getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE);
+        return BuildConfig.DEBUG;
     }
 
     public boolean isTablet() {

@@ -206,8 +206,8 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
         getMainActivity().stopWait();
     }
 
-    public void setIsMain(boolean val) {
-        isMain = val;
-        setHasOptionsMenu(isMain);
+    public void setNonMain() {
+        isMain = false;
+        setHasOptionsMenu(false);
     }
 }

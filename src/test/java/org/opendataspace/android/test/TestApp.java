@@ -5,7 +5,7 @@ import org.opendataspace.android.app.OdsApp;
 public class TestApp extends OdsApp {
 
     @Override
-    protected void performHacks() {
-        // nothing
+    public boolean isRealApp() {
+        return false;
     }
 }

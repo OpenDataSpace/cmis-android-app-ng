@@ -1,7 +1,6 @@
 package org.opendataspace.android.object;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import junit.framework.Assert;
 import org.junit.Test;
@@ -12,6 +11,7 @@ import org.opendataspace.android.test.TestUtil;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 @SuppressWarnings("unused")
 @RunWith(TestRunner.class)
@@ -20,6 +20,15 @@ public class MimeTypeTest {
     @Test
     public void verify() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
+
+        //noinspection Convert2Lambda
+        app.getDatabase().transact(new Callable<Object>() {
+            public Object call() throws Exception {
+                app.getDatabase().getMime().createDefaults();
+                return null;
+            }
+        });
+
         List<MimeType> ls = TestUtil.allOf(app.getDatabase().getMime().iterate());
         Assert.assertEquals(false, ls.isEmpty());
 

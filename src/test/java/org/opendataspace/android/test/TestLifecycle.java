@@ -14,6 +14,7 @@ import org.robolectric.shadows.ShadowLog;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+@SuppressWarnings("WeakerAccess")
 public class TestLifecycle extends DefaultTestLifecycle {
 
     @Override

@@ -73,7 +73,7 @@ public class Navigation implements NavigationInterface {
         }
 
         FragmentNavigation nav = new FragmentNavigation();
-        nav.setIsMain(false);
+        nav.setNonMain();
         applyFragment(R.id.main_view_drawer, nav, TAG_NAVGATION);
         navigate(backstack.lastElement());
     }
