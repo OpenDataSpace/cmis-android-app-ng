@@ -8,18 +8,17 @@ import android.widget.TextView;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.data.DataAdapter;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 
 public class FileAdapter extends DataAdapter {
 
-    private final ArrayList<File> data = new ArrayList<>();
+    private final ArrayList<FileInfo> data = new ArrayList<>();
+    private final Context context;
 
-    public FileAdapter(Context context, File root) {
+    public FileAdapter(Context context) {
         super(context, R.layout.delegate_list_item1);
-        addAll(root);
+        this.context = context;
     }
 
     @Override
@@ -41,36 +40,15 @@ public class FileAdapter extends DataAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View vw = super.getView(position, convertView, parent);
         TextView tv = (TextView) vw.findViewById(R.id.text_listitem_primary);
-        File file = data.get(position);
-        tv.setText(file.getName());
-        tv.setCompoundDrawablesWithIntrinsicBounds(file.isDirectory() ? R.drawable.ic_folder : R.drawable.ic_file, 0, 0,
-                0);
-
+        FileInfo info = data.get(position);
+        tv.setText(info.getName());
+        tv.setCompoundDrawablesWithIntrinsicBounds(info.getIcon(context), 0, 0, 0);
         return vw;
     }
 
-    public void update(File file) {
+    public void update(List<FileInfo> file) {
         data.clear();
-        addAll(file);
+        data.addAll(file);
         invalidate();
-    }
-
-    private void addAll(File file) {
-        if (file == null) {
-            return;
-        }
-
-        File[] ls = file.listFiles(cur -> !cur.isHidden());
-
-        if (ls == null) {
-            return;
-        }
-
-        data.addAll(Arrays.asList(ls));
-
-        Collections.sort(data, (f1, f2) -> {
-            int res = Boolean.valueOf(f1.isDirectory()).compareTo(f2.isDirectory());
-            return res != 0 ? -res : f1.getName().compareToIgnoreCase(f2.getName());
-        });
     }
 }

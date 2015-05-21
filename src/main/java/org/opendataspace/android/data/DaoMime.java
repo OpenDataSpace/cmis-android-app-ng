@@ -26,7 +26,7 @@ public class DaoMime extends DaoBase<MimeType> {
         return null;
     }
 
-    MimeType forExtension(String extension) throws SQLException {
+    public MimeType forExtension(String extension) throws SQLException {
         if (byExt == null) {
             byExtArg = new SelectArg();
             byExt = queryBuilder().where().eq(MimeType.FIELD_EXT, byExtArg).prepare();
