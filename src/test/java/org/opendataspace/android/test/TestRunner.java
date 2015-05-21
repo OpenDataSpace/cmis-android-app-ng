@@ -6,7 +6,6 @@ import org.junit.runners.model.InitializationError;
 import org.opendataspace.android.app.beta.BuildConfig;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.internal.SdkConfig;
 import org.robolectric.manifest.AndroidManifest;
 import org.robolectric.res.FileFsFile;
 import org.robolectric.util.ReflectionHelpers;
@@ -71,12 +70,7 @@ public class TestRunner extends RobolectricTestRunner {
     }
 
     @Override
-    protected SdkConfig pickSdkVersion(AndroidManifest appManifest, Config config) {
-        return new SdkConfig(Build.VERSION_CODES.JELLY_BEAN);
-    }
-
-    @Override
-    protected int pickReportedSdkVersion(Config config, AndroidManifest appManifest) {
+    protected int pickSdkVersion(Config config, AndroidManifest manifest) {
         return Build.VERSION_CODES.JELLY_BEAN;
     }
 

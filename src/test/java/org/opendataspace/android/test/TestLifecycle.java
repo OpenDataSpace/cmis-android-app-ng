@@ -48,4 +48,10 @@ public class TestLifecycle extends DefaultTestLifecycle {
             ShadowLog.stream = System.out;
         }
     }
+
+    @Override
+    public void afterTest(Method method) {
+        super.afterTest(method);
+        System.gc();
+    }
 }

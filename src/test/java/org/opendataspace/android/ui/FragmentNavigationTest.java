@@ -81,6 +81,7 @@ public class FragmentNavigationTest {
         Account acc = app.getDatabase().getAccounts().get(app.getPrefs().getLastAccountId());
         OperationAccountDelete op = new OperationAccountDelete(acc);
         op.execute();
+        TestUtil.waitRunnable();
 
         TextView tv = (TextView) fgm1.getView().findViewById(R.id.action_nav_account);
         Assert.assertEquals(ac.getString(R.string.nav_noaccount), tv.getText());

@@ -23,8 +23,9 @@ import org.robolectric.util.ActivityController;
 public class ActivityMainTest {
 
     @Test
-    public void checkNoAccounts() {
+    public void checkNoAccounts() throws Exception {
         ActivityMain ac = Robolectric.setupActivity(ActivityMain.class);
+        TestUtil.waitRunnable();
         Assert.assertEquals(FragmentAccountList.class, ac.getNavigation().getTopFragment().getClass());
         ac.onBackPressed();
         Assert.assertEquals(true, Shadows.shadowOf(ac).isFinishing());
@@ -91,6 +92,7 @@ public class ActivityMainTest {
     @Test
     public void checkSerialization() throws Exception {
         ActivityMain ac = TestUtil.setupActivity();
+        TestUtil.waitRunnable();
         NavigationInterface nav = ac.getNavigation();
         nav.openRootFolder(FragmentAccountList.class, null);
         nav.openFile(FragmentAccountDetails.class, new OperationAccountUpdate(TestUtil.getDefaultAccount()));
@@ -104,6 +106,7 @@ public class ActivityMainTest {
         Assert.assertEquals(OperationAccountUpdate.class, ns[2].getOperation().getClass());
 
         ac = ActivityController.of(Robolectric.getShadowsAdapter(), ActivityMain.class).setup(bu).get();
+        TestUtil.waitRunnable();
         Assert.assertEquals(FragmentAccountDetails.class, ac.getNavigation().getTopFragment().getClass());
         TestUtil.dismisActivity(ac);
     }

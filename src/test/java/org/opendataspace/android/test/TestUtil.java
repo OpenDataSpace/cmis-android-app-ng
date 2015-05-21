@@ -98,15 +98,20 @@ public class TestUtil {
 
         do {
             Thread.sleep(100);
-        } while (++cnt < 60 && OdsApp.get().getPool().hasTasks());
+
+            if (++cnt > 200) {
+                throw new InterruptedException();
+            }
+        } while (OdsApp.get().getPool().hasTasks());
 
         ShadowLooper.runUiThreadTasks();
     }
 
-    public static Bundle dismisActivity(ActivityMain ac) {
+    public static Bundle dismisActivity(ActivityMain ac) throws InterruptedException {
         ActivityController con = ActivityController.of(Robolectric.getShadowsAdapter(), ac);
         Bundle bu = new Bundle();
         con.pause().stop().saveInstanceState(bu).destroy();
+        waitRunnable();
         return bu;
     }
 

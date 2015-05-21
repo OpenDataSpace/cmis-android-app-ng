@@ -34,6 +34,7 @@ public class OperationAccountSelect extends OperationBase {
         vm.setCurrentAccount(account);
 
         if (account == null) {
+            OdsApp.bus.post(new EventAccountSelect());
             return;
         }
 
