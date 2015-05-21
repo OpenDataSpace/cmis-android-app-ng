@@ -3,7 +3,7 @@ package org.opendataspace.android.view;
 import android.content.Context;
 
 import org.opendataspace.android.app.CompatDisposable;
-import org.opendataspace.android.app.CompatEvent;
+import org.opendataspace.android.event.Event;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.data.DataAdapter;
 import org.opendataspace.android.object.ObjectBase;
@@ -20,7 +20,7 @@ public class ViewAdapter<T extends ObjectBase> extends DataAdapter implements Co
         super(context, resId);
         this.view = view;
         data.addAll(view.getObjects());
-        OdsApp.bus.register(this, CompatEvent.PRIORITY_ADAPTER);
+        OdsApp.bus.register(this, Event.PRIORITY_ADAPTER);
     }
 
     @Override

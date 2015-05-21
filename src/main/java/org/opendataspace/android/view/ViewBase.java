@@ -2,7 +2,7 @@ package org.opendataspace.android.view;
 
 import com.j256.ormlite.dao.CloseableIterator;
 import org.opendataspace.android.app.CompatDisposable;
-import org.opendataspace.android.app.CompatEvent;
+import org.opendataspace.android.event.Event;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.event.EventDaoBase;
@@ -21,7 +21,7 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
     private final Set<Long> deleted = new HashSet<>();
 
     ViewBase() {
-        OdsApp.bus.register(this, CompatEvent.PRIORITY_VIEW);
+        OdsApp.bus.register(this, Event.PRIORITY_VIEW);
     }
 
     void processEvent(EventDaoBase<T> event) {

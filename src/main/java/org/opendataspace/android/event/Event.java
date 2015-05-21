@@ -1,6 +1,6 @@
-package org.opendataspace.android.app;
+package org.opendataspace.android.event;
 
-public class CompatEvent {
+public class Event {
 
     public static final int PRIORITY_UI = 0;
     public static final int PRIORITY_ADAPTER = 1;

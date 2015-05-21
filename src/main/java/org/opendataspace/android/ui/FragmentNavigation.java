@@ -13,7 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import org.opendataspace.android.app.CompatEvent;
+import org.opendataspace.android.event.Event;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.data.DataAdapterMerge;
@@ -66,7 +66,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
 
         widget(R.id.action_nav_account).setOnClickListener(view -> toggleView());
         widget(R.id.action_nav_accdesc).setOnClickListener(view -> toggleView());
-        OdsApp.bus.register(this, CompatEvent.PRIORITY_UI);
+        OdsApp.bus.register(this, Event.PRIORITY_UI);
         updateCurrentAccount();
 
         if (isMain && OdsApp.get().getViewManager().getCurrentAccount() == null) {
