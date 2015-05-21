@@ -13,6 +13,7 @@ import org.opendataspace.android.object.NodeAdapter;
 import org.opendataspace.android.operation.OperationBase;
 import org.opendataspace.android.operation.OperationFolderBrowse;
 import org.opendataspace.android.operation.OperationLoader;
+import org.opendataspace.android.operation.OperationNodeBrowse;
 import org.opendataspace.android.operation.OperationStatus;
 
 @SuppressLint("ValidFragment")
@@ -43,7 +44,7 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
 
     @Override
     public String getTile(Context context) {
-        return context.getString(R.string.folder_title);
+        return context.getString(R.string.folder_slash);
     }
 
     @Override
@@ -75,7 +76,18 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
     }
 
     private void selectNode(Node node, boolean cdup) {
-        if (inProgress || (node != null && node.getType() != Node.Type.FOLDER)) {
+        if (inProgress) {
+            return;
+        }
+
+        Node.Type type = node != null ? node.getType() : Node.Type.FOLDER;
+
+        if (type == Node.Type.DOCUMENT) {
+            getMainActivity().getNavigation().openFile(FragmentNodeInfo.class, new OperationNodeBrowse(node));
+            return;
+        }
+
+        if (type != Node.Type.FOLDER) {
             return;
         }
 

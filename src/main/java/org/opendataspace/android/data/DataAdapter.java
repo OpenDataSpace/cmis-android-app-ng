@@ -9,11 +9,13 @@ import android.widget.BaseAdapter;
 public abstract class DataAdapter extends BaseAdapter {
 
     protected final LayoutInflater inf;
+    protected final Context context;
     private final int resId;
 
     protected DataAdapter(final Context context, final int resId) {
         inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.resId = resId;
+        this.context = context;
     }
 
     @Override

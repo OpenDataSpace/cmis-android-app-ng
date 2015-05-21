@@ -1,5 +1,11 @@
 package org.opendataspace.android.object;
 
+import android.content.Context;
+import android.text.TextUtils;
+import android.text.format.DateFormat;
+import android.text.format.DateUtils;
+import android.text.format.Formatter;
+
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -146,5 +152,45 @@ public class Node extends ObjectBase {
         default:
             return R.drawable.ic_file;
         }
+    }
+
+    public String getDecription(Context context) {
+        String res = "";
+
+        if (info.size != 0) {
+            res += Formatter.formatShortFileSize(context, info.size);
+        }
+
+        if (info.mdt != null) {
+            if (!res.isEmpty()) {
+                res += " ";
+            }
+
+            res += DateUtils.getRelativeTimeSpanString(context, info.mdt.getTimeInMillis());
+        }
+
+        return res;
+    }
+
+    public String getPath(Context context) {
+        return TextUtils.isEmpty(info.path) ? context.getString(R.string.folder_slash) : info.path;
+    }
+
+    public String getCreatedAt(Context context) {
+        return info.cdt != null ? DateFormat.getMediumDateFormat(context).format(info.cdt.getTime()) + " " +
+                DateFormat.getTimeFormat(context).format(info.cdt.getTime()) : "";
+    }
+
+    public String getCreatedBy() {
+        return info.cru;
+    }
+
+    public String getModifiedAt(Context context) {
+        return info.mdt != null ? DateFormat.getMediumDateFormat(context).format(info.mdt.getTime()) + " " +
+                DateFormat.getTimeFormat(context).format(info.mdt.getTime()) : "";
+    }
+
+    public String getModifiedBy() {
+        return info.mdu;
     }
 }

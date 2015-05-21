@@ -3,6 +3,8 @@
 
     <bool name="isTablet">false</bool>
 
+    <dimen name="preview">140dp</dimen>
+
     <item name="internal_empty" type="id"/>
     <item name="internal_progress" type="id"/>
     <item name="internal_listcontainer" type="id"/>

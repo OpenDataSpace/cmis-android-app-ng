@@ -20,10 +20,12 @@ public class NodeAdapter extends ViewAdapter<Node> {
     public View getView(final int position, View convertView, final ViewGroup parent) {
         View vw = super.getView(position, convertView, parent);
         TextView tw1 = (TextView) vw.findViewById(R.id.text_listitem_primary);
+        TextView tw2 = (TextView) vw.findViewById(R.id.text_listitem_secondary);
         Node node = getObject(position);
 
         tw1.setText(node.getName());
         tw1.setCompoundDrawablesWithIntrinsicBounds(node.getIcon(), 0, 0, 0);
+        tw2.setText(node.getDecription(context));
         return vw;
     }
 

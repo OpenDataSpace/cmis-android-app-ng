@@ -46,4 +46,14 @@
         <item name="android:drawablePadding">@dimen/pad</item>
     </style>
 
+    <style name="OdsTextPrimary">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="OdsTextSecondary">
+        <item name="android:textAppearance">?android:attr/textAppearance</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+    </style>
+
 </resources>

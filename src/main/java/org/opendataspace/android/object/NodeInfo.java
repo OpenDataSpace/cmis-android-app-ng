@@ -8,6 +8,7 @@ import org.apache.chemistry.opencmis.client.api.Property;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.opendataspace.android.app.CompatObjects;
 
+import java.math.BigInteger;
 import java.util.Calendar;
 
 class NodeInfo {
@@ -36,6 +37,9 @@ class NodeInfo {
     @Expose
     public Calendar mdt;
 
+    @Expose
+    public long size = 0;
+
     public NodeInfo() {
         // nothing
     }
@@ -49,6 +53,7 @@ class NodeInfo {
         mdu = other.mdu;
         cdt = other.cdt;
         mdt = other.mdt;
+        size = other.size;
     }
 
     public boolean update(CmisObject cmis) {
@@ -96,6 +101,14 @@ class NodeInfo {
 
         if (!CompatObjects.equals(modified, mdt)) {
             mdt = modified;
+            res = true;
+        }
+
+        BigInteger bi = getProperty(PropertyIds.CONTENT_STREAM_LENGTH, cmis);
+        long size = bi != null ? bi.longValue() : 0;
+
+        if (this.size != size) {
+            this.size = size;
             res = true;
         }
 

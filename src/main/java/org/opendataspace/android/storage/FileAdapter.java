@@ -14,11 +14,9 @@ import java.util.List;
 public class FileAdapter extends DataAdapter {
 
     private final ArrayList<FileInfo> data = new ArrayList<>();
-    private final Context context;
 
     public FileAdapter(Context context) {
         super(context, R.layout.delegate_list_item1);
-        this.context = context;
     }
 
     @Override

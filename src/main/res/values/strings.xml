@@ -11,6 +11,34 @@
     <string name="common_error">Something went wrong.</string>
     <string name="common_ok">OK</string>
 
+    <!-- mime types -->
+    <string name="mime_audio">Audio</string>
+    <string name="mime_archive">Archive</string>
+    <string name="mime_binary">Binary Data</string>
+    <string name="mime_calendar">Calendar</string>
+    <string name="mime_certificate">Certificate</string>
+    <string name="mime_contact">Contact</string>
+    <string name="mime_data">Data</string>
+    <string name="mime_document">Document</string>
+    <string name="mime_ebook">eBook</string>
+    <string name="mime_email">Email</string>
+    <string name="mime_html">HTML</string>
+    <string name="mime_image">Image</string>
+    <string name="mime_msaccess">Microsoft Access</string>
+    <string name="mime_msexcel">Microsoft Excel</string>
+    <string name="mime_msnote">Microsoft OneNote</string>
+    <string name="mime_msppt">Microsoft PowerPoint</string>
+    <string name="mime_msproject">Microsoft Project</string>
+    <string name="mime_msvisio">Microsoft Visio</string>
+    <string name="mime_msword">Microsoft Word</string>
+    <string name="mime_opendocument">OpenDocument</string>
+    <string name="mime_package">Package</string>
+    <string name="mime_plain">Plain Text</string>
+    <string name="mime_playlist">Playlist</string>
+    <string name="mime_raw">RAW Image</string>
+    <string name="mime_source">Source File</string>
+    <string name="mime_video">Video</string>
+
     <!-- navigation -->
     <string name="nav_accounts">Accounts</string>
     <string name="nav_manage">Manage accounts…</string>
@@ -64,7 +92,7 @@
     <string name="accout_delete">Are you sure you want to delete \'%1$s\'?</string>
 
     <!-- folder -->
-    <string name="folder_title">/</string>
+    <string name="folder_slash">/</string>
     <string name="folder_empty">No files…</string>
     <string name="folder_root">SD Card</string>
     <string name="folder_downloads">Downloads</string>
@@ -73,32 +101,15 @@
     <string name="folder_music">Music</string>
     <string name="folder_video">Video</string>
 
-    <!-- mime types -->
-    <string name="mime_audio">Audio</string>
-    <string name="mime_archive">Archive</string>
-    <string name="mime_binary">Binary Data</string>
-    <string name="mime_calendar">Calendar</string>
-    <string name="mime_certificate">Certificate</string>
-    <string name="mime_contact">Contact</string>
-    <string name="mime_data">Data</string>
-    <string name="mime_document">Document</string>
-    <string name="mime_ebook">eBook</string>
-    <string name="mime_email">Email</string>
-    <string name="mime_html">HTML</string>
-    <string name="mime_image">Image</string>
-    <string name="mime_msaccess">Microsoft Access</string>
-    <string name="mime_msexcel">Microsoft Excel</string>
-    <string name="mime_msnote">Microsoft OneNote</string>
-    <string name="mime_msppt">Microsoft PowerPoint</string>
-    <string name="mime_msproject">Microsoft Project</string>
-    <string name="mime_msvisio">Microsoft Visio</string>
-    <string name="mime_msword">Microsoft Word</string>
-    <string name="mime_opendocument">OpenDocument</string>
-    <string name="mime_package">Package</string>
-    <string name="mime_plain">Plain Text</string>
-    <string name="mime_playlist">Playlist</string>
-    <string name="mime_raw">RAW Image</string>
-    <string name="mime_source">Source File</string>
-    <string name="mime_video">Video</string>
+    <!-- node info -->
+    <string name="node_title">Details</string>
+    <string name="node_properties">Properties</string>
+    <string name="node_name">Name</string>
+    <string name="node_path">Path</string>
+    <string name="node_creator">Created by</string>
+    <string name="node_created">Created</string>
+    <string name="node_modified">Modified</string>
+    <string name="node_modifier">Modified by</string>
+    <string name="node_preview">Preview</string>
 
 </resources>

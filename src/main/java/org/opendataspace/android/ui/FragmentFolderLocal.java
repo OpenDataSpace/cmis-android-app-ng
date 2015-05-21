@@ -57,7 +57,7 @@ public class FragmentFolderLocal extends FragmentBaseList implements LoaderManag
     public String getTile(Context context) {
         File file = op.getRoot();
         File root = Environment.getExternalStorageDirectory();
-        return file.equals(root) ? context.getString(R.string.folder_title) :
+        return file.equals(root) ? context.getString(R.string.folder_slash) :
                 op.getRoot().getAbsolutePath().replaceFirst(root.getAbsolutePath(), "");
     }
 

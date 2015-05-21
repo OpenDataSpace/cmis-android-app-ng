@@ -5,25 +5,28 @@
               android:orientation="vertical"
               tools:context="org.opendataspace.android.ui.FragmentNavigation">
 
-    <TextView
-        android:id="@+id/action_nav_account"
-        style="@style/OdsStyledPanel"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="?android:attr/textColorPrimary"
-        android:drawablePadding="@dimen/pad"
-        android:drawableEnd="@drawable/ic_arrow_down"
-        android:drawableRight="@drawable/ic_arrow_down"/>
+        style="@style/OdsStyledPanel"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/action_nav_accdesc"
-        style="@style/OdsStyledPanel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearance"
-        android:textColor="?android:attr/textColorSecondary"
-        android:drawablePadding="@dimen/pad"/>
+        <TextView
+            android:id="@+id/action_nav_account"
+            style="@style/OdsTextPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/pad"
+            android:drawableEnd="@drawable/ic_arrow_down"
+            android:drawableRight="@drawable/ic_arrow_down"/>
+
+        <TextView
+            android:id="@+id/action_nav_accdesc"
+            style="@style/OdsTextSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/pad"/>
+    </LinearLayout>
 
     <ViewSwitcher
         android:id="@+id/view_nav_switch"
