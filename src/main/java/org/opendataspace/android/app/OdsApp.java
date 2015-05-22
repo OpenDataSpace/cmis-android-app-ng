@@ -8,6 +8,8 @@ import com.google.gson.GsonBuilder;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import de.greenrobot.event.EventBus;
 import io.fabric.sdk.android.Fabric;
+import org.opendataspace.android.app.beta.BuildConfig;
+import org.opendataspace.android.cmis.CmisRenditionCache;
 import org.opendataspace.android.data.DataBase;
 import org.opendataspace.android.view.ViewManager;
 
@@ -31,6 +33,7 @@ public class OdsApp extends Application {
     private DataBase database;
     private TaskPool pool;
     private ViewManager vm;
+    private CmisRenditionCache cmiscache;
 
     public static OdsApp get() {
         return instance;
@@ -46,7 +49,7 @@ public class OdsApp extends Application {
             if (isRealApp()) {
                 CompatPRNG.apply();
 
-                if (!OdsPreferences.isDebug()) {
+                if (!BuildConfig.DEBUG) {
                     Fabric.with(this, new Crashlytics());
                     Crashlytics.setUserIdentifier(prefs.getInstallId());
                     crashl = true;
@@ -60,6 +63,7 @@ public class OdsApp extends Application {
         database = OpenHelperManager.getHelper(this, DataBase.class);
         pool = new TaskPool();
         vm = new ViewManager();
+        cmiscache = new CmisRenditionCache(getApplicationContext(), pool.getCmisService());
     }
 
     @Override
@@ -68,6 +72,7 @@ public class OdsApp extends Application {
         OpenHelperManager.releaseHelper();
 
         vm.dispose();
+        cmiscache.dispose();
 
         instance = null;
         prefs = null;
@@ -100,5 +105,9 @@ public class OdsApp extends Application {
 
     public boolean isRealApp() {
         return true;
+    }
+
+    public CmisRenditionCache getCmisCache() {
+        return cmiscache;
     }
 }

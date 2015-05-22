@@ -9,6 +9,7 @@ import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.object.MimeType;
 
 import java.sql.SQLException;
+import java.util.Locale;
 
 public class DaoMime extends DaoBase<MimeType> {
 
@@ -28,7 +29,7 @@ public class DaoMime extends DaoBase<MimeType> {
 
     public MimeType forFileName(String name) throws SQLException {
         int dot = name.lastIndexOf(".".charAt(0));
-        String extension = dot > 0 ? name.substring(dot + 1).toLowerCase() : "";
+        String extension = dot > 0 ? name.substring(dot + 1).toLowerCase(Locale.getDefault()) : "";
 
         if (byExt == null) {
             byExtArg = new SelectArg();

@@ -1,5 +1,6 @@
 package org.opendataspace.android.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ public class FragmentFolderLibrary extends FragmentBaseList {
         setListAdapter(adapter);
     }
 
+    @SuppressLint("InlinedApi")
     @Override
     void onListItemClick(int position) {
         Action action = adapter.getItem(position);

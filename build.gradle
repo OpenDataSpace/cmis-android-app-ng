@@ -6,8 +6,8 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.2'
-        classpath 'me.tatarka:gradle-retrolambda:2.5.0'
-        classpath 'io.fabric.tools:gradle:1.15.2'
+        classpath 'me.tatarka:gradle-retrolambda:3.1.0'
+        classpath 'io.fabric.tools:gradle:1.19.0'
         classpath 'net.sf.proguard:proguard-base:5.2'
     }
 }
@@ -83,9 +83,10 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'org.slf4j:slf4j-android:1.7.7'
-    compile 'com.crashlytics.sdk.android:crashlytics:2.2.2'
+    compile 'com.crashlytics.sdk.android:crashlytics:2.2.4'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'org.apache.chemistry.opencmis:chemistry-opencmis-android-client:0.13.0.126'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.apache.maven:maven-ant-tasks:2.1.3'

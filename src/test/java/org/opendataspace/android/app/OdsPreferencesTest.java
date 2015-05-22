@@ -19,7 +19,6 @@ public class OdsPreferencesTest {
         OdsPreferences pref = app.getPrefs();
 
         Assert.assertEquals(true, pref != null);
-        Assert.assertEquals(false, TextUtils.isEmpty(pref.version()));
         Assert.assertEquals(false, TextUtils.isEmpty(pref.getInstallId()));
     }
 }

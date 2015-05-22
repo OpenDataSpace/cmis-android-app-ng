@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import org.opendataspace.android.app.beta.BuildConfig;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.ObjectBase;
@@ -21,23 +20,8 @@ public class OdsPreferences {
         prefs = context.getSharedPreferences("ods", Context.MODE_PRIVATE);
     }
 
-    @SuppressWarnings("SameReturnValue")
-    public static boolean isDebug() {
-        return BuildConfig.DEBUG;
-    }
-
     public boolean isTablet() {
         return context.getResources().getBoolean(R.bool.isTablet);
-    }
-
-    public String version() {
-        try {
-            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-        } catch (Exception ex) {
-            OdsLog.ex(getClass(), ex);
-        }
-
-        return "";
     }
 
     private String getString(final String key, final String def) {

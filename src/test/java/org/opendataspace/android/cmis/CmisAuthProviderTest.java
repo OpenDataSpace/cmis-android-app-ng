@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsPreferences;
+import org.opendataspace.android.app.beta.BuildConfig;
 import org.opendataspace.android.test.TestRunner;
 import org.robolectric.RuntimeEnvironment;
 
@@ -43,7 +44,7 @@ public class CmisAuthProviderTest {
         Assert.assertEquals(false, TextUtils.isEmpty(auth));
         Assert.assertEquals(false, TextUtils.isEmpty(deviceid));
         Assert.assertEquals(pref.getInstallId(), deviceid);
-        Assert.assertEquals(true, agent.contains(pref.version()));
+        Assert.assertEquals(true, agent.contains(BuildConfig.VERSION_NAME));
         Assert.assertEquals(true, agent.contains("Android"));
     }
 }

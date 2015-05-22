@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
+import org.opendataspace.android.app.beta.BuildConfig;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.event.EventAccountConfig;
 import org.opendataspace.android.operation.OperationAccountConfig;
@@ -34,7 +35,7 @@ public class FragmentAbout extends FragmentBase {
         tva.setMovementMethod(new LinkMovementMethod());
 
         try {
-            tva.setText(Html.fromHtml(String.format(getString(R.string.about_info), OdsApp.get().getPrefs().version(),
+            tva.setText(Html.fromHtml(String.format(getString(R.string.about_info), BuildConfig.VERSION_NAME,
                     Calendar.getInstance().get(Calendar.YEAR), getString(R.string.app_mailto))));
         } catch (Exception ex) {
             OdsLog.ex(getClass(), ex);

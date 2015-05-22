@@ -10,6 +10,7 @@ import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.OdsPreferences;
+import org.opendataspace.android.app.beta.BuildConfig;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -82,8 +83,8 @@ public class CmisAuthProvider extends AbstractAuthenticationProvider {
 
         cookieManager = new CmisCookieManager(session.getSessionId());
         fixedHeaders.put("Device-ID", Collections.singletonList(pref.getInstallId()));
-        fixedHeaders.put("User-Agent", Collections
-                .singletonList(String.format("ODS/%1$s (Android %2$s)", pref.version(), Build.VERSION.RELEASE)));
+        fixedHeaders.put("User-Agent", Collections.singletonList(
+                String.format("ODS/%1$s (Android %2$s)", BuildConfig.VERSION_NAME, Build.VERSION.RELEASE)));
         fixedHeaders.put("Authorization", Collections
                 .singletonList("Basic " + Base64.encodeToString((session.get(SessionParameter.USER).toString() + ":" +
                         session.get(SessionParameter.PASSWORD).toString()).getBytes(), Base64.NO_WRAP)));

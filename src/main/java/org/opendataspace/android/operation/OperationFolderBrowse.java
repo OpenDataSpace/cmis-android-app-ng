@@ -28,6 +28,7 @@ public class OperationFolderBrowse extends OperationBase {
     private boolean cdup;
 
     private transient Task lastTask;
+    private transient CmisSession session;
 
     public OperationFolderBrowse(Account account, Repo repo) {
         this.repo = repo;
@@ -49,7 +50,7 @@ public class OperationFolderBrowse extends OperationBase {
             throw new InterruptedException();
         }
 
-        CmisSession session = nodes.setScope(account, repo, folder);
+        session = nodes.setScope(account, repo, folder);
         DaoMime mime = app.getDatabase().getMime();
         nodes.sync(dao);
 
@@ -82,5 +83,9 @@ public class OperationFolderBrowse extends OperationBase {
 
     public void setCdup(boolean val) {
         cdup = val;
+    }
+
+    public CmisSession getSession() {
+        return session;
     }
 }

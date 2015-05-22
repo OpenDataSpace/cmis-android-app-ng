@@ -5,6 +5,7 @@ import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.ObjectFactory;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
+import org.apache.chemistry.opencmis.client.api.Rendition;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.runtime.OperationContextImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -157,5 +158,22 @@ public class CmisSession {
         } while (children.hasMoreItems());
 
         return res;
+    }
+
+    public InputStream getRendition(String nodeId) {
+        Session session = getSession();
+        OperationContext context = session.createOperationContext();
+        context.setRenditionFilterString("image/*");
+
+        List<Rendition> renditions = session.getObject(nodeId, context).getRenditions();
+        Rendition r = null;
+
+        for (Rendition cur : renditions) {
+            if (r == null || r.getWidth() * r.getHeight() < cur.getHeight() * cur.getWidth()) {
+                r = cur;
+            }
+        }
+
+        return r != null ? r.getContentStream().getStream() : null;
     }
 }

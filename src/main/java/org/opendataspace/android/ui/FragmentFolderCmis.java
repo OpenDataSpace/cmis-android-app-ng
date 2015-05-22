@@ -83,7 +83,9 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
         Node.Type type = node != null ? node.getType() : Node.Type.FOLDER;
 
         if (type == Node.Type.DOCUMENT) {
-            getMainActivity().getNavigation().openFile(FragmentNodeInfo.class, new OperationNodeBrowse(node));
+            getMainActivity().getNavigation()
+                    .openFile(FragmentNodeInfo.class, new OperationNodeBrowse(node, op.getSession()));
+
             return;
         }
 

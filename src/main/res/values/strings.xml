@@ -115,5 +115,6 @@
     <string name="node_unknown">Unknown</string>
     <string name="node_type">Type</string>
     <string name="node_nopreview">Preview is not available.</string>
+    <string name="mode_loadpreview">Loading preview…</string>
 
 </resources>

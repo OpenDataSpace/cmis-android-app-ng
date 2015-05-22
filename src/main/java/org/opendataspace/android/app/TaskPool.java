@@ -4,6 +4,7 @@ import org.opendataspace.android.operation.OperationBase;
 import org.opendataspace.android.operation.OperationBaseCmis;
 
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -65,5 +66,9 @@ public class TaskPool {
 
         execute(t, op instanceof OperationBaseCmis);
         return t;
+    }
+
+    ExecutorService getCmisService() {
+        return cmis;
     }
 }
