@@ -24,8 +24,8 @@ public class NodeAdapter extends ViewAdapter<Node> {
         Node node = getObject(position);
 
         tw1.setText(node.getName());
-        tw1.setCompoundDrawablesWithIntrinsicBounds(node.getIcon(), 0, 0, 0);
-        tw2.setText(node.getDecription(context));
+        tw1.setCompoundDrawablesWithIntrinsicBounds(node.getIcon(context), 0, 0, 0);
+        tw2.setText(node.getNodeDecription(context));
         return vw;
     }
 

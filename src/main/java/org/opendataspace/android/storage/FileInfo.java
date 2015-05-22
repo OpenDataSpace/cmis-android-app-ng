@@ -16,15 +16,11 @@ public class FileInfo {
 
     public FileInfo(File file, DaoMime mime) throws SQLException {
         this.file = file;
-        this.mime = isDirectory() ? null : mime.forExtension(getExtension());
+        this.mime = isDirectory() ? null : mime.forFileName(getName());
     }
 
     public String getName() {
         return file.getName();
-    }
-
-    public String getPath() {
-        return file.getAbsolutePath();
     }
 
     public int getIcon(Context context) {
@@ -37,12 +33,6 @@ public class FileInfo {
 
     public boolean isDirectory() {
         return file.isDirectory();
-    }
-
-    public String getExtension() {
-        String name = getName();
-        int dot = name.lastIndexOf(".".charAt(0));
-        return dot > 0 ? name.substring(dot + 1).toLowerCase() : "";
     }
 
     public File getFile() {

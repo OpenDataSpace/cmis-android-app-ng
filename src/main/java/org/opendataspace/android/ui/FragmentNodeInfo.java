@@ -32,11 +32,14 @@ public class FragmentNodeInfo extends FragmentBase {
         super.onActivityCreated(savedInstanceState);
         Node node = op.getNode();
         Activity ac = getActivity();
+        TextView tv = widget(R.id.text_node_title);
 
-        this.<TextView>widget(R.id.text_node_title).setText(node.getName());
-        this.<TextView>widget(R.id.text_node_details).setText(node.getDecription(ac));
+        tv.setText(node.getName());
+        tv.setCompoundDrawablesWithIntrinsicBounds(node.getIcon(ac), 0, 0, 0);
+        this.<TextView>widget(R.id.text_node_details).setText(node.getNodeDecription(ac));
         this.<TextView>widget(R.id.text_node_name).setText(node.getName());
         this.<TextView>widget(R.id.text_node_path).setText(node.getPath(ac));
+        this.<TextView>widget(R.id.text_node_type).setText(node.getMimeDescription(ac));
         this.<TextView>widget(R.id.text_node_created).setText(node.getCreatedAt(ac));
         this.<TextView>widget(R.id.text_node_creator).setText(node.getCreatedBy());
         this.<TextView>widget(R.id.text_node_modified).setText(node.getModifiedAt(ac));

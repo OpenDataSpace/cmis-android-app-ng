@@ -42,6 +42,7 @@ public class Node extends ObjectBase {
     private final NodeInfo info;
 
     private transient CmisObject cmis;
+    private transient MimeType mime;
 
     public Node() {
         info = new NodeInfo();
@@ -144,21 +145,29 @@ public class Node extends ObjectBase {
         return parentId;
     }
 
-    public int getIcon() {
+    public int getIcon(Context context) {
         switch (type) {
         case FOLDER:
             return R.drawable.ic_folder;
 
         default:
-            return R.drawable.ic_file;
+            return mime != null ? mime.getIcon(context) : R.drawable.ic_file;
         }
     }
 
-    public String getDecription(Context context) {
+    public String getNodeDecription(Context context) {
         String res = "";
 
         if (info.size != 0) {
             res += Formatter.formatShortFileSize(context, info.size);
+        }
+
+        if (mime != null) {
+            if (!res.isEmpty()) {
+                res += " ";
+            }
+
+            res += mime.getDescription(context);
         }
 
         if (info.mdt != null) {
@@ -192,5 +201,21 @@ public class Node extends ObjectBase {
 
     public String getModifiedBy() {
         return info.mdu;
+    }
+
+    public void setMimeType(MimeType mime) {
+        this.mime = mime;
+    }
+
+    public MimeType getMimeType() {
+        return mime;
+    }
+
+    public String getMimeDescription(Context context) {
+        if (mime != null) {
+            return mime.getDescription(context);
+        }
+
+        return context.getString(getType() == Type.FOLDER ? R.string.node_folder : R.string.node_unknown);
     }
 }

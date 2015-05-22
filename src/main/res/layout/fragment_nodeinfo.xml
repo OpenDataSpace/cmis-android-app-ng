@@ -15,13 +15,30 @@
         android:id="@+id/text_node_details"
         style="@style/OdsTextSecondary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pad"/>
 
-    <ImageView
+    <ViewSwitcher
         android:id="@+id/view_node_preview"
         android:layout_width="match_parent"
         android:layout_height="@dimen/preview"
-        android:contentDescription="@string/node_preview"/>
+        android:padding="@dimen/pad">
+
+        <TextView
+            style="@style/OdsTextSecondary"
+            android:id="@+id/text_node_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/node_nopreview"
+            android:gravity="center"/>
+
+        <ImageView
+            android:id="@+id/image_node_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/node_preview"
+            android:scaleType="centerCrop"/>
+    </ViewSwitcher>
 
     <TextView
         style="@style/OdsSectionHeader"
@@ -33,7 +50,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:shrinkColumns="1"
-        android:stretchColumns="1">
+        android:stretchColumns="1"
+        android:layout_marginTop="@dimen/pad">
 
         <TableRow
             android:layout_width="wrap_content"
@@ -64,6 +82,23 @@
 
             <TextView
                 android:id="@+id/text_node_path"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/OdsTextSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/node_type"/>
+
+            <TextView
+                android:id="@+id/text_node_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"/>

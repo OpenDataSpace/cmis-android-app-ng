@@ -61,12 +61,24 @@ public class OperationFolderFetch extends OperationBaseFetch<Node, CmisObject> {
     }
 
     @Override
-    protected Node createObject(CmisObject val) {
-        return folder != null ? new Node(val, folder) : new Node(val, session.getRepo());
+    protected Node createObject(CmisObject val) throws SQLException {
+        Node node = folder != null ? new Node(val, folder) : new Node(val, session.getRepo());
+
+        if (node.getType() == Node.Type.DOCUMENT) {
+            node.setMimeType(OdsApp.get().getDatabase().getMime().forFileName(node.getName()));
+        }
+
+        return node;
     }
 
     @Override
-    protected boolean merge(Node obj, CmisObject val) {
-        return obj.merge(val);
+    protected boolean merge(Node node, CmisObject val) throws SQLException {
+        boolean res = node.merge(val);
+
+        if (res && node.getMimeType() == null && node.getType() == Node.Type.DOCUMENT) {
+            node.setMimeType(OdsApp.get().getDatabase().getMime().forFileName(node.getName()));
+        }
+
+        return res;
     }
 }

@@ -26,7 +26,10 @@ public class DaoMime extends DaoBase<MimeType> {
         return null;
     }
 
-    public MimeType forExtension(String extension) throws SQLException {
+    public MimeType forFileName(String name) throws SQLException {
+        int dot = name.lastIndexOf(".".charAt(0));
+        String extension = dot > 0 ? name.substring(dot + 1).toLowerCase() : "";
+
         if (byExt == null) {
             byExtArg = new SelectArg();
             byExt = queryBuilder().where().eq(MimeType.FIELD_EXT, byExtArg).prepare();

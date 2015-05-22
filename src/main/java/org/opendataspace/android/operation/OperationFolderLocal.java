@@ -48,7 +48,12 @@ public class OperationFolderLocal extends OperationBase {
         File[] ls = root.listFiles(cur -> !cur.isHidden());
 
         if (ls == null) {
+            status.setOk();
             return;
+        }
+
+        if (isCancel()) {
+            throw new InterruptedException();
         }
 
         DaoMime mime = OdsApp.get().getDatabase().getMime();
@@ -57,10 +62,18 @@ public class OperationFolderLocal extends OperationBase {
             data.add(new FileInfo(cur, mime));
         }
 
+        if (isCancel()) {
+            throw new InterruptedException();
+        }
+
         Collections.sort(data, (f1, f2) -> {
             int res = Boolean.valueOf(f1.isDirectory()).compareTo(f2.isDirectory());
             return res != 0 ? -res : f1.getName().compareToIgnoreCase(f2.getName());
         });
+
+        if (isCancel()) {
+            throw new InterruptedException();
+        }
 
         status.setOk();
     }

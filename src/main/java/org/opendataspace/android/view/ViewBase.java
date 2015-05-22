@@ -91,7 +91,7 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
         }
     }
 
-    List<T> getObjects() {
+    public List<T> getObjects() {
         return Collections.unmodifiableList(data);
     }
 

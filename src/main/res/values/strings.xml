@@ -111,5 +111,9 @@
     <string name="node_modified">Modified</string>
     <string name="node_modifier">Modified by</string>
     <string name="node_preview">Preview</string>
+    <string name="node_folder">Folder</string>
+    <string name="node_unknown">Unknown</string>
+    <string name="node_type">Type</string>
+    <string name="node_nopreview">Preview is not available.</string>
 
 </resources>

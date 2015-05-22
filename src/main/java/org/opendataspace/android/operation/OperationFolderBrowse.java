@@ -5,6 +5,7 @@ import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.Task;
 import org.opendataspace.android.app.TaskPool;
 import org.opendataspace.android.cmis.CmisSession;
+import org.opendataspace.android.data.DaoMime;
 import org.opendataspace.android.data.DaoNode;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Node;
@@ -44,8 +45,23 @@ public class OperationFolderBrowse extends OperationBase {
             folder = id != ObjectBase.INVALID_ID ? dao.get(id) : null;
         }
 
+        if (isCancel()) {
+            throw new InterruptedException();
+        }
+
         CmisSession session = nodes.setScope(account, repo, folder);
+        DaoMime mime = app.getDatabase().getMime();
         nodes.sync(dao);
+
+        if (isCancel()) {
+            throw new InterruptedException();
+        }
+
+        for (Node cur : nodes.getObjects()) {
+            if (cur.getType() == Node.Type.DOCUMENT) {
+                cur.setMimeType(mime.forFileName(cur.getName()));
+            }
+        }
 
         if (!isCancel()) {
             TaskPool pool = app.getPool();

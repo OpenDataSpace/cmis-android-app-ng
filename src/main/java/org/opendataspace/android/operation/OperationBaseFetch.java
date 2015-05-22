@@ -70,7 +70,7 @@ public abstract class OperationBaseFetch<T extends ObjectBase, U> extends Operat
 
     protected abstract T find(U val, List<T> ls);
 
-    protected abstract T createObject(U val);
+    protected abstract T createObject(U val) throws SQLException;
 
-    protected abstract boolean merge(T obj, U val);
+    protected abstract boolean merge(T obj, U val) throws SQLException;
 }
