@@ -3,6 +3,7 @@ package org.opendataspace.android.navigation;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -127,9 +128,9 @@ public class Navigation implements NavigationInterface {
             applyFragment(R.id.main_view_frame, fgm, TAG_MAIN);
         }
 
-        bar.invalidateOptionsMenu();
+        updateMenu();
+        updateTitle();
         bar.setDisplayHomeAsUpEnabled(needDrawer);
-        bar.setTitle(fgm.getTile(context));
         toggle.syncState();
         drawer.setDrawerLockMode(needDrawer ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
                 Gravity.START);
@@ -233,6 +234,11 @@ public class Navigation implements NavigationInterface {
         if (fgm != null) {
             bar.setTitle(fgm.getTile(context));
         }
+    }
+
+    @Override
+    public void updateMenu() {
+        ActivityCompat.invalidateOptionsMenu(context);
     }
 
     @Override

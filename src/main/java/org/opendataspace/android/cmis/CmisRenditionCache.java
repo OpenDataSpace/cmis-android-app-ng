@@ -24,7 +24,7 @@ public class CmisRenditionCache implements CompatDisposable {
     private static final String SCHEME = "ren";
 
     private final Picasso picasso;
-    private Map<Uri, CmisSession> sessions = new HashMap<>();
+    private final Map<Uri, CmisSession> sessions = new HashMap<>();
 
     public CmisRenditionCache(Context context, ExecutorService service) {
         picasso = new Picasso.Builder(context).executor(service).addRequestHandler(new RequestHandler() {
@@ -54,7 +54,7 @@ public class CmisRenditionCache implements CompatDisposable {
         if (node == null || session == null) {
             return;
         }
-        
+
         Uri uri = new Uri.Builder().scheme(SCHEME).authority(node.getUuid()).build();
         sessions.put(uri, session);
 

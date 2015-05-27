@@ -29,15 +29,7 @@ public class OperationFolderCreate extends OperationBaseCmis {
     protected void doExecute(OperationStatus status) throws Exception {
         CmisObject cmis = session.createFolder(parent, name);
         lastId = cmis.getId();
-        Node node;
-
-        if (parent != null) {
-            node = new Node(cmis, parent);
-        } else {
-            node = new Node(cmis, session.getRepo());
-        }
-
-        OdsApp.get().getDatabase().getNodes().create(node);
+        OdsApp.get().getDatabase().getNodes().create(new Node(cmis, parent));
         status.setOk();
     }
 

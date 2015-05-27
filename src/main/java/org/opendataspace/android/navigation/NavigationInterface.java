@@ -24,4 +24,6 @@ public interface NavigationInterface {
     void openDrawer();
 
     void updateTitle();
+
+    void updateMenu();
 }

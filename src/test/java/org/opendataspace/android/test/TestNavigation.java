@@ -53,4 +53,9 @@ public class TestNavigation implements NavigationInterface {
     public void updateTitle() {
         // nothing
     }
+
+    @Override
+    public void updateMenu() {
+        // nothing
+    }
 }

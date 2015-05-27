@@ -15,6 +15,7 @@ import org.opendataspace.android.operation.OperationFolderLocal;
 import java.io.File;
 import java.util.List;
 
+@SuppressWarnings("WeakerAccess")
 public class FragmentFolderLibrary extends FragmentBaseList {
 
     private ActionAdapter adapter;

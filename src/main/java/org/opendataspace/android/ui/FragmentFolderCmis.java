@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.NodeAdapter;
+import org.opendataspace.android.object.ObjectBase;
 import org.opendataspace.android.operation.OperationBase;
 import org.opendataspace.android.operation.OperationFolderBrowse;
 import org.opendataspace.android.operation.OperationFolderCreate;
@@ -79,7 +81,7 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
 
     @Override
     public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus data) {
-        Activity ac = getActivity();
+        ActivityMain ac = getMainActivity();
         loadingDone();
 
         if (!data.isOk()) {
@@ -87,6 +89,12 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
                     .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> {
                         dialogInterface.cancel();
                     }).show();
+        } else {
+            switch (loader.getId()) {
+            case LOADER_BROWSE:
+                ac.getNavigation().updateMenu();
+                break;
+            }
         }
     }
 
@@ -136,7 +144,7 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
     public boolean backPressed() {
         Node node = op.getFolder();
 
-        if (node != null) {
+        if (node.getId() != ObjectBase.INVALID_ID) {
             selectNode(node, true);
             return true;
         }
@@ -172,7 +180,7 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
         }
 
         Activity ac = getActivity();
-        View view = ac.getLayoutInflater().inflate(R.layout.dialog_folder_create, null);
+        @SuppressLint("InflateParams") View view = ac.getLayoutInflater().inflate(R.layout.dialog_folder_create, null);
         EditText et = (EditText) view.findViewById(R.id.edit_dialog_name);
 
         new AlertDialog.Builder(ac).setTitle(R.string.folder_createdlg).setView(view).setCancelable(true)
@@ -196,5 +204,17 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
 
         create = new OperationFolderCreate(op.getSession(), op.getFolder(), name);
         startLoader(LOADER_NEWFOLDER);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem mi = menu.findItem(R.id.menu_folder_create);
+
+        if (mi != null) {
+            Node node = op.getFolder();
+            mi.setVisible(node != null && node.canCreateFolder());
+        }
     }
 }

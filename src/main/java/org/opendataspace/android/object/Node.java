@@ -63,9 +63,8 @@ public class Node extends ObjectBase {
 
     public Node(CmisObject val, Repo repo) {
         info = new NodeInfo();
-        cmis = val;
         parentId = INVALID_ID;
-        updateType();
+        update(val);
 
         if (repo != null) {
             repoId = repo.getId();
@@ -76,8 +75,7 @@ public class Node extends ObjectBase {
 
     public Node(CmisObject val, Node parent) {
         info = new NodeInfo();
-        cmis = val;
-        updateType();
+        update(val);
 
         if (parent != null) {
             info.pid = parent.getUuid();
@@ -90,25 +88,13 @@ public class Node extends ObjectBase {
     }
 
     public boolean merge(CmisObject val) {
-        if (cmis == null) {
-            cmis = val;
-        } else if (!cmis.getId().equals(val.getId())) {
-            return false;
-        }
-
-        boolean res = info.update(val);
-
-        if (res) {
-            updateType();
-        }
-
-        return res;
+        return (cmis == null || cmis.getId().equals(val.getId())) && update(val);
     }
 
-    private void updateType() {
-        if (cmis != null) {
-            info.update(cmis);
+    private boolean update(CmisObject val) {
+        cmis = val;
 
+        if (cmis != null) {
             if (cmis instanceof Folder) {
                 type = Type.FOLDER;
             } else if (cmis instanceof Document) {
@@ -116,8 +102,11 @@ public class Node extends ObjectBase {
             } else {
                 type = Type.UNKNOWN;
             }
+
+            return info.update(cmis, type);
         } else {
             type = Type.UNKNOWN;
+            return true;
         }
     }
 
@@ -217,5 +206,9 @@ public class Node extends ObjectBase {
         }
 
         return context.getString(getType() == Type.FOLDER ? R.string.node_folder : R.string.node_unknown);
+    }
+
+    public boolean canCreateFolder() {
+        return (info.permissions & NodeInfo.CAN_CREATE_FOLDER) != 0;
     }
 }

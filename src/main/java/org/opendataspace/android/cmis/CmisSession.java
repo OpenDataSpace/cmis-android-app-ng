@@ -1,7 +1,5 @@
 package org.opendataspace.android.cmis;
 
-import android.util.Property;
-
 import com.google.gson.annotations.Expose;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -73,7 +71,7 @@ public class CmisSession {
         }
     }
 
-    private Folder getRoot() {
+    public Folder getRoot() {
         if (root == null) {
             root = getSession().getRootFolder();
         }
@@ -147,7 +145,7 @@ public class CmisSession {
         do {
             children =
                     ns.getChildren(repo.getUuid(), folder != null ? folder.getUuid() : repo.getRootFolderUuid(), null,
-                            null, false, IncludeRelationships.NONE, null, false, BigInteger.valueOf(50),
+                            null, true, IncludeRelationships.NONE, null, false, BigInteger.valueOf(50),
                             BigInteger.valueOf(pos), null);
 
             List<ObjectInFolderData> ls = children.getObjects();

@@ -8,7 +8,6 @@ import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.data.DaoNode;
 import org.opendataspace.android.object.Node;
-import org.opendataspace.android.object.ObjectBase;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -34,7 +33,7 @@ public class OperationFolderFetch extends OperationBaseFetch<Node, CmisObject> {
 
     @Override
     protected CloseableIterator<Node> localObjects(DaoBase<Node> dao) throws SQLException {
-        return ((DaoNode) dao).forParent(session.getRepo(), folder != null ? folder.getId() : ObjectBase.INVALID_ID);
+        return ((DaoNode) dao).forParent(session.getRepo(), folder.getId());
     }
 
     @Override
@@ -62,7 +61,7 @@ public class OperationFolderFetch extends OperationBaseFetch<Node, CmisObject> {
 
     @Override
     protected Node createObject(CmisObject val) throws SQLException {
-        Node node = folder != null ? new Node(val, folder) : new Node(val, session.getRepo());
+        Node node = new Node(val, folder);
 
         if (node.getType() == Node.Type.DOCUMENT) {
             node.setMimeType(OdsApp.get().getDatabase().getMime().forFileName(node.getName()));

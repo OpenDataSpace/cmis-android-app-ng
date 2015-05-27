@@ -4,11 +4,15 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
 import com.j256.ormlite.dao.CloseableIterator;
+import junit.framework.Assert;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.ObjectBase;
 import org.opendataspace.android.object.Repo;
+import org.opendataspace.android.operation.OperationRepoFetch;
+import org.opendataspace.android.operation.OperationStatus;
 import org.opendataspace.android.ui.ActivityMain;
 import org.opendataspace.android.ui.FragmentBase;
 import org.robolectric.Robolectric;
@@ -138,5 +142,21 @@ public class TestUtil {
         }
 
         return null;
+    }
+
+    public static CmisSession setupSession(OdsApp app, Repo.Type type) throws Exception {
+        Account acc = TestUtil.getDefaultAccount();
+        app.getDatabase().getAccounts().create(acc);
+        app.getPrefs().setLastAccountId(acc);
+
+        OperationRepoFetch op = new OperationRepoFetch(acc);
+        op.setShouldConfig(false);
+        OperationStatus st = op.execute();
+        Assert.assertEquals(true, st.isOk());
+        Assert.assertEquals(true, app.getDatabase().getRepos().countOf() > 0);
+
+        Repo repo = TestUtil.repo(app, acc, type);
+        Assert.assertEquals(true, repo != null);
+        return new CmisSession(acc, repo);
     }
 }

@@ -6,12 +6,20 @@ import com.google.gson.annotations.Expose;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Property;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.data.AllowableActions;
+import org.apache.chemistry.opencmis.commons.enums.Action;
 import org.opendataspace.android.app.CompatObjects;
 
 import java.math.BigInteger;
 import java.util.Calendar;
+import java.util.Set;
 
 class NodeInfo {
+
+    public final static int CAN_EDIT = 0x1;
+    public final static int CAN_DELETE = 0x2;
+    public final static int CAN_CREATE_FOLDER = 0x4;
+    public final static int CAN_CREATE_DOCUMENT = 0x8;
 
     @Expose
     public String name = "";
@@ -40,6 +48,9 @@ class NodeInfo {
     @Expose
     public long size = 0;
 
+    @Expose
+    int permissions = 0;
+
     public NodeInfo() {
         // nothing
     }
@@ -56,7 +67,7 @@ class NodeInfo {
         size = other.size;
     }
 
-    public boolean update(CmisObject cmis) {
+    public boolean update(CmisObject cmis, Node.Type type) {
         boolean res = false;
 
         if (!TextUtils.equals(name, cmis.getName())) {
@@ -112,11 +123,51 @@ class NodeInfo {
             res = true;
         }
 
+        int perm = permissions(cmis, type);
+
+        if (perm != permissions) {
+            permissions = perm;
+            res = true;
+        }
+
         return res;
     }
 
     private <T> T getProperty(String name, CmisObject cmis) {
         Property<T> prop = cmis.getProperty(name);
         return prop != null ? prop.getValue() : null;
+    }
+
+    private int permissions(CmisObject cmis, Node.Type type) {
+        AllowableActions perms = cmis.getAllowableActions();
+
+        if (perms == null) {
+            return 0;
+        }
+
+        int res = 0;
+        Set<Action> actions = perms.getAllowableActions();
+
+        if (actions.contains(Action.CAN_UPDATE_PROPERTIES)) {
+            res |= CAN_EDIT;
+        }
+
+        if (actions.contains(Action.CAN_CREATE_FOLDER)) {
+            res |= CAN_CREATE_FOLDER;
+        }
+
+        if (actions.contains(Action.CAN_CREATE_DOCUMENT)) {
+            res |= CAN_CREATE_DOCUMENT;
+        }
+
+        if (type == Node.Type.DOCUMENT && actions.contains(Action.CAN_DELETE_OBJECT)) {
+            res |= CAN_DELETE;
+        }
+
+        if (type == Node.Type.FOLDER && actions.contains(Action.CAN_DELETE_TREE)) {
+            res |= CAN_DELETE;
+        }
+
+        return res;
     }
 }
