@@ -211,4 +211,8 @@ public class Node extends ObjectBase {
     public boolean canCreateFolder() {
         return (info.permissions & NodeInfo.CAN_CREATE_FOLDER) != 0;
     }
+
+    public boolean canDelete() {
+        return (info.permissions & NodeInfo.CAN_DELETE) != 0;
+    }
 }

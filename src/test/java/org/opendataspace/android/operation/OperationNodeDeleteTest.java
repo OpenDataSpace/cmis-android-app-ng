@@ -1,7 +1,5 @@
 package org.opendataspace.android.operation;
 
-import android.text.TextUtils;
-
 import junit.framework.Assert;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.junit.Test;
@@ -16,10 +14,10 @@ import org.opendataspace.android.test.TestUtil;
 import org.robolectric.RuntimeEnvironment;
 
 @RunWith(TestRunner.class)
-public class OperationFolderCreateTest {
+public class OperationNodeDeleteTest {
 
     @Test
-    public void execute() throws Exception {
+    public void deleteFolder() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         CmisSession session = TestUtil.setupSession(app, Repo.Type.PRIVATE);
         String name = "Test123";
@@ -29,11 +27,12 @@ public class OperationFolderCreateTest {
             session.delete(obj.getId());
         }
 
-        OperationFolderCreate op =
-                new OperationFolderCreate(session, new Node(session.getRoot(), session.getRepo()), name);
+        obj = session.createFolder(new Node(session.getRoot(), session.getRepo()), name);
+        Node node = new Node(obj, session.getRepo());
+        OdsApp.get().getDatabase().getNodes().create(node);
+        OperationNodeDelete op = new OperationNodeDelete(node, session);
         OperationStatus st = op.execute();
         Assert.assertEquals(true, st.isOk());
-        Assert.assertEquals(false, TextUtils.isEmpty(op.getLastUuid()));
 
         boolean found = false;
 
@@ -45,7 +44,6 @@ public class OperationFolderCreateTest {
             }
         }
 
-        Assert.assertEquals(true, found);
-        session.delete(op.getLastUuid());
+        Assert.assertEquals(false, found);
     }
 }

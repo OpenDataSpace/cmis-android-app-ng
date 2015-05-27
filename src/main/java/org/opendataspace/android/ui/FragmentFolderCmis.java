@@ -202,7 +202,13 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
             return;
         }
 
-        create = new OperationFolderCreate(op.getSession(), op.getFolder(), name);
+        Node node = op.getFolder();
+
+        if (node == null || !node.canCreateFolder()) {
+            return;
+        }
+
+        create = new OperationFolderCreate(op.getSession(), node, name);
         startLoader(LOADER_NEWFOLDER);
     }
 

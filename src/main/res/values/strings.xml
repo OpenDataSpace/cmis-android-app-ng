@@ -119,5 +119,6 @@
     <string name="node_type">Type</string>
     <string name="node_nopreview">Preview is not available.</string>
     <string name="node_loadpreview">Loading preview…</string>
+    <string name="node_delete">Delete</string>
 
 </resources>

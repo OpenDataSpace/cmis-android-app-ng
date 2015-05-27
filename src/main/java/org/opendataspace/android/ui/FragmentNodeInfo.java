@@ -2,9 +2,14 @@ package org.opendataspace.android.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -13,12 +18,15 @@ import android.widget.ViewSwitcher;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.object.Node;
+import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationNodeBrowse;
+import org.opendataspace.android.operation.OperationNodeDelete;
+import org.opendataspace.android.operation.OperationStatus;
 
 import java.lang.ref.WeakReference;
 
 @SuppressLint("ValidFragment")
-public class FragmentNodeInfo extends FragmentBase {
+public class FragmentNodeInfo extends FragmentBase implements LoaderManager.LoaderCallbacks<OperationStatus> {
 
     private final OperationNodeBrowse op;
 
@@ -83,5 +91,79 @@ public class FragmentNodeInfo extends FragmentBase {
     public void onDestroyView() {
         OdsApp.get().getCmisCache().cancel(widget(R.id.image_node_preview));
         super.onDestroyView();
+    }
+
+    @Override
+    int getMenuResource() {
+        return R.menu.menu_node;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menu_node_delete:
+            actionDelete();
+            break;
+
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+
+        return true;
+    }
+
+    private void actionDelete() {
+        ActivityMain ac = getMainActivity();
+
+        if (ac.isWaiting()) {
+            return;
+        }
+
+        Node node = op.getNode();
+
+        if (node == null || !node.canDelete()) {
+            return;
+        }
+
+        ac.startWaitDialog(getTile(ac), getString(R.string.common_pleasewait),
+                di -> getLoaderManager().destroyLoader(1));
+        getLoaderManager().restartLoader(1, null, this);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem mi = menu.findItem(R.id.menu_node_delete);
+
+        if (mi != null) {
+            Node node = op.getNode();
+            mi.setVisible(node != null && node.canDelete());
+        }
+    }
+
+    @Override
+    public Loader<OperationStatus> onCreateLoader(int id, Bundle args) {
+        return new OperationLoader(new OperationNodeDelete(op.getNode(), op.getSession()), getActivity());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus data) {
+        ActivityMain ac = getMainActivity();
+        ac.stopWait();
+
+        if (data.isOk()) {
+            ac.getNavigation().backPressed();
+        } else {
+            new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
+                    .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> {
+                        dialogInterface.cancel();
+                    }).show();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<OperationStatus> loader) {
+        getMainActivity().stopWait();
     }
 }
