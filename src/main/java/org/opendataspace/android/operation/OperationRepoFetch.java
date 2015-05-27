@@ -18,6 +18,9 @@ public class OperationRepoFetch extends OperationBaseFetch<Repo, Repository> {
     @Expose
     private final Account account;
 
+    @Expose
+    private boolean shouldConfig = true;
+
     public OperationRepoFetch(Account account) {
         this.account = account;
     }
@@ -26,7 +29,7 @@ public class OperationRepoFetch extends OperationBaseFetch<Repo, Repository> {
     protected void doExecute(OperationStatus status) throws Exception {
         super.doExecute(status);
 
-        if (!isCancel()) {
+        if (!isCancel() && shouldConfig) {
             OdsApp.get().getPool().execute(new OperationAccountConfig(account));
         }
 
@@ -69,5 +72,9 @@ public class OperationRepoFetch extends OperationBaseFetch<Repo, Repository> {
     @Override
     protected boolean merge(Repo obj, Repository val) {
         return obj.merge(val);
+    }
+
+    public void setShouldConfig(boolean val) {
+        shouldConfig = val;
     }
 }

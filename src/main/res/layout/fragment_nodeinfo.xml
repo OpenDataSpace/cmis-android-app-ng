@@ -29,7 +29,7 @@
             android:id="@+id/text_node_preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/mode_loadpreview"
+            android:text="@string/node_loadpreview"
             android:gravity="center"/>
 
         <ImageView

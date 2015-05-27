@@ -8,6 +8,7 @@ import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.ObjectBase;
+import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.ui.ActivityMain;
 import org.opendataspace.android.ui.FragmentBase;
 import org.robolectric.Robolectric;
@@ -127,5 +128,15 @@ public class TestUtil {
         }
 
         return ls;
+    }
+
+    public static Repo repo(OdsApp app, Account acc, Repo.Type type) throws SQLException {
+        for (Repo cur : allOf(app.getDatabase().getRepos().forAccount(acc))) {
+            if (cur.getType() == type) {
+                return cur;
+            }
+        }
+
+        return null;
     }
 }

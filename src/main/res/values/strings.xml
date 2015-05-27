@@ -100,6 +100,9 @@
     <string name="folder_pictures">Images</string>
     <string name="folder_music">Music</string>
     <string name="folder_video">Video</string>
+    <string name="folder_createact">Create folder…</string>
+    <string name="folder_createdlg">Create a new folder</string>
+    <string name="folder_createhint">Type the folder name here…</string>
 
     <!-- node info -->
     <string name="node_title">Details</string>
@@ -115,6 +118,6 @@
     <string name="node_unknown">Unknown</string>
     <string name="node_type">Type</string>
     <string name="node_nopreview">Preview is not available.</string>
-    <string name="mode_loadpreview">Loading preview…</string>
+    <string name="node_loadpreview">Loading preview…</string>
 
 </resources>

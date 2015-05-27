@@ -1,5 +1,7 @@
 package org.opendataspace.android.cmis;
 
+import android.util.Property;
+
 import com.google.gson.annotations.Expose;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -7,11 +9,13 @@ import org.apache.chemistry.opencmis.client.api.ObjectFactory;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Rendition;
 import org.apache.chemistry.opencmis.client.api.Session;
+import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.client.runtime.OperationContextImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.data.ObjectInFolderData;
 import org.apache.chemistry.opencmis.commons.data.ObjectInFolderList;
+import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.IncludeRelationships;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.spi.NavigationService;
@@ -26,8 +30,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -175,5 +181,19 @@ public class CmisSession {
         }
 
         return r != null ? r.getContentStream().getStream() : null;
+    }
+
+    public CmisObject createFolder(Node parent, String name) {
+        Session session = getSession();
+        Map<String, Serializable> properties = new HashMap<>();
+
+        properties.put(PropertyIds.OBJECT_TYPE_ID, BaseTypeId.CMIS_FOLDER.value());
+        properties.put(PropertyIds.NAME, name);
+        return session.getObject(session.createFolder(properties,
+                new ObjectIdImpl(parent != null ? parent.getUuid() : repo.getRootFolderUuid())));
+    }
+
+    public void delete(String id) {
+        getSession().delete(new ObjectIdImpl(id));
     }
 }

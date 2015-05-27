@@ -10,6 +10,9 @@ import org.opendataspace.android.event.EventDaoNode;
 import org.opendataspace.android.view.ViewAdapter;
 import org.opendataspace.android.view.ViewBase;
 
+import java.util.Collections;
+import java.util.List;
+
 public class NodeAdapter extends ViewAdapter<Node> {
 
     public NodeAdapter(ViewBase<Node> view, Context context) {
@@ -32,5 +35,13 @@ public class NodeAdapter extends ViewAdapter<Node> {
     @SuppressWarnings({"UnusedParameters", "unused"})
     public void onEventMainThread(EventDaoNode event) {
         invalidate();
+    }
+
+    @Override
+    protected void sort(List<Node> data) {
+        Collections.sort(data, (n1, n2) -> {
+            int res = Boolean.valueOf(n1.getType() == Node.Type.FOLDER).compareTo(n2.getType() == Node.Type.FOLDER);
+            return res != 0 ? -res : n1.getName().compareToIgnoreCase(n2.getName());
+        });
     }
 }

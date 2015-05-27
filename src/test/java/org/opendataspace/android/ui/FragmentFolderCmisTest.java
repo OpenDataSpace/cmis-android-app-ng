@@ -28,17 +28,10 @@ public class FragmentFolderCmisTest {
         app.getPrefs().setLastAccountId(acc);
 
         OperationRepoFetch fetch = new OperationRepoFetch(acc);
+        fetch.setShouldConfig(false);
         OperationStatus st = fetch.execute();
         Assert.assertEquals(true, st.isOk());
-        Repo repo = null;
-
-        for (Repo cur : TestUtil.allOf(app.getDatabase().getRepos().forAccount(acc))) {
-            if (cur.getType() == Repo.Type.GLOBAL) {
-                repo = cur;
-                break;
-            }
-        }
-
+        Repo repo = TestUtil.repo(app, acc, Repo.Type.GLOBAL);
         Assert.assertEquals(true, repo != null);
         OperationFolderBrowse op = new OperationFolderBrowse(acc, repo);
         FragmentFolderCmis fgm = new FragmentFolderCmis(op);

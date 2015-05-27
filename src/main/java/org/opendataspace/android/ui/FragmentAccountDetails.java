@@ -138,11 +138,8 @@ public class FragmentAccountDetails extends FragmentBaseInput
 
         new AlertDialog.Builder(ac)
                 .setMessage(String.format(getString(R.string.accout_delete), op.getAccount().getName()))
-                .setCancelable(true).setPositiveButton(R.string.common_ok, (dialogInterface, i) -> {
-            startLoader(LOADER_DELETE);
-        }).setNegativeButton(R.string.common_cancel, (dialogInterface, i) -> {
-            dialogInterface.cancel();
-        }).show();
+                .setCancelable(true).setPositiveButton(R.string.common_ok, (di, i) -> startLoader(LOADER_DELETE))
+                .setNegativeButton(R.string.common_cancel, (di, i) -> di.cancel()).show();
     }
 
     private void startLoader(int id) {

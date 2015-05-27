@@ -1,10 +1,16 @@
 package org.opendataspace.android.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
@@ -12,6 +18,7 @@ import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.NodeAdapter;
 import org.opendataspace.android.operation.OperationBase;
 import org.opendataspace.android.operation.OperationFolderBrowse;
+import org.opendataspace.android.operation.OperationFolderCreate;
 import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationNodeBrowse;
 import org.opendataspace.android.operation.OperationStatus;
@@ -19,9 +26,13 @@ import org.opendataspace.android.operation.OperationStatus;
 @SuppressLint("ValidFragment")
 public class FragmentFolderCmis extends FragmentBaseList implements LoaderManager.LoaderCallbacks<OperationStatus> {
 
+    private final static int LOADER_BROWSE = 1;
+    private final static int LOADER_NEWFOLDER = 2;
+
     private OperationFolderBrowse op;
     private NodeAdapter adapter;
     private boolean inProgress;
+    private OperationFolderCreate create;
 
     public FragmentFolderCmis(OperationFolderBrowse op) {
         this.op = op;
@@ -54,12 +65,29 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
 
     @Override
     public Loader<OperationStatus> onCreateLoader(int id, Bundle args) {
-        return new OperationLoader(op, getActivity());
+        switch (id) {
+        case LOADER_BROWSE:
+            return new OperationLoader(op, getActivity());
+
+        case LOADER_NEWFOLDER:
+            return new OperationLoader(create, getActivity());
+
+        default:
+            return null;
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus data) {
+        Activity ac = getActivity();
         loadingDone();
+
+        if (!data.isOk()) {
+            new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
+                    .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> {
+                        dialogInterface.cancel();
+                    }).show();
+        }
     }
 
     @Override
@@ -93,11 +121,10 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
             return;
         }
 
-        inProgress = true;
         setListShown(false, false);
         op.setFolder(node);
         op.setCdup(cdup);
-        getLoaderManager().restartLoader(1, null, this);
+        startLoader(LOADER_BROWSE);
     }
 
     @Override
@@ -123,5 +150,51 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
             this.op = (OperationFolderBrowse) op;
             selectNode(null, false);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menu_folder_create:
+            actionCreateFolder();
+            break;
+
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+
+        return true;
+    }
+
+    private void actionCreateFolder() {
+        if (inProgress) {
+            return;
+        }
+
+        Activity ac = getActivity();
+        View view = ac.getLayoutInflater().inflate(R.layout.dialog_folder_create, null);
+        EditText et = (EditText) view.findViewById(R.id.edit_dialog_name);
+
+        new AlertDialog.Builder(ac).setTitle(R.string.folder_createdlg).setView(view).setCancelable(true)
+                .setPositiveButton(R.string.common_ok, (di, i) -> createFolder(et.getText().toString().trim()))
+                .setNegativeButton(R.string.common_cancel, (di, i) -> di.dismiss()).show();
+    }
+
+    private void startLoader(int id) {
+        if (inProgress) {
+            return;
+        }
+
+        inProgress = true;
+        getLoaderManager().restartLoader(id, null, this);
+    }
+
+    private void createFolder(String name) {
+        if (TextUtils.isEmpty(name) || inProgress) {
+            return;
+        }
+
+        create = new OperationFolderCreate(op.getSession(), op.getFolder(), name);
+        startLoader(LOADER_NEWFOLDER);
     }
 }

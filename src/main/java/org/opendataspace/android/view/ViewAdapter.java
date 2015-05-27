@@ -3,9 +3,9 @@ package org.opendataspace.android.view;
 import android.content.Context;
 
 import org.opendataspace.android.app.CompatDisposable;
-import org.opendataspace.android.event.Event;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.data.DataAdapter;
+import org.opendataspace.android.event.Event;
 import org.opendataspace.android.object.ObjectBase;
 
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ public class ViewAdapter<T extends ObjectBase> extends DataAdapter implements Co
         super(context, resId);
         this.view = view;
         data.addAll(view.getObjects());
+        sort(data);
         OdsApp.bus.register(this, Event.PRIORITY_ADAPTER);
     }
 
@@ -51,6 +52,11 @@ public class ViewAdapter<T extends ObjectBase> extends DataAdapter implements Co
     public void invalidate() {
         data.clear();
         data.addAll(view.getObjects());
+        sort(data);
         super.invalidate();
+    }
+
+    protected void sort(List<T> data) {
+        // nothing
     }
 }
