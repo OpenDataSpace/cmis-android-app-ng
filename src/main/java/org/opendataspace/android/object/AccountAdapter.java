@@ -2,7 +2,6 @@ package org.opendataspace.android.object;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.opendataspace.android.app.beta.R;
@@ -17,15 +16,12 @@ public class AccountAdapter extends ViewAdapter<Account> {
     }
 
     @Override
-    public View getView(final int position, View convertView, final ViewGroup parent) {
-        View vw = super.getView(position, convertView, parent);
-        TextView tw1 = (TextView) vw.findViewById(R.id.text_listitem_primary);
-        TextView tw2 = (TextView) vw.findViewById(R.id.text_listitem_secondary);
-        Account acc = getObject(position);
+    public void updateView(Account item, View view) {
+        TextView tw1 = (TextView) view.findViewById(R.id.text_listitem_primary);
+        TextView tw2 = (TextView) view.findViewById(R.id.text_listitem_secondary);
 
-        tw1.setText(acc.getDisplayName());
-        tw2.setText(acc.getDescription());
-        return vw;
+        tw1.setText(item.getDisplayName());
+        tw2.setText(item.getDescription());
     }
 
     @SuppressWarnings({"UnusedParameters", "unused"})

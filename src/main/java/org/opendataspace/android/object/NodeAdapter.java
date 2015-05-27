@@ -2,7 +2,6 @@ package org.opendataspace.android.object;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.opendataspace.android.app.beta.R;
@@ -20,16 +19,13 @@ public class NodeAdapter extends ViewAdapter<Node> {
     }
 
     @Override
-    public View getView(final int position, View convertView, final ViewGroup parent) {
-        View vw = super.getView(position, convertView, parent);
-        TextView tw1 = (TextView) vw.findViewById(R.id.text_listitem_primary);
-        TextView tw2 = (TextView) vw.findViewById(R.id.text_listitem_secondary);
-        Node node = getObject(position);
+    public void updateView(Node item, View view) {
+        TextView tw1 = (TextView) view.findViewById(R.id.text_listitem_primary);
+        TextView tw2 = (TextView) view.findViewById(R.id.text_listitem_secondary);
 
-        tw1.setText(node.getName());
-        tw1.setCompoundDrawablesWithIntrinsicBounds(node.getIcon(context), 0, 0, 0);
-        tw2.setText(node.getNodeDecription(context));
-        return vw;
+        tw1.setText(item.getName());
+        tw1.setCompoundDrawablesWithIntrinsicBounds(item.getIcon(context), 0, 0, 0);
+        tw2.setText(item.getNodeDecription(context));
     }
 
     @SuppressWarnings({"UnusedParameters", "unused"})

@@ -7,8 +7,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.view.ActionMode;
 import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -23,18 +25,25 @@ import org.opendataspace.android.operation.OperationFolderBrowse;
 import org.opendataspace.android.operation.OperationFolderCreate;
 import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationNodeBrowse;
+import org.opendataspace.android.operation.OperationNodeDelete;
 import org.opendataspace.android.operation.OperationStatus;
 
+import java.util.List;
+
 @SuppressLint("ValidFragment")
-public class FragmentFolderCmis extends FragmentBaseList implements LoaderManager.LoaderCallbacks<OperationStatus> {
+public class FragmentFolderCmis extends FragmentBaseList
+        implements LoaderManager.LoaderCallbacks<OperationStatus>, ActionMode.Callback {
 
     private final static int LOADER_BROWSE = 1;
     private final static int LOADER_NEWFOLDER = 2;
+    private final static int LOADER_DELETE = 3;
 
     private OperationFolderBrowse op;
     private NodeAdapter adapter;
     private boolean inProgress;
     private OperationFolderCreate create;
+    private ActionMode selection;
+    private OperationNodeDelete delete;
 
     public FragmentFolderCmis(OperationFolderBrowse op) {
         this.op = op;
@@ -57,12 +66,13 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
 
     @Override
     public String getTile(Context context) {
-        return context.getString(R.string.folder_slash);
+        Node node = op.getFolder();
+        return node != null ? node.getPath(context) : context.getString(R.string.folder_slash);
     }
 
     @Override
     protected int getMenuResource() {
-        return R.menu.menu_folder;
+        return R.menu.menu_folder_default;
     }
 
     @Override
@@ -73,6 +83,9 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
 
         case LOADER_NEWFOLDER:
             return new OperationLoader(create, getActivity());
+
+        case LOADER_DELETE:
+            return new OperationLoader(delete, getActivity());
 
         default:
             return null;
@@ -93,6 +106,7 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
             switch (loader.getId()) {
             case LOADER_BROWSE:
                 ac.getNavigation().updateMenu();
+                ac.getNavigation().updateTitle();
                 break;
             }
         }
@@ -137,7 +151,11 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
 
     @Override
     void onListItemClick(int position) {
-        selectNode(adapter.getObject(position), false);
+        if (selection != null) {
+            adapter.select(position);
+        } else {
+            selectNode(adapter.getObject(position), false);
+        }
     }
 
     @Override
@@ -165,6 +183,10 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
         switch (item.getItemId()) {
         case R.id.menu_folder_create:
             actionCreateFolder();
+            break;
+
+        case R.id.menu_folder_delete:
+            actionDelete();
             break;
 
         default:
@@ -214,13 +236,62 @@ public class FragmentFolderCmis extends FragmentBaseList implements LoaderManage
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
         MenuItem mi = menu.findItem(R.id.menu_folder_create);
 
         if (mi != null) {
             Node node = op.getFolder();
             mi.setVisible(node != null && node.canCreateFolder());
         }
+    }
+
+    @Override
+    protected boolean onListItemLongClick(int position) {
+        if (selection != null) {
+            return false;
+        }
+
+        adapter.select(position);
+        selection = getMainActivity().startSupportActionMode(this);
+        return true;
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        MenuInflater inflater = actionMode.getMenuInflater();
+        inflater.inflate(R.menu.menu_folder_select, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+        onPrepareOptionsMenu(menu);
+        return true;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+        return onOptionsItemSelected(menuItem);
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode actionMode) {
+        selection = null;
+        adapter.clearSelection();
+    }
+
+    private void actionDelete() {
+        if (inProgress || selection == null) {
+            return;
+        }
+
+        List<Node> ls = adapter.getSelected();
+        selection.finish();
+
+        if (ls.isEmpty()) {
+            return;
+        }
+
+        delete = new OperationNodeDelete(ls, op.getSession());
+        startLoader(LOADER_DELETE);
     }
 }

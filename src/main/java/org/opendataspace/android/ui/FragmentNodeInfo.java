@@ -132,8 +132,6 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
         MenuItem mi = menu.findItem(R.id.menu_node_delete);
 
         if (mi != null) {

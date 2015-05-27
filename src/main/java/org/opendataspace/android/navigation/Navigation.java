@@ -129,7 +129,7 @@ public class Navigation implements NavigationInterface {
         }
 
         updateMenu();
-        updateTitle();
+        bar.setTitle(fgm.getTile(context));
         bar.setDisplayHomeAsUpEnabled(needDrawer);
         toggle.syncState();
         drawer.setDrawerLockMode(needDrawer ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,

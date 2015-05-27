@@ -157,8 +157,6 @@ public class FragmentAccountDetails extends FragmentBaseInput
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
         MenuItem mi = menu.findItem(R.id.menu_account_delete);
 
         if (mi != null) {

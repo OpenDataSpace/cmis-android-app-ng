@@ -22,16 +22,19 @@ import org.opendataspace.android.app.beta.R;
 @SuppressLint("ValidFragment")
 class FragmentBaseList extends FragmentBase {
 
-    final private Handler mHandler = new Handler();
+    final private Handler handler = new Handler();
 
-    final private Runnable mRequestFocus = new Runnable() {
+    final private Runnable requestFocus = new Runnable() {
         public void run() {
             list.focusableViewAvailable(list);
         }
     };
 
-    final private AdapterView.OnItemClickListener mOnClickListener =
+    final private AdapterView.OnItemClickListener clickListener =
             (parent, v, position, id) -> onListItemClick(position);
+
+    final private AdapterView.OnItemLongClickListener longClickListener =
+            (parent, v, position, id) -> onListItemLongClick(position);
 
     private ListAdapter adapter;
     private ListView list;
@@ -127,7 +130,7 @@ class FragmentBaseList extends FragmentBase {
      */
     @Override
     public void onDestroyView() {
-        mHandler.removeCallbacks(mRequestFocus);
+        handler.removeCallbacks(requestFocus);
         list = null;
         isListShown = false;
         emptyView = progressContainer = listContainer = null;
@@ -136,10 +139,10 @@ class FragmentBaseList extends FragmentBase {
     }
 
     /**
-     * This method will be called when an item in the list is selected.
+     * This method will be called when an item in the list is ods_selectable.
      * Subclasses should override. Subclasses can call
      * getListView().getItemAtPosition(position) if they need to access the
-     * data associated with the selected item.
+     * data associated with the ods_selectable item.
      *
      * @param position The position of the view in the list
      */
@@ -259,7 +262,8 @@ class FragmentBaseList extends FragmentBase {
             }
         }
         isListShown = true;
-        list.setOnItemClickListener(mOnClickListener);
+        list.setOnItemClickListener(clickListener);
+        list.setOnItemLongClickListener(longClickListener);
         if (adapter != null) {
             ListAdapter adapter = this.adapter;
             this.adapter = null;
@@ -271,10 +275,14 @@ class FragmentBaseList extends FragmentBase {
                 setListShown(false, false);
             }
         }
-        mHandler.post(mRequestFocus);
+        handler.post(requestFocus);
     }
 
     public ListView getList() {
         return list;
+    }
+
+    protected boolean onListItemLongClick(int position) {
+        return false;
     }
 }
