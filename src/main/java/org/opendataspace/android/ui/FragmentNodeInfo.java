@@ -17,6 +17,9 @@ import android.widget.ViewSwitcher;
 
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.event.Event;
+import org.opendataspace.android.event.EventDaoBase;
+import org.opendataspace.android.event.EventDaoNode;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationNodeBrowse;
@@ -42,20 +45,8 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Node node = op.getNode();
-        Activity ac = getActivity();
-        TextView tvt = widget(R.id.text_node_title);
-
-        tvt.setText(node.getName());
-        tvt.setCompoundDrawablesWithIntrinsicBounds(node.getIcon(ac), 0, 0, 0);
-        this.<TextView>widget(R.id.text_node_details).setText(node.getNodeDecription(ac));
-        this.<TextView>widget(R.id.text_node_name).setText(node.getName());
-        this.<TextView>widget(R.id.text_node_path).setText(node.getPath(ac));
-        this.<TextView>widget(R.id.text_node_type).setText(node.getMimeDescription(ac));
-        this.<TextView>widget(R.id.text_node_created).setText(node.getCreatedAt(ac));
-        this.<TextView>widget(R.id.text_node_creator).setText(node.getCreatedBy());
-        this.<TextView>widget(R.id.text_node_modified).setText(node.getModifiedAt(ac));
-        this.<TextView>widget(R.id.text_node_modifier).setText(node.getModifiedBy());
+        OdsApp.bus.register(this, Event.PRIORITY_UI);
+        updateInfo();
 
         WeakReference<FragmentNodeInfo> weak = new WeakReference<>(this);
 
@@ -82,6 +73,23 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
         });
     }
 
+    private void updateInfo() {
+        Node node = op.getNode();
+        Activity ac = getActivity();
+        TextView tvt = widget(R.id.text_node_title);
+
+        tvt.setText(node.getName());
+        tvt.setCompoundDrawablesWithIntrinsicBounds(node.getIcon(ac), 0, 0, 0);
+        this.<TextView>widget(R.id.text_node_details).setText(node.getNodeDecription(ac));
+        this.<TextView>widget(R.id.text_node_name).setText(node.getName());
+        this.<TextView>widget(R.id.text_node_path).setText(node.getPath(ac));
+        this.<TextView>widget(R.id.text_node_type).setText(node.getMimeDescription(ac));
+        this.<TextView>widget(R.id.text_node_created).setText(node.getCreatedAt(ac));
+        this.<TextView>widget(R.id.text_node_creator).setText(node.getCreatedBy());
+        this.<TextView>widget(R.id.text_node_modified).setText(node.getModifiedAt(ac));
+        this.<TextView>widget(R.id.text_node_modifier).setText(node.getModifiedBy());
+    }
+
     @Override
     public String getTile(Context context) {
         return context.getString(R.string.node_title);
@@ -89,6 +97,7 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
 
     @Override
     public void onDestroyView() {
+        OdsApp.bus.unregister(this);
         OdsApp.get().getCmisCache().cancel(widget(R.id.image_node_preview));
         super.onDestroyView();
     }
@@ -163,5 +172,22 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
     @Override
     public void onLoaderReset(Loader<OperationStatus> loader) {
         getMainActivity().stopWait();
+    }
+
+    @SuppressWarnings({"UnusedParameters", "unused"})
+    public void onEventMainThread(EventDaoNode event) {
+        for (EventDaoBase.Event<Node> cur : event.getEvents()) {
+            if (cur.getObject().equals(op.getNode())) {
+                if (cur.getOperation() == EventDaoBase.Operation.DELETE)
+                    getMainActivity().getNavigation().backPressed();
+                else {
+                    op.setNode(cur.getObject());
+                    updateInfo();
+                    getMainActivity().getNavigation().updateMenu();
+                }
+
+                break;
+            }
+        }
     }
 }

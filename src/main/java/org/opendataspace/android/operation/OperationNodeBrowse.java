@@ -7,7 +7,7 @@ import org.opendataspace.android.object.Node;
 public class OperationNodeBrowse extends OperationBase {
 
     @Expose
-    private final Node node;
+    private Node node;
 
     private final transient CmisSession session;
 
@@ -27,5 +27,9 @@ public class OperationNodeBrowse extends OperationBase {
 
     public CmisSession getSession() {
         return session;
+    }
+
+    public void setNode(Node node) {
+        this.node = node;
     }
 }

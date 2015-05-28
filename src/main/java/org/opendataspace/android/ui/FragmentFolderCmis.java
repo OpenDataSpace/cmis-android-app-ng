@@ -17,9 +17,7 @@ import android.widget.EditText;
 
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.event.Event;
-import org.opendataspace.android.event.EventAccountSelect;
-import org.opendataspace.android.event.EventNodeUpdate;
+import org.opendataspace.android.event.*;
 import org.opendataspace.android.navigation.Navigation;
 import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.object.Node;
@@ -115,12 +113,12 @@ public class FragmentFolderCmis extends FragmentBaseList
 
         switch (loader.getId()) {
         case LOADER_BROWSE:
-            browseFinished();
+            browseFinished(false);
             break;
         }
     }
 
-    private void browseFinished() {
+    private void browseFinished(boolean isFinal) {
         if (getView() == null) {
             return;
         }
@@ -129,7 +127,7 @@ public class FragmentFolderCmis extends FragmentBaseList
         nav.updateMenu();
         nav.updateTitle();
 
-        if (adapter.getCount() != 0) {
+        if (isFinal || adapter.getCount() != 0) {
             setListShown(true, false);
         }
     }
@@ -310,7 +308,23 @@ public class FragmentFolderCmis extends FragmentBaseList
     }
 
     @SuppressWarnings({"UnusedParameters", "unused"})
-    public void onEventMainThread(EventNodeUpdate val) {
-        setListShown(true, false);
+    public void onEventMainThread(EventNodeUpdate event) {
+        browseFinished(true);
+    }
+
+    @SuppressWarnings({"UnusedParameters", "unused"})
+    public void onEventMainThread(EventDaoNode event) {
+        for (EventDaoBase.Event<Node> cur : event.getEvents()) {
+            if (cur.getObject().equals(op.getFolder())) {
+                if (cur.getOperation() == EventDaoBase.Operation.DELETE)
+                    getMainActivity().getNavigation().backPressed();
+                else {
+                    op.setFolder(cur.getObject());
+                    getMainActivity().getNavigation().updateMenu();
+                }
+
+                break;
+            }
+        }
     }
 }
