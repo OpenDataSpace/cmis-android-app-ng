@@ -17,6 +17,11 @@ import android.widget.EditText;
 
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.event.Event;
+import org.opendataspace.android.event.EventAccountSelect;
+import org.opendataspace.android.event.EventNodeUpdate;
+import org.opendataspace.android.navigation.Navigation;
+import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.NodeAdapter;
 import org.opendataspace.android.object.ObjectBase;
@@ -55,11 +60,13 @@ public class FragmentFolderCmis extends FragmentBaseList
         adapter = new NodeAdapter(OdsApp.get().getViewManager().getNodes(), getActivity());
         setListAdapter(adapter);
         setEmptyText(getString(R.string.folder_empty));
+        OdsApp.bus.register(this, Event.PRIORITY_UI);
         selectNode(null, false);
     }
 
     @Override
     public void onDestroyView() {
+        OdsApp.bus.unregister(this);
         adapter.dispose();
         super.onDestroyView();
     }
@@ -94,34 +101,41 @@ public class FragmentFolderCmis extends FragmentBaseList
 
     @Override
     public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus data) {
-        ActivityMain ac = getMainActivity();
-        loadingDone();
+        inProgress = false;
 
         if (!data.isOk()) {
+            ActivityMain ac = getMainActivity();
             new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
                     .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> {
                         dialogInterface.cancel();
                     }).show();
-        } else {
-            switch (loader.getId()) {
-            case LOADER_BROWSE:
-                ac.getNavigation().updateMenu();
-                ac.getNavigation().updateTitle();
-                break;
-            }
+
+            return;
+        }
+
+        switch (loader.getId()) {
+        case LOADER_BROWSE:
+            browseFinished();
+            break;
+        }
+    }
+
+    private void browseFinished() {
+        if (getView() == null) {
+            return;
+        }
+
+        NavigationInterface nav = getMainActivity().getNavigation();
+        nav.updateMenu();
+        nav.updateTitle();
+
+        if (adapter.getCount() != 0) {
+            setListShown(true, false);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<OperationStatus> loader) {
-        loadingDone();
-    }
-
-    private void loadingDone() {
-        if (getView() != null) {
-            setListShown(true, false);
-        }
-
         inProgress = false;
     }
 
@@ -293,5 +307,10 @@ public class FragmentFolderCmis extends FragmentBaseList
 
         delete = new OperationNodeDelete(ls, op.getSession());
         startLoader(LOADER_DELETE);
+    }
+
+    @SuppressWarnings({"UnusedParameters", "unused"})
+    public void onEventMainThread(EventNodeUpdate val) {
+        setListShown(true, false);
     }
 }

@@ -7,6 +7,7 @@ import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.data.DaoNode;
+import org.opendataspace.android.event.EventNodeUpdate;
 import org.opendataspace.android.object.Node;
 
 import java.sql.SQLException;
@@ -28,6 +29,7 @@ public class OperationFolderFetch extends OperationBaseFetch<Node, CmisObject> {
     @Override
     protected void doExecute(OperationStatus status) throws Exception {
         super.doExecute(status);
+        OdsApp.bus.post(new EventNodeUpdate());
         status.setOk();
     }
 
