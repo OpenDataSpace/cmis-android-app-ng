@@ -6,4 +6,7 @@
         android:title="@string/folder_delete"
         android:icon="@drawable/ic_remove"
         auto:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/menu_folder_selectall"
+        android:title="@string/folder_selectall"/>
 </menu>

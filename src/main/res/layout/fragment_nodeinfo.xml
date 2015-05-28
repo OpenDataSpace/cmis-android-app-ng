@@ -9,7 +9,8 @@
         android:id="@+id/text_node_title"
         style="@style/OdsTextPrimary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/pad"/>
 
     <TextView
         android:id="@+id/text_node_details"

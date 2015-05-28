@@ -104,6 +104,9 @@
     <string name="folder_createdlg">Create a new folder</string>
     <string name="folder_createhint">Type the folder name here…</string>
     <string name="folder_delete">Delete</string>
+    <string name="folder_selectall">Select All</string>
+    <string name="folder_actions">Additional actions</string>
+    <string name="folder_details">Details</string>
 
     <!-- node info -->
     <string name="node_title">Details</string>

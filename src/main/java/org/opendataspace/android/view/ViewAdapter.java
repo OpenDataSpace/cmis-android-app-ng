@@ -120,4 +120,12 @@ public abstract class ViewAdapter<T extends ObjectBase> extends DataAdapter impl
 
         return res;
     }
+
+    public void selectAll() {
+        for (T cur : data) {
+            selected.add(cur.getId());
+        }
+
+        super.invalidate();
+    }
 }

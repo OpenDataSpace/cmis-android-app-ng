@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.view.ActionMode;
+import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,6 +48,7 @@ public class FragmentFolderCmis extends FragmentBaseList
     private OperationFolderCreate create;
     private ActionMode selection;
     private OperationNodeDelete delete;
+    private Node moreItem;
 
     public FragmentFolderCmis(OperationFolderBrowse op) {
         this.op = op;
@@ -55,7 +57,7 @@ public class FragmentFolderCmis extends FragmentBaseList
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        adapter = new NodeAdapter(OdsApp.get().getViewManager().getNodes(), getActivity());
+        adapter = new NodeAdapter(OdsApp.get().getViewManager().getNodes(), getActivity(), this::showPopup);
         setListAdapter(adapter);
         setEmptyText(getString(R.string.folder_empty));
         OdsApp.bus.register(this, Event.PRIORITY_UI);
@@ -201,6 +203,17 @@ public class FragmentFolderCmis extends FragmentBaseList
             actionDelete();
             break;
 
+        case R.id.menu_folder_selectall:
+            adapter.selectAll();
+            break;
+
+        case R.id.menu_folder_details:
+            if (moreItem != null) {
+                getMainActivity().getNavigation()
+                        .openFile(FragmentNodeInfo.class, new OperationNodeBrowse(moreItem, op.getSession()));
+            }
+            break;
+
         default:
             return super.onOptionsItemSelected(item);
         }
@@ -326,5 +339,20 @@ public class FragmentFolderCmis extends FragmentBaseList
                 break;
             }
         }
+    }
+
+    private void showPopup(View view) {
+        moreItem = adapter.resolve(view.getParent());
+
+        if (moreItem == null) {
+            return;
+        }
+
+        ActivityMain ac = getMainActivity();
+        PopupMenu popup = new PopupMenu(ac, view);
+        ac.getMenuInflater().inflate(R.menu.menu_folder_more, popup.getMenu());
+        popup.setOnDismissListener(menu -> moreItem = null);
+        popup.setOnMenuItemClickListener(this::onOptionsItemSelected);
+        popup.show();
     }
 }
