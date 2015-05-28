@@ -14,6 +14,7 @@ import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.cmis.CmisSession;
 
 @DatabaseTable(tableName = "node")
 public class Node extends ObjectBase {
@@ -214,5 +215,21 @@ public class Node extends ObjectBase {
 
     public boolean canDelete() {
         return (info.permissions & NodeInfo.CAN_DELETE) != 0;
+    }
+
+    public boolean canEdit() {
+        return (info.permissions & NodeInfo.CAN_EDIT) != 0;
+    }
+
+    public void setName(String name) {
+        info.name = name;
+    }
+
+    public CmisObject getCmisObject(CmisSession session) {
+        if (cmis == null) {
+            update(session.getObjectById(getUuid()));
+        }
+
+        return cmis;
     }
 }

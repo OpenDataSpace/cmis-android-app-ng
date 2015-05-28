@@ -10,6 +10,7 @@
     <string name="common_pleasewait">Please wait…</string>
     <string name="common_error">Something went wrong.</string>
     <string name="common_ok">OK</string>
+    <string name="common_delete">Are you sure you want to delete \'%1$s\'?</string>
 
     <!-- mime types -->
     <string name="mime_audio">Audio</string>
@@ -89,7 +90,6 @@
     <string name="account_advanced">Advanced</string>
     <string name="account_usejson">Use Json binding</string>
     <string name="account_delete">Delete</string>
-    <string name="accout_delete">Are you sure you want to delete \'%1$s\'?</string>
 
     <!-- folder -->
     <string name="folder_slash">/</string>
@@ -124,5 +124,7 @@
     <string name="node_nopreview">Preview is not available.</string>
     <string name="node_loadpreview">Loading preview…</string>
     <string name="node_delete">Delete</string>
+    <string name="node_rename">Rename</string>
+    <string name="node_renamehint">Type new name here…</string>
 
 </resources>

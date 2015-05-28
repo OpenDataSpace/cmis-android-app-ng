@@ -23,7 +23,7 @@ public class OperationFolderCreateTest {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         CmisSession session = TestUtil.setupSession(app, Repo.Type.PRIVATE);
         String name = "Test123";
-        CmisObject obj = session.getObject(name);
+        CmisObject obj = session.getObjectByPath(name);
 
         if (obj != null) {
             session.delete(obj.getId());

@@ -51,16 +51,20 @@ public class CmisSession {
         this.repo = repo;
     }
 
-    public CmisObject getObject(String path) {
+    public CmisObject getObjectByPath(String path) {
         Session session = getSession();
         OperationContext context = session.getDefaultContext();
         ObjectService objectService = session.getBinding().getObjectService();
         ObjectFactory objectFactory = session.getObjectFactory();
         String root = getRoot().getPath();
 
+        if (!root.endsWith("/")) {
+            root += "/";
+        }
+
         try {
             ObjectData objectData = objectService
-                    .getObjectByPath(session.getRepositoryInfo().getId(), root + "/" + path, context.getFilterString(),
+                    .getObjectByPath(session.getRepositoryInfo().getId(), root + path, context.getFilterString(),
                             context.isIncludeAllowableActions(), context.getIncludeRelationships(),
                             context.getRenditionFilterString(), context.isIncludePolicies(), context.isIncludeAcls(),
                             null);
@@ -193,5 +197,9 @@ public class CmisSession {
 
     public void delete(String id) {
         getSession().delete(new ObjectIdImpl(id));
+    }
+
+    public CmisObject getObjectById(String uuid) {
+        return getSession().getObject(new ObjectIdImpl(uuid));
     }
 }

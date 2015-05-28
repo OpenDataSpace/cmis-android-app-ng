@@ -49,14 +49,14 @@ public class OperationAccountConfig extends OperationBase {
                 return false;
             }
 
-            CmisObject cmo = ses.getObject("branding/android/res/drawable-xxhdpi/" + name);
+            CmisObject cmo = ses.getObjectByPath("branding/android/res/drawable-xxhdpi/" + name);
 
             if (cmo == null) {
-                cmo = ses.getObject("branding/android/res/drawable-xhdpi/" + name);
+                cmo = ses.getObjectByPath("branding/android/res/drawable-xhdpi/" + name);
             }
 
             if (cmo == null) {
-                cmo = ses.getObject("branding/android/res/drawable/" + name);
+                cmo = ses.getObjectByPath("branding/android/res/drawable/" + name);
             }
 
             if (cmo == null) {
