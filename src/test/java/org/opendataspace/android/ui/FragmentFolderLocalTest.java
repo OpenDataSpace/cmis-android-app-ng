@@ -31,10 +31,12 @@ public class FragmentFolderLocalTest {
         OperationFolderLocal op = new OperationFolderLocal(f);
         FragmentFolderLocal fgm = new FragmentFolderLocal(op);
         ActivityMain ac = TestUtil.setupFragment(fgm);
+        TestUtil.waitRunnable();
         ListView lv = (ListView) fgm.getView().findViewById(android.R.id.list);
         Assert.assertEquals(true, lv.getCount() != 0);
 
         Shadows.shadowOf(lv).clickFirstItemContainingText(dir.getName());
+        TestUtil.waitRunnable();
         Assert.assertEquals(true, lv.getCount() == 0);
         res = fgm.backPressed();
         Assert.assertEquals(true, res);

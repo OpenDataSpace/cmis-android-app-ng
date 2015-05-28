@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.operation.OperationFolderBrowse;
@@ -23,17 +24,9 @@ public class FragmentFolderCmisTest {
     @Test
     public void navigate() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
-        Account acc = TestUtil.getDefaultAccount();
-        app.getDatabase().getAccounts().create(acc);
-        app.getPrefs().setLastAccountId(acc);
-
-        OperationRepoFetch fetch = new OperationRepoFetch(acc);
-        fetch.setShouldConfig(false);
-        OperationStatus st = fetch.execute();
-        Assert.assertEquals(true, st.isOk());
-        Repo repo = TestUtil.repo(app, acc, Repo.Type.GLOBAL);
-        Assert.assertEquals(true, repo != null);
-        OperationFolderBrowse op = new OperationFolderBrowse(acc, repo);
+        CmisSession session = TestUtil.setupSession(app, Repo.Type.GLOBAL);
+        OperationFolderBrowse op = new OperationFolderBrowse(
+                app.getDatabase().getAccounts().get(app.getPrefs().getLastAccountId()), session.getRepo());
         FragmentFolderCmis fgm = new FragmentFolderCmis(op);
         ActivityMain ac = TestUtil.setupFragment(fgm);
         TestUtil.waitRunnable();

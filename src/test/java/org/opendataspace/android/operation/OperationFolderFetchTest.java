@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.cmis.CmisSession;
+import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
@@ -18,7 +19,7 @@ public class OperationFolderFetchTest {
     public void execute() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         CmisSession session = TestUtil.setupSession(app, Repo.Type.PRIVATE);
-        OperationFolderFetch op = new OperationFolderFetch(session, null);
+        OperationFolderFetch op = new OperationFolderFetch(session, new Node(session.getRoot(), session.getRepo()));
         OperationStatus st = op.execute();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(true, app.getDatabase().getNodes().countOf() > 0);

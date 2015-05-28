@@ -162,7 +162,7 @@ public class FragmentFolderCmis extends FragmentBaseList
     public boolean backPressed() {
         Node node = op.getFolder();
 
-        if (node.getId() != ObjectBase.INVALID_ID) {
+        if (node != null && node.getId() != ObjectBase.INVALID_ID) {
             selectNode(node, true);
             return true;
         }
