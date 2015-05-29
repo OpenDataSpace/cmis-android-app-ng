@@ -18,8 +18,10 @@ import android.widget.EditText;
 
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.event.*;
-import org.opendataspace.android.navigation.Navigation;
+import org.opendataspace.android.event.Event;
+import org.opendataspace.android.event.EventDaoBase;
+import org.opendataspace.android.event.EventDaoNode;
+import org.opendataspace.android.event.EventNodeUpdate;
 import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.NodeAdapter;
@@ -106,9 +108,7 @@ public class FragmentFolderCmis extends FragmentBaseList
         if (!data.isOk()) {
             ActivityMain ac = getMainActivity();
             new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
-                    .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> {
-                        dialogInterface.cancel();
-                    }).show();
+                    .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> dialogInterface.cancel()).show();
 
             return;
         }
@@ -329,9 +329,9 @@ public class FragmentFolderCmis extends FragmentBaseList
     public void onEventMainThread(EventDaoNode event) {
         for (EventDaoBase.Event<Node> cur : event.getEvents()) {
             if (cur.getObject().equals(op.getFolder())) {
-                if (cur.getOperation() == EventDaoBase.Operation.DELETE)
+                if (cur.getOperation() == EventDaoBase.Operation.DELETE) {
                     getMainActivity().getNavigation().backPressed();
-                else {
+                } else {
                     op.setFolder(cur.getObject());
                     getMainActivity().getNavigation().updateMenu();
                 }

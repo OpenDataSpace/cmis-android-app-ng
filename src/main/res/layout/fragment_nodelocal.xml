@@ -19,27 +19,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/pad"/>
 
-    <ViewSwitcher
-        android:id="@+id/view_node_preview"
+    <TextView
+        style="@style/OdsTextSecondary"
+        android:id="@+id/text_node_preview"
         android:layout_width="match_parent"
         android:layout_height="@dimen/preview"
-        android:padding="@dimen/pad">
-
-        <TextView
-            style="@style/OdsTextSecondary"
-            android:id="@+id/text_node_preview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/node_loadpreview"
-            android:gravity="center"/>
-
-        <ImageView
-            android:id="@+id/image_node_preview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/node_preview"
-            android:scaleType="centerCrop"/>
-    </ViewSwitcher>
+        android:text="@string/node_nopreview"
+        android:gravity="center"
+        android:padding="@dimen/pad"/>
 
     <TextView
         style="@style/OdsSectionHeader"
@@ -130,61 +117,10 @@
                 style="@style/OdsTextSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/node_created"/>
-
-            <TextView
-                android:id="@+id/text_node_created"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end"/>
-        </TableRow>
-
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                style="@style/OdsTextSecondary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/node_creator"/>
-
-            <TextView
-                android:id="@+id/text_node_creator"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end"/>
-        </TableRow>
-
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                style="@style/OdsTextSecondary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:text="@string/node_modified"/>
 
             <TextView
                 android:id="@+id/text_node_modified"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end"/>
-        </TableRow>
-
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                style="@style/OdsTextSecondary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/node_modifier"/>
-
-            <TextView
-                android:id="@+id/text_node_modifier"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"/>

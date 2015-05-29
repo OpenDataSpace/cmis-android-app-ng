@@ -232,4 +232,8 @@ public class Node extends ObjectBase {
 
         return cmis;
     }
+
+    public long getSize() {
+        return info.size;
+    }
 }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +24,11 @@ import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.event.EventDaoNode;
 import org.opendataspace.android.object.Node;
-import org.opendataspace.android.operation.*;
+import org.opendataspace.android.operation.OperationLoader;
+import org.opendataspace.android.operation.OperationNodeBrowse;
+import org.opendataspace.android.operation.OperationNodeDelete;
+import org.opendataspace.android.operation.OperationNodeRename;
+import org.opendataspace.android.operation.OperationStatus;
 
 import java.lang.ref.WeakReference;
 
@@ -87,6 +92,7 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
         this.<TextView>widget(R.id.text_node_name).setText(node.getName());
         this.<TextView>widget(R.id.text_node_path).setText(node.getPath(ac));
         this.<TextView>widget(R.id.text_node_type).setText(node.getMimeDescription(ac));
+        this.<TextView>widget(R.id.text_node_size).setText(Formatter.formatShortFileSize(ac, node.getSize()));
         this.<TextView>widget(R.id.text_node_created).setText(node.getCreatedAt(ac));
         this.<TextView>widget(R.id.text_node_creator).setText(node.getCreatedBy());
         this.<TextView>widget(R.id.text_node_modified).setText(node.getModifiedAt(ac));
@@ -107,7 +113,7 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
 
     @Override
     int getMenuResource() {
-        return R.menu.menu_node;
+        return R.menu.menu_node_info;
     }
 
     @Override
@@ -136,8 +142,8 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
         }
 
         new AlertDialog.Builder(getActivity())
-                .setMessage(String.format(getString(R.string.common_delete), node.getName()))
-                .setCancelable(true).setPositiveButton(R.string.common_ok, (di, i) -> startLoader(LOADER_DELETE))
+                .setMessage(String.format(getString(R.string.common_delete), node.getName())).setCancelable(true)
+                .setPositiveButton(R.string.common_ok, (di, i) -> startLoader(LOADER_DELETE))
                 .setNegativeButton(R.string.common_cancel, (di, i) -> di.cancel()).show();
     }
 
@@ -185,17 +191,7 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
 
         if (!data.isOk()) {
             new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
-                    .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> {
-                        dialogInterface.cancel();
-                    }).show();
-
-            return;
-        }
-
-        switch (loader.getId()) {
-        case LOADER_DELETE:
-            ac.getNavigation().backPressed();
-            break;
+                    .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> dialogInterface.cancel()).show();
         }
     }
 
@@ -232,6 +228,7 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
         Activity ac = getActivity();
         @SuppressLint("InflateParams") View view = ac.getLayoutInflater().inflate(R.layout.dialog_node_rename, null);
         EditText et = (EditText) view.findViewById(R.id.edit_dialog_name);
+        et.setText(node.getName());
 
         new AlertDialog.Builder(ac).setTitle(R.string.node_rename).setView(view).setCancelable(true)
                 .setPositiveButton(R.string.common_ok, (di, i) -> renameNode(node, et.getText().toString().trim()))

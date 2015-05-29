@@ -10,6 +10,7 @@ import android.support.v4.content.Loader;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.operation.OperationFolderLocal;
 import org.opendataspace.android.operation.OperationLoader;
+import org.opendataspace.android.operation.OperationNodeLocal;
 import org.opendataspace.android.operation.OperationStatus;
 import org.opendataspace.android.storage.FileAdapter;
 import org.opendataspace.android.storage.FileInfo;
@@ -38,7 +39,14 @@ public class FragmentFolderLocal extends FragmentBaseList implements LoaderManag
 
     @Override
     void onListItemClick(int position) {
-        selectFile(((FileInfo) adapter.getItem(position)).getFile());
+        FileInfo info = (FileInfo) adapter.getItem(position);
+
+        if (!info.isDirectory()) {
+            getMainActivity().getNavigation().openFile(FragmentNodeLocal.class, new OperationNodeLocal(info));
+            return;
+        }
+
+        selectFile(info.getFile());
     }
 
     private void selectFile(File file) {
@@ -58,7 +66,7 @@ public class FragmentFolderLocal extends FragmentBaseList implements LoaderManag
         File file = op.getRoot();
         File root = Environment.getExternalStorageDirectory();
         return file.equals(root) ? context.getString(R.string.folder_slash) :
-                op.getRoot().getAbsolutePath().replaceFirst(root.getAbsolutePath(), "");
+                file.getAbsolutePath().replaceFirst(root.getAbsolutePath(), "");
     }
 
     @Override

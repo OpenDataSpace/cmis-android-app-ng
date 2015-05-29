@@ -126,5 +126,6 @@
     <string name="node_delete">Delete</string>
     <string name="node_rename">Rename</string>
     <string name="node_renamehint">Type new name here…</string>
+    <string name="node_size">Size</string>
 
 </resources>

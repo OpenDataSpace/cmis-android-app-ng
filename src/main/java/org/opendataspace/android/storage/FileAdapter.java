@@ -3,6 +3,7 @@ package org.opendataspace.android.storage;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.opendataspace.android.app.beta.R;
@@ -16,7 +17,7 @@ public class FileAdapter extends DataAdapter {
     private final ArrayList<FileInfo> data = new ArrayList<>();
 
     public FileAdapter(Context context) {
-        super(context, R.layout.delegate_list_item1);
+        super(context, R.layout.delegate_node);
     }
 
     @Override
@@ -37,10 +38,15 @@ public class FileAdapter extends DataAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View vw = super.getView(position, convertView, parent);
-        TextView tv = (TextView) vw.findViewById(R.id.text_listitem_primary);
+        TextView tv1 = (TextView) vw.findViewById(R.id.text_listitem_primary);
+        TextView tv2 = (TextView) vw.findViewById(R.id.text_listitem_secondary);
+        ImageView iv = (ImageView) vw.findViewById(R.id.action_listitem_more);
         FileInfo info = data.get(position);
-        tv.setText(info.getName());
-        tv.setCompoundDrawablesWithIntrinsicBounds(info.getIcon(context), 0, 0, 0);
+
+        tv1.setText(info.getName());
+        tv1.setCompoundDrawablesWithIntrinsicBounds(info.getIcon(context), 0, 0, 0);
+        tv2.setText(info.getNodeDecription(inf.getContext()));
+        iv.setVisibility(info.isDirectory() ? View.VISIBLE : View.GONE);
         return vw;
     }
 
