@@ -2,57 +2,49 @@ package org.opendataspace.android.storage;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.data.DataAdapter;
+import org.opendataspace.android.data.DataAdapterList;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class FileAdapter extends DataAdapter {
+public class FileAdapter extends DataAdapterList<FileInfo> {
 
-    private final ArrayList<FileInfo> data = new ArrayList<>();
+    private final View.OnClickListener more;
 
-    public FileAdapter(Context context) {
+    public FileAdapter(Context context, View.OnClickListener more) {
         super(context, R.layout.delegate_node);
+        this.more = more;
     }
 
     @Override
-    public int getCount() {
-        return data.size();
+    protected void updateView(FileInfo item, View view) {
+        TextView tv1 = (TextView) view.findViewById(R.id.text_listitem_primary);
+        TextView tv2 = (TextView) view.findViewById(R.id.text_listitem_secondary);
+        ImageView iv = (ImageView) view.findViewById(R.id.action_listitem_more);
+
+        view.setTag(R.id.internal_more, item);
+        tv1.setText(item.getName(inf.getContext()));
+        tv1.setCompoundDrawablesWithIntrinsicBounds(item.getIcon(context), 0, 0, 0);
+        tv2.setText(item.getNodeDecription(inf.getContext()));
+        iv.setVisibility((more != null && item.isDirectory()) ? View.VISIBLE : View.GONE);
+        iv.setOnClickListener(more);
     }
 
-    @Override
-    public Object getItem(int i) {
-        return data.get(i);
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return i;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View vw = super.getView(position, convertView, parent);
-        TextView tv1 = (TextView) vw.findViewById(R.id.text_listitem_primary);
-        TextView tv2 = (TextView) vw.findViewById(R.id.text_listitem_secondary);
-        ImageView iv = (ImageView) vw.findViewById(R.id.action_listitem_more);
-        FileInfo info = data.get(position);
-
-        tv1.setText(info.getName(inf.getContext()));
-        tv1.setCompoundDrawablesWithIntrinsicBounds(info.getIcon(context), 0, 0, 0);
-        tv2.setText(info.getNodeDecription(inf.getContext()));
-        iv.setVisibility(info.isDirectory() ? View.VISIBLE : View.GONE);
-        return vw;
-    }
-
-    public void update(List<FileInfo> file) {
-        data.clear();
-        data.addAll(file);
+    public void update(List<FileInfo> data) {
+        assign(data);
         invalidate();
+    }
+
+    public FileInfo resolve(ViewParent view) {
+        if (!(view instanceof View)) {
+            return null;
+        }
+
+        Object res = ((View) view).getTag(R.id.internal_more);
+        return res instanceof FileInfo ? (FileInfo) res : null;
     }
 }

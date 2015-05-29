@@ -33,6 +33,9 @@ class FragmentBaseList extends FragmentBase {
     final private AdapterView.OnItemClickListener clickListener =
             (parent, v, position, id) -> onListItemClick(position);
 
+    final private AdapterView.OnItemLongClickListener longClickListener =
+            (parent, v, position, id) -> onListItemLongClick(position);
+
     private ListAdapter adapter;
     private ListView list;
     private View emptyView;
@@ -260,6 +263,7 @@ class FragmentBaseList extends FragmentBase {
         }
         isListShown = true;
         list.setOnItemClickListener(clickListener);
+        list.setOnItemLongClickListener(longClickListener);
         if (adapter != null) {
             ListAdapter adapter = this.adapter;
             this.adapter = null;
@@ -276,5 +280,9 @@ class FragmentBaseList extends FragmentBase {
 
     public ListView getList() {
         return list;
+    }
+
+    protected boolean onListItemLongClick(int position) {
+        return false;
     }
 }

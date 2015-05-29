@@ -3,7 +3,7 @@ package org.opendataspace.android.object;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 
-public class ObjectBase {
+public class ObjectBase implements ObjectBaseId {
 
     public static final String FIELD_ID = "id";
 
@@ -13,6 +13,7 @@ public class ObjectBase {
     @DatabaseField(generatedId = true, columnName = FIELD_ID)
     private long id = INVALID_ID;
 
+    @Override
     public long getId() {
         return id;
     }

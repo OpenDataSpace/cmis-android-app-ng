@@ -15,13 +15,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.opendataspace.android.app.OdsApp;
-import org.opendataspace.android.app.OdsLog;
+import org.opendataspace.android.app.Task;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.operation.OperationNodeLocal;
 import org.opendataspace.android.storage.FileInfo;
 
 import java.io.File;
-import java.sql.SQLException;
 
 @SuppressLint("ValidFragment")
 public class FragmentNodeLocal extends FragmentBase {
@@ -112,39 +111,65 @@ public class FragmentNodeLocal extends FragmentBase {
         et.setText(info.getName(ac));
 
         new AlertDialog.Builder(ac).setTitle(R.string.node_rename).setView(view).setCancelable(true)
-                .setPositiveButton(R.string.common_ok, (di, i) -> renameNode(info, et.getText().toString().trim()))
+                .setPositiveButton(R.string.common_ok, (di, i) -> renameFile(info, et.getText().toString().trim()))
                 .setNegativeButton(R.string.common_cancel, (di, i) -> di.dismiss()).show();
     }
 
-    private void renameNode(FileInfo info, String name) {
+    private void renameFile(FileInfo info, String name) {
         if (TextUtils.isEmpty(name) || info == null) {
             return;
         }
 
-        File of = info.getFile();
-        File nf = new File(of.getParent(), name);
+        OdsApp.get().getPool().execute(new Task() {
 
-        if (!of.renameTo(nf)) {
-            new AlertDialog.Builder(getActivity()).setMessage(R.string.common_error).setCancelable(true)
-                    .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> dialogInterface.cancel()).show();
-            return;
-        }
+            private boolean res = false;
 
-        try {
-            op.setInfo(new FileInfo(nf, OdsApp.get().getDatabase().getMime()));
-        } catch (SQLException ex) {
-            OdsLog.ex(getClass(), ex);
-        }
+            @Override
+            public void onExecute() throws Exception {
+                File of = info.getFile();
+                File nf = new File(of.getParent(), name);
 
-        updateInfo();
+                if (!of.renameTo(nf)) {
+                    return;
+                }
+
+                op.setInfo(new FileInfo(nf, OdsApp.get().getDatabase().getMime()));
+                res = true;
+            }
+
+            @Override
+            public void onDone() throws Exception {
+                if (res) {
+                    updateInfo();
+                } else {
+                    new AlertDialog.Builder(getActivity()).setMessage(R.string.common_error).setCancelable(true)
+                            .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> dialogInterface.cancel())
+                            .show();
+                }
+            }
+        }, false);
     }
 
     private void deleteFile(FileInfo info) {
-        if (info.getFile().delete()) {
-            getMainActivity().getNavigation().backPressed();
-        } else {
-            new AlertDialog.Builder(getActivity()).setMessage(R.string.common_error).setCancelable(true)
-                    .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> dialogInterface.cancel()).show();
-        }
+        OdsApp.get().getPool().execute(new Task() {
+
+            private boolean res = false;
+
+            @Override
+            public void onExecute() throws Exception {
+                res = info.getFile().delete();
+            }
+
+            @Override
+            public void onDone() throws Exception {
+                if (res) {
+                    getMainActivity().getNavigation().backPressed();
+                } else {
+                    new AlertDialog.Builder(getActivity()).setMessage(R.string.common_error).setCancelable(true)
+                            .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> dialogInterface.cancel())
+                            .show();
+                }
+            }
+        }, false);
     }
 }

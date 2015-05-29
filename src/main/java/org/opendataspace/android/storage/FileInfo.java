@@ -8,26 +8,33 @@ import android.text.format.Formatter;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.data.DaoMime;
 import org.opendataspace.android.object.MimeType;
+import org.opendataspace.android.object.ObjectBaseId;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class FileInfo {
+public class FileInfo implements ObjectBaseId {
+
+    private final static AtomicInteger counter = new AtomicInteger(0);
 
     private final File file;
     private final MimeType mime;
     private final int special;
+    private final long id;
 
     public FileInfo(File file, DaoMime mime) throws SQLException {
         this.file = file;
         this.mime = isDirectory() ? null : mime.forFileName(file.getName());
         this.special = 0;
+        id = counter.incrementAndGet();
     }
 
     public FileInfo(File file, int special) {
         this.file = file;
         this.mime = null;
         this.special = special;
+        id = counter.incrementAndGet();
     }
 
     public String getName(Context context) {
@@ -125,5 +132,10 @@ public class FileInfo {
     public String getModifiedAt(Context context) {
         return DateFormat.getMediumDateFormat(context).format(file.lastModified()) + " " +
                 DateFormat.getTimeFormat(context).format(file.lastModified());
+    }
+
+    @Override
+    public long getId() {
+        return id;
     }
 }

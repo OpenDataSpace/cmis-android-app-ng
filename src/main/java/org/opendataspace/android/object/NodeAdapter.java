@@ -33,7 +33,7 @@ public class NodeAdapter extends ViewAdapter<Node> {
         tw1.setText(item.getName());
         tw1.setCompoundDrawablesWithIntrinsicBounds(item.getIcon(context), 0, 0, 0);
         tw2.setText(item.getNodeDecription(context));
-        ib.setVisibility(item.getType() == Node.Type.FOLDER ? View.VISIBLE : View.GONE);
+        ib.setVisibility((more != null && item.getType() == Node.Type.FOLDER) ? View.VISIBLE : View.GONE);
         ib.setOnClickListener(more);
     }
 
@@ -51,10 +51,11 @@ public class NodeAdapter extends ViewAdapter<Node> {
     }
 
     public Node resolve(ViewParent view) {
-        if (!(view instanceof View))
+        if (!(view instanceof View)) {
             return null;
+        }
 
         Object res = ((View) view).getTag(R.id.internal_more);
-        return  res instanceof Node ? (Node) res : null;
+        return res instanceof Node ? (Node) res : null;
     }
 }
