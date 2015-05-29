@@ -107,6 +107,7 @@
     <string name="folder_selectall">Select All</string>
     <string name="folder_actions">Additional actions</string>
     <string name="folder_details">Details</string>
+    <string name="folder_libraries">Local Files</string>
 
     <!-- node info -->
     <string name="node_title">Details</string>

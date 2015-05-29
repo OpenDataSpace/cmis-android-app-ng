@@ -21,7 +21,7 @@ public class Node extends ObjectBase {
 
     public static final String FIELD_RID = "rid";
     public static final String FIELD_PID = "pid";
-    public static final String FIELD_TYPE = "t";
+    private static final String FIELD_TYPE = "t";
 
     public enum Type {UNKNOWN, DOCUMENT, FOLDER}
 

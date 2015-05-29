@@ -74,7 +74,7 @@ public class OperationRepoFetch extends OperationBaseFetch<Repo, Repository> {
         return obj.merge(val);
     }
 
-    public void setShouldConfig(boolean val) {
-        shouldConfig = val;
+    public void withoutConfig() {
+        shouldConfig = false;
     }
 }

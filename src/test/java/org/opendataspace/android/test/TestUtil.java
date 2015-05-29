@@ -134,7 +134,7 @@ public class TestUtil {
         return ls;
     }
 
-    public static Repo repo(OdsApp app, Account acc, Repo.Type type) throws SQLException {
+    private static Repo repo(OdsApp app, Account acc, Repo.Type type) throws SQLException {
         for (Repo cur : allOf(app.getDatabase().getRepos().forAccount(acc))) {
             if (cur.getType() == type) {
                 return cur;
@@ -150,7 +150,7 @@ public class TestUtil {
         app.getPrefs().setLastAccountId(acc);
 
         OperationRepoFetch op = new OperationRepoFetch(acc);
-        op.setShouldConfig(false);
+        op.withoutConfig();
         OperationStatus st = op.execute();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(true, app.getDatabase().getRepos().countOf() > 0);

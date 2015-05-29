@@ -13,10 +13,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import org.opendataspace.android.event.Event;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.data.DataAdapterMerge;
+import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventAccountSelect;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.AccountAdapter;
@@ -27,6 +27,7 @@ import org.opendataspace.android.object.RepoAdapter;
 import org.opendataspace.android.operation.OperationAccountSelect;
 import org.opendataspace.android.operation.OperationAccountUpdate;
 import org.opendataspace.android.operation.OperationFolderBrowse;
+import org.opendataspace.android.operation.OperationFolderLocal;
 import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationStatus;
 import org.opendataspace.android.view.ViewManager;
@@ -175,7 +176,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
             break;
 
         case R.id.action_nav_localfolder:
-            getMainActivity().getNavigation().openRootFolder(FragmentFolderLibrary.class, null);
+            getMainActivity().getNavigation().openRootFolder(FragmentFolderLocal.class, new OperationFolderLocal());
             break;
         }
     }

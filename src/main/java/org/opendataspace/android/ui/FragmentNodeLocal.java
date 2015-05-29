@@ -18,7 +18,6 @@ import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.operation.OperationNodeLocal;
-import org.opendataspace.android.operation.OperationNodeRename;
 import org.opendataspace.android.storage.FileInfo;
 
 import java.io.File;
@@ -28,7 +27,6 @@ import java.sql.SQLException;
 public class FragmentNodeLocal extends FragmentBase {
 
     private final OperationNodeLocal op;
-    private OperationNodeRename rename;
 
     public FragmentNodeLocal(OperationNodeLocal op) {
         this.op = op;
@@ -50,10 +48,10 @@ public class FragmentNodeLocal extends FragmentBase {
         Activity ac = getActivity();
         TextView tvt = widget(R.id.text_node_title);
 
-        tvt.setText(info.getName());
+        tvt.setText(info.getName(ac));
         tvt.setCompoundDrawablesWithIntrinsicBounds(info.getIcon(ac), 0, 0, 0);
         this.<TextView>widget(R.id.text_node_details).setText(info.getNodeDecription(ac));
-        this.<TextView>widget(R.id.text_node_name).setText(info.getName());
+        this.<TextView>widget(R.id.text_node_name).setText(info.getName(ac));
         this.<TextView>widget(R.id.text_node_path).setText(info.getFile().getParentFile().getAbsolutePath());
         this.<TextView>widget(R.id.text_node_type).setText(info.getMimeDescription(ac));
         this.<TextView>widget(R.id.text_node_size).setText(Formatter.formatShortFileSize(ac, info.getFile().length()));
@@ -95,9 +93,9 @@ public class FragmentNodeLocal extends FragmentBase {
             return;
         }
 
-        new AlertDialog.Builder(getActivity())
-                .setMessage(String.format(getString(R.string.common_delete), info.getName())).setCancelable(true)
-                .setPositiveButton(R.string.common_ok, (di, i) -> deleteFile(info))
+        Activity ac = getActivity();
+        new AlertDialog.Builder(ac).setMessage(String.format(getString(R.string.common_delete), info.getName(ac)))
+                .setCancelable(true).setPositiveButton(R.string.common_ok, (di, i) -> deleteFile(info))
                 .setNegativeButton(R.string.common_cancel, (di, i) -> di.cancel()).show();
     }
 
@@ -111,7 +109,7 @@ public class FragmentNodeLocal extends FragmentBase {
         Activity ac = getActivity();
         @SuppressLint("InflateParams") View view = ac.getLayoutInflater().inflate(R.layout.dialog_node_rename, null);
         EditText et = (EditText) view.findViewById(R.id.edit_dialog_name);
-        et.setText(info.getName());
+        et.setText(info.getName(ac));
 
         new AlertDialog.Builder(ac).setTitle(R.string.node_rename).setView(view).setCancelable(true)
                 .setPositiveButton(R.string.common_ok, (di, i) -> renameNode(info, et.getText().toString().trim()))

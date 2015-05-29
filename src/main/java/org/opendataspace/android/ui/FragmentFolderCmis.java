@@ -63,7 +63,7 @@ public class FragmentFolderCmis extends FragmentBaseList
         setListAdapter(adapter);
         setEmptyText(getString(R.string.folder_empty));
         OdsApp.bus.register(this, Event.PRIORITY_UI);
-        selectNode(null, false);
+        selectNode(op.getFolder(), false);
     }
 
     @Override

@@ -15,6 +15,7 @@ public class MimeType extends ObjectBase {
     @DatabaseField(unique = true, columnName = FIELD_EXT, canBeNull = false)
     private String extenstion;
 
+    @SuppressWarnings("FieldCanBeLocal")
     @Expose
     @DatabaseField(columnName = "type", canBeNull = false)
     private String type;
@@ -51,9 +52,5 @@ public class MimeType extends ObjectBase {
     public int getIcon(Context context) {
         return TextUtils.isEmpty(icon) ? R.drawable.ic_file :
                 context.getResources().getIdentifier("file_" + icon, "drawable", R.class.getPackage().getName());
-    }
-
-    public String getType() {
-        return type;
     }
 }

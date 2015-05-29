@@ -50,7 +50,7 @@ public class FragmentFolderLocal extends FragmentBaseList implements LoaderManag
     }
 
     private void selectFile(File file) {
-        if (inProgress || !file.isDirectory()) {
+        if (inProgress || (file != null && !file.isDirectory())) {
             return;
         }
 
@@ -64,6 +64,11 @@ public class FragmentFolderLocal extends FragmentBaseList implements LoaderManag
     @Override
     public String getTile(Context context) {
         File file = op.getRoot();
+
+        if (file == null) {
+            return context.getString(R.string.folder_libraries);
+        }
+
         File root = Environment.getExternalStorageDirectory();
         return file.equals(root) ? context.getString(R.string.folder_slash) :
                 file.getAbsolutePath().replaceFirst(root.getAbsolutePath(), "");
@@ -73,18 +78,18 @@ public class FragmentFolderLocal extends FragmentBaseList implements LoaderManag
     public boolean backPressed() {
         File file = op.getRoot();
 
-        if (file.equals(op.getTop())) {
+        if (file == null) {
             return false;
         }
 
-        file = file.getParentFile();
-
-        if (file != null) {
-            selectFile(file);
-            return true;
+        if (file.equals(op.getTop())) {
+            file = null;
+        } else {
+            file = file.getParentFile();
         }
 
-        return false;
+        selectFile(file);
+        return true;
     }
 
     @Override

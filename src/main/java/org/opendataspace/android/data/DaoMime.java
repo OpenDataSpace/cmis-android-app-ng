@@ -15,8 +15,6 @@ public class DaoMime extends DaoBase<MimeType> {
 
     private PreparedQuery<MimeType> byExt;
     private SelectArg byExtArg;
-    private PreparedQuery<MimeType> byType;
-    private SelectArg byTypeArg;
 
     DaoMime(ConnectionSource source, ObjectCache cache) throws SQLException {
         super(source, cache, MimeType.class);

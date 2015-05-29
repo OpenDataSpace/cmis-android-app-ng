@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.cmis.CmisSession;
-import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
@@ -19,8 +18,9 @@ public class OperationFolderBrowseTest {
     public void execute() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         CmisSession session = TestUtil.setupSession(app, Repo.Type.PRIVATE);
-        OperationFolderBrowse op = new OperationFolderBrowse(
-                app.getDatabase().getAccounts().get(app.getPrefs().getLastAccountId()), session.getRepo());
+        OperationFolderBrowse op =
+                new OperationFolderBrowse(app.getDatabase().getAccounts().get(app.getPrefs().getLastAccountId()),
+                        session.getRepo());
         OperationStatus st = op.execute();
         TestUtil.waitRunnable();
         Assert.assertEquals(true, st.isOk());

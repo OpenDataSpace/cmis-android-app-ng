@@ -43,7 +43,7 @@ public class FileAdapter extends DataAdapter {
         ImageView iv = (ImageView) vw.findViewById(R.id.action_listitem_more);
         FileInfo info = data.get(position);
 
-        tv1.setText(info.getName());
+        tv1.setText(info.getName(inf.getContext()));
         tv1.setCompoundDrawablesWithIntrinsicBounds(info.getIcon(context), 0, 0, 0);
         tv2.setText(info.getNodeDecription(inf.getContext()));
         iv.setVisibility(info.isDirectory() ? View.VISIBLE : View.GONE);

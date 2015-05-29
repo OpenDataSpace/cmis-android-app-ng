@@ -7,11 +7,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.cmis.CmisSession;
-import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.operation.OperationFolderBrowse;
-import org.opendataspace.android.operation.OperationRepoFetch;
-import org.opendataspace.android.operation.OperationStatus;
 import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -25,8 +22,9 @@ public class FragmentFolderCmisTest {
     public void navigate() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         CmisSession session = TestUtil.setupSession(app, Repo.Type.GLOBAL);
-        OperationFolderBrowse op = new OperationFolderBrowse(
-                app.getDatabase().getAccounts().get(app.getPrefs().getLastAccountId()), session.getRepo());
+        OperationFolderBrowse op =
+                new OperationFolderBrowse(app.getDatabase().getAccounts().get(app.getPrefs().getLastAccountId()),
+                        session.getRepo());
         FragmentFolderCmis fgm = new FragmentFolderCmis(op);
         ActivityMain ac = TestUtil.setupFragment(fgm);
         TestUtil.waitRunnable();

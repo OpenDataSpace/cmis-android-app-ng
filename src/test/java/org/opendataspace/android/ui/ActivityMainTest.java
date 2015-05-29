@@ -60,9 +60,7 @@ public class ActivityMainTest {
         navigateBack(FragmentNavigation.class, ac);
         navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_global), FragmentFolderCmis.class, ac);
         navigateBack(FragmentNavigation.class, ac);
-        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_localfolder), FragmentFolderLibrary.class, ac);
-        navigateList(android.R.id.list, ac.getString(R.string.folder_root), FragmentFolderLocal.class, ac);
-        navigateBack(FragmentFolderLibrary.class, ac);
+        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_localfolder), FragmentFolderLocal.class, ac);
         navigateBack(FragmentNavigation.class, ac);
 
         // exit

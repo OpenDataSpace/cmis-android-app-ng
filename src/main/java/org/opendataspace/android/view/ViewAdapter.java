@@ -88,7 +88,7 @@ public abstract class ViewAdapter<T extends ObjectBase> extends DataAdapter impl
         super.invalidate();
     }
 
-    protected boolean isSelected(long id) {
+    private boolean isSelected(long id) {
         return selected.contains(id);
     }
 
@@ -107,7 +107,7 @@ public abstract class ViewAdapter<T extends ObjectBase> extends DataAdapter impl
         return vw;
     }
 
-    public abstract void updateView(T item, View view);
+    protected abstract void updateView(T item, View view);
 
     public List<T> getSelected() {
         List<T> res = new ArrayList<>();

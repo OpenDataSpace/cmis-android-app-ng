@@ -1,7 +1,11 @@
 package org.opendataspace.android.operation;
 
+import android.os.Build;
+import android.os.Environment;
+
 import com.google.gson.annotations.Expose;
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.data.DaoMime;
 import org.opendataspace.android.storage.FileInfo;
 
@@ -16,17 +20,19 @@ public class OperationFolderLocal extends OperationBase {
     private File root;
 
     @Expose
-    private final File top;
+    private File top;
 
     private final transient List<FileInfo> data = new ArrayList<>();
 
-    public OperationFolderLocal(File root) {
-        top = root;
-        setRoot(root);
+    public OperationFolderLocal() {
     }
 
     public void setRoot(File root) {
         this.root = root;
+
+        if (top == null || root == null) {
+            top = root;
+        }
     }
 
     public File getRoot() {
@@ -41,41 +47,47 @@ public class OperationFolderLocal extends OperationBase {
     protected void doExecute(OperationStatus status) throws Exception {
         data.clear();
 
-        if (root == null) {
-            return;
+        if (root != null) {
+            File[] ls = root.listFiles(cur -> !cur.isHidden());
+
+            if (ls != null) {
+                DaoMime mime = OdsApp.get().getDatabase().getMime();
+
+                for (File cur : ls) {
+                    data.add(new FileInfo(cur, mime));
+                }
+            }
+
+            Collections.sort(data, (f1, f2) -> {
+                int res = Boolean.valueOf(f1.isDirectory()).compareTo(f2.isDirectory());
+                return res != 0 ? -res : f1.getFile().getName().compareToIgnoreCase(f2.getFile().getName());
+            });
+        } else {
+            data.add(new FileInfo(Environment.getExternalStorageDirectory(), R.id.action_local_root));
+            addSpecial(Environment.DIRECTORY_DOWNLOADS, R.id.action_local_downloads);
+
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+                addSpecial(Environment.DIRECTORY_DOCUMENTS, R.id.action_local_documents);
+            }
+
+            addSpecial(Environment.DIRECTORY_PICTURES, R.id.action_local_pictures);
+            addSpecial(Environment.DIRECTORY_MUSIC, R.id.action_local_music);
+            addSpecial(Environment.DIRECTORY_MOVIES, R.id.action_local_video);
         }
-
-        File[] ls = root.listFiles(cur -> !cur.isHidden());
-
-        if (ls == null) {
-            status.setOk();
-            return;
-        }
-
-        if (isCancel()) {
-            throw new InterruptedException();
-        }
-
-        DaoMime mime = OdsApp.get().getDatabase().getMime();
-
-        for (File cur : ls) {
-            data.add(new FileInfo(cur, mime));
-        }
-
-        if (isCancel()) {
-            throw new InterruptedException();
-        }
-
-        Collections.sort(data, (f1, f2) -> {
-            int res = Boolean.valueOf(f1.isDirectory()).compareTo(f2.isDirectory());
-            return res != 0 ? -res : f1.getName().compareToIgnoreCase(f2.getName());
-        });
 
         if (isCancel()) {
             throw new InterruptedException();
         }
 
         status.setOk();
+    }
+
+    private void addSpecial(String type, int id) {
+        File f = Environment.getExternalStoragePublicDirectory(type);
+
+        if (f.exists()) {
+            data.add(new FileInfo(f, id));
+        }
     }
 
     public List<FileInfo> getData() {
