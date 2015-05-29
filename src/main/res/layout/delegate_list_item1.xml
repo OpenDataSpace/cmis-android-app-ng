@@ -5,4 +5,5 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:drawablePadding="@dimen/pad"
-          android:padding="@dimen/pad"/>
+          android:padding="@dimen/pad"
+          android:descendantFocusability="blocksDescendants"/>

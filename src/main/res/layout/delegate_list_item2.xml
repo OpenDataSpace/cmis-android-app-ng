@@ -4,7 +4,8 @@
               android:layout_height="wrap_content"
               android:minHeight="?attr/listPreferredItemHeight"
               android:orientation="vertical"
-              android:padding="@dimen/pad">
+              android:padding="@dimen/pad"
+              android:descendantFocusability="blocksDescendants">
 
     <TextView
         android:id="@+id/text_listitem_primary"
