@@ -3,15 +3,11 @@ package org.opendataspace.android.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.MenuItem;
-
 import org.opendataspace.android.app.OdsApp;
-import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.AccountAdapter;
 import org.opendataspace.android.operation.OperationAccountUpdate;
-
-import java.sql.SQLException;
 
 public class FragmentAccountList extends FragmentBaseList {
 
@@ -35,20 +31,6 @@ public class FragmentAccountList extends FragmentBaseList {
     }
 
     @Override
-    public boolean backPressed() {
-        try {
-            if (OdsApp.get().getDatabase().getAccounts().countOf() == 0) {
-                getActivity().finish();
-                return true;
-            }
-        } catch (SQLException ex) {
-            OdsLog.ex(getClass(), ex);
-        }
-
-        return false;
-    }
-
-    @Override
     public String getTile(Context context) {
         return context.getString(R.string.accounts_title);
     }
@@ -63,12 +45,12 @@ public class FragmentAccountList extends FragmentBaseList {
         ActivityMain ac = getMainActivity();
 
         switch (item.getItemId()) {
-        case R.id.menu_account_add:
-            ac.getNavigation().openFile(FragmentAccountDetails.class, new OperationAccountUpdate(new Account()));
-            break;
+            case R.id.menu_account_add:
+                ac.getNavigation().openFile(FragmentAccountDetails.class, new OperationAccountUpdate(new Account()));
+                break;
 
-        default:
-            return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
         return true;

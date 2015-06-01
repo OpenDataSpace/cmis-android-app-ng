@@ -2,7 +2,6 @@ package org.opendataspace.android.ui;
 
 import android.os.Bundle;
 import android.widget.ListView;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +25,7 @@ public class ActivityMainTest {
     public void checkNoAccounts() throws Exception {
         ActivityMain ac = Robolectric.setupActivity(ActivityMain.class);
         TestUtil.waitRunnable();
-        Assert.assertEquals(FragmentAccountList.class, ac.getNavigation().getTopFragment().getClass());
+        Assert.assertEquals(FragmentAccountDetails.class, ac.getNavigation().getTopFragment().getClass());
         ac.onBackPressed();
         Assert.assertEquals(true, Shadows.shadowOf(ac).isFinishing());
     }

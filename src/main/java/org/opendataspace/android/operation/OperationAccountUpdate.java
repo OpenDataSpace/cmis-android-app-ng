@@ -10,6 +10,9 @@ public class OperationAccountUpdate extends OperationBase {
     @Expose
     private final Account account;
 
+    @Expose
+    private boolean isFirstAccount = false;
+
     public OperationAccountUpdate(Account account) {
         this.account = account;
     }
@@ -47,5 +50,13 @@ public class OperationAccountUpdate extends OperationBase {
         }
 
         status.setOk();
+    }
+
+    public void setIsFirstAccount() {
+        isFirstAccount = true;
+    }
+
+    public boolean isFirstAccount() {
+        return isFirstAccount;
     }
 }

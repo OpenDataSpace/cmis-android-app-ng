@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.operation.OperationBase;
@@ -64,5 +63,9 @@ public class FragmentBase extends Fragment {
 
     public void navigationRequest(OperationBase op) {
         // nothing
+    }
+
+    public boolean needDrawer() {
+        return true;
     }
 }

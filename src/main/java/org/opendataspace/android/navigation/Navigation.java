@@ -11,17 +11,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
-
 import org.opendataspace.android.app.CompatKeyboard;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.object.Account;
+import org.opendataspace.android.operation.OperationAccountUpdate;
 import org.opendataspace.android.operation.OperationBase;
-import org.opendataspace.android.ui.ActivityDialog;
-import org.opendataspace.android.ui.ActivityMain;
-import org.opendataspace.android.ui.FragmentAccountList;
-import org.opendataspace.android.ui.FragmentBase;
-import org.opendataspace.android.ui.FragmentNavigation;
+import org.opendataspace.android.ui.*;
 
 import java.util.Collections;
 import java.util.Stack;
@@ -61,21 +58,28 @@ public class Navigation implements NavigationInterface {
             }
         }
 
+        FragmentNavigation nav = new FragmentNavigation();
+        nav.setNonMain();
+        applyFragment(R.id.main_view_drawer, nav, TAG_NAVGATION);
+
         if (backstack.isEmpty()) {
             backstack.add(new NavigationState(NavigationScope.MAIN, FragmentNavigation.class, null));
 
             try {
                 if (OdsApp.get().getDatabase().getAccounts().countOf() == 0) {
-                    backstack.add(new NavigationState(NavigationScope.MAIN, FragmentAccountList.class, null));
+                    if (isTablet) {
+                        navigate(backstack.lastElement());
+                    }
+
+                    OperationAccountUpdate op = new OperationAccountUpdate(new Account());
+                    op.setIsFirstAccount();
+                    backstack.add(new NavigationState(NavigationScope.DETAILS, FragmentAccountDetails.class, op));
                 }
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);
             }
         }
 
-        FragmentNavigation nav = new FragmentNavigation();
-        nav.setNonMain();
-        applyFragment(R.id.main_view_drawer, nav, TAG_NAVGATION);
         navigate(backstack.lastElement());
     }
 
@@ -106,7 +110,7 @@ public class Navigation implements NavigationInterface {
             return;
         }
 
-        boolean needDrawer = backstack.size() > 1;
+        boolean needDrawer = backstack.size() > 1 && fgm.needDrawer();
 
         if (isTablet) {
             switch (ns.getNavigationScope()) {

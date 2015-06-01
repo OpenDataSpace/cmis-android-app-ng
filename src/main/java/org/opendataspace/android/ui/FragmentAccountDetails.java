@@ -7,19 +7,18 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.webkit.URLUtil;
-
+import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.operation.OperationAccountDelete;
 import org.opendataspace.android.operation.OperationAccountUpdate;
 import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationStatus;
+
+import java.sql.SQLException;
 
 @SuppressLint("ValidFragment")
 public class FragmentAccountDetails extends FragmentBaseInput
@@ -162,5 +161,24 @@ public class FragmentAccountDetails extends FragmentBaseInput
         if (mi != null) {
             mi.setVisible(op.getAccount().isValidId());
         }
+    }
+
+    @Override
+    public boolean backPressed() {
+        try {
+            if (op.isFirstAccount() && OdsApp.get().getDatabase().getAccounts().countOf() == 0) {
+                getActivity().finish();
+                return true;
+            }
+        } catch (SQLException ex) {
+            OdsLog.ex(getClass(), ex);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean needDrawer() {
+        return !op.isFirstAccount();
     }
 }
