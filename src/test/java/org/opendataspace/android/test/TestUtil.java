@@ -2,13 +2,14 @@ package org.opendataspace.android.test;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-
 import com.j256.ormlite.dao.CloseableIterator;
 import junit.framework.Assert;
+import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.object.Account;
+import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.ObjectBase;
 import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.operation.OperationRepoFetch;
@@ -158,5 +159,23 @@ public class TestUtil {
         Repo repo = TestUtil.repo(app, acc, type);
         Assert.assertEquals(true, repo != null);
         return new CmisSession(acc, repo);
+    }
+
+    public static void removeIfExists(CmisSession session, String name) {
+        CmisObject obj = session.getObjectByPath(name);
+
+        if (obj != null) {
+            session.delete(new Node(obj, session.getRepo()));
+        }
+    }
+
+    public static boolean hasChild(OdsApp app, Repo repo, Node parent, String name, Node.Type type) throws java.sql.SQLException {
+        for (Node cur : TestUtil.allOf(app.getDatabase().getNodes().forParent(repo, parent != null ? parent.getId() : ObjectBase.INVALID_ID))) {
+            if (cur.getType() == type && name.equals(cur.getName())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

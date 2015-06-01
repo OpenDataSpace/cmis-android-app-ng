@@ -1,12 +1,7 @@
 package org.opendataspace.android.cmis;
 
 import com.google.gson.annotations.Expose;
-import org.apache.chemistry.opencmis.client.api.CmisObject;
-import org.apache.chemistry.opencmis.client.api.Folder;
-import org.apache.chemistry.opencmis.client.api.ObjectFactory;
-import org.apache.chemistry.opencmis.client.api.OperationContext;
-import org.apache.chemistry.opencmis.client.api.Rendition;
-import org.apache.chemistry.opencmis.client.api.Session;
+import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.client.runtime.OperationContextImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -22,13 +17,7 @@ import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.Repo;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -195,8 +184,13 @@ public class CmisSession {
                 new ObjectIdImpl(parent != null ? parent.getUuid() : repo.getRootFolderUuid())));
     }
 
-    public void delete(String id) {
-        getSession().delete(new ObjectIdImpl(id));
+    public void delete(Node node) {
+        if (node.getType() == Node.Type.FOLDER) {
+            getSession().getBinding().getObjectService().deleteTree(repo.getUuid(), node.getUuid(), true, null, false,
+                    null);
+        } else {
+            getSession().delete(new ObjectIdImpl(node.getUuid()));
+        }
     }
 
     public CmisObject getObjectById(String uuid) {

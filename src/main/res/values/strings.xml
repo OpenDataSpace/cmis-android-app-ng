@@ -108,6 +108,9 @@
     <string name="folder_actions">Additional actions</string>
     <string name="folder_details">Details</string>
     <string name="folder_libraries">Local Files</string>
+    <string name="folder_cut">Cut</string>
+    <string name="folder_copy">Copy</string>
+    <string name="folder_paste">Paste</string>
 
     <!-- node info -->
     <string name="node_title">Details</string>

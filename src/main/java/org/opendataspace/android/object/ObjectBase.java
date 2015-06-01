@@ -28,12 +28,12 @@ public class ObjectBase implements ObjectBaseId {
             return true;
         }
 
-        if (o == null || !(o instanceof ObjectBase)) {
+        if (o == null || !(o instanceof ObjectBaseId)) {
             return false;
         }
 
-        ObjectBase that = (ObjectBase) o;
-        return id == that.id;
+        ObjectBaseId that = (ObjectBaseId) o;
+        return id == that.getId();
     }
 
     @Override

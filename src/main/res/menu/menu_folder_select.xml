@@ -2,11 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:auto="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_folder_delete"
-        android:title="@string/folder_delete"
-        android:icon="@drawable/ic_remove"
-        auto:showAsAction="ifRoom"/>
+            android:id="@+id/menu_folder_delete"
+            android:title="@string/folder_delete"
+            android:icon="@drawable/ic_remove"
+            auto:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/menu_folder_selectall"
-        android:title="@string/folder_selectall"/>
+            android:id="@+id/menu_folder_cut"
+            android:title="@string/folder_cut"
+            auto:showAsAction="never"/>
+    <item
+            android:id="@+id/menu_folder_copy"
+            android:title="@string/folder_copy"
+            auto:showAsAction="never"/>
+    <item
+            android:id="@+id/menu_folder_selectall"
+            android:title="@string/folder_selectall"
+            auto:showAsAction="never"/>
 </menu>

@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.text.format.Formatter;
-
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -211,6 +210,10 @@ public class Node extends ObjectBase {
 
     public boolean canCreateFolder() {
         return (info.permissions & NodeInfo.CAN_CREATE_FOLDER) != 0;
+    }
+
+    public boolean canCreateDocument() {
+        return (info.permissions & NodeInfo.CAN_CREATE_DOCUMENT) != 0;
     }
 
     public boolean canDelete() {

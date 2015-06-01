@@ -31,7 +31,7 @@ public class OperationNodeDelete extends OperationBaseCmis {
     protected void doExecute(OperationStatus status) throws Exception {
         for (Node cur : nodes) {
             try {
-                session.delete(cur.getUuid());
+                session.delete(cur);
                 OdsApp.get().getDatabase().getNodes().delete(cur);
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);

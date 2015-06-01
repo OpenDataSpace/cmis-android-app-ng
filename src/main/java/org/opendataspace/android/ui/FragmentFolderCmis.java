@@ -15,7 +15,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.event.Event;
@@ -26,14 +25,9 @@ import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.NodeAdapter;
 import org.opendataspace.android.object.ObjectBase;
-import org.opendataspace.android.operation.OperationBase;
-import org.opendataspace.android.operation.OperationFolderBrowse;
-import org.opendataspace.android.operation.OperationFolderCreate;
-import org.opendataspace.android.operation.OperationLoader;
-import org.opendataspace.android.operation.OperationNodeBrowse;
-import org.opendataspace.android.operation.OperationNodeDelete;
-import org.opendataspace.android.operation.OperationStatus;
+import org.opendataspace.android.operation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @SuppressLint("ValidFragment")
@@ -43,14 +37,15 @@ public class FragmentFolderCmis extends FragmentBaseList
     private final static int LOADER_BROWSE = 1;
     private final static int LOADER_NEWFOLDER = 2;
     private final static int LOADER_DELETE = 3;
+    private static final int LOADER_COPYMOVE = 4;
 
     private OperationFolderBrowse op;
     private NodeAdapter adapter;
-    private boolean inProgress;
     private OperationFolderCreate create;
     private ActionMode selection;
     private OperationNodeDelete delete;
     private Node moreItem;
+    private OperationNodeCopyMove copymove;
 
     public FragmentFolderCmis(OperationFolderBrowse op) {
         this.op = op;
@@ -96,6 +91,9 @@ public class FragmentFolderCmis extends FragmentBaseList
         case LOADER_DELETE:
             return new OperationLoader(delete, getActivity());
 
+        case LOADER_COPYMOVE:
+            return new OperationLoader(copymove, getActivity());
+
         default:
             return null;
         }
@@ -103,8 +101,6 @@ public class FragmentFolderCmis extends FragmentBaseList
 
     @Override
     public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus data) {
-        inProgress = false;
-
         if (!data.isOk()) {
             ActivityMain ac = getMainActivity();
             new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
@@ -136,14 +132,10 @@ public class FragmentFolderCmis extends FragmentBaseList
 
     @Override
     public void onLoaderReset(Loader<OperationStatus> loader) {
-        inProgress = false;
+        // nothing
     }
 
     private void selectNode(Node node, boolean cdup) {
-        if (inProgress) {
-            return;
-        }
-
         Node.Type type = node != null ? node.getType() : Node.Type.FOLDER;
 
         if (type == Node.Type.DOCUMENT) {
@@ -214,6 +206,18 @@ public class FragmentFolderCmis extends FragmentBaseList
             }
             break;
 
+        case R.id.menu_folder_copy:
+            actionCopyCut(true);
+            break;
+
+        case R.id.menu_folder_cut:
+            actionCopyCut(false);
+            break;
+
+        case R.id.menu_folder_paste:
+            actionPaste();
+            break;
+
         default:
             return super.onOptionsItemSelected(item);
         }
@@ -222,10 +226,6 @@ public class FragmentFolderCmis extends FragmentBaseList
     }
 
     private void actionCreateFolder() {
-        if (inProgress) {
-            return;
-        }
-
         Activity ac = getActivity();
         @SuppressLint("InflateParams") View view = ac.getLayoutInflater().inflate(R.layout.dialog_folder_create, null);
         EditText et = (EditText) view.findViewById(R.id.edit_dialog_name);
@@ -236,16 +236,11 @@ public class FragmentFolderCmis extends FragmentBaseList
     }
 
     private void startLoader(int id) {
-        if (inProgress) {
-            return;
-        }
-
-        inProgress = true;
         getLoaderManager().restartLoader(id, null, this);
     }
 
     private void createFolder(String name) {
-        if (TextUtils.isEmpty(name) || inProgress) {
+        if (TextUtils.isEmpty(name)) {
             return;
         }
 
@@ -262,10 +257,16 @@ public class FragmentFolderCmis extends FragmentBaseList
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         MenuItem mi = menu.findItem(R.id.menu_folder_create);
+        Node node = op.getFolder();
 
         if (mi != null) {
-            Node node = op.getFolder();
             mi.setVisible(node != null && node.canCreateFolder());
+        }
+
+        mi = menu.findItem(R.id.menu_folder_paste);
+
+        if (mi != null) {
+            mi.setVisible(node != null && copymove != null && copymove.canPaste(node));
         }
     }
 
@@ -305,14 +306,16 @@ public class FragmentFolderCmis extends FragmentBaseList
     }
 
     private void actionDelete() {
-        if (inProgress || selection == null) {
-            return;
+        List<Node> ls = null;
+
+        if (selection != null) {
+            ls = adapter.getSelected();
+            selection.finish();
+        } else if (moreItem != null) {
+            ls = Collections.singletonList(moreItem);
         }
 
-        List<Node> ls = adapter.getSelected();
-        selection.finish();
-
-        if (ls.isEmpty()) {
+        if (ls == null || ls.isEmpty()) {
             return;
         }
 
@@ -351,8 +354,37 @@ public class FragmentFolderCmis extends FragmentBaseList
         ActivityMain ac = getMainActivity();
         PopupMenu popup = new PopupMenu(ac, view);
         ac.getMenuInflater().inflate(R.menu.menu_folder_more, popup.getMenu());
+        onPrepareOptionsMenu(popup.getMenu());
         popup.setOnDismissListener(menu -> moreItem = null);
         popup.setOnMenuItemClickListener(this::onOptionsItemSelected);
         popup.show();
+    }
+
+    private void actionCopyCut(boolean isCopy) {
+        List<Node> ls = null;
+
+        if (selection != null) {
+            ls = adapter.getSelected();
+            selection.finish();
+        } else if (moreItem != null) {
+            ls = Collections.singletonList(moreItem);
+        }
+
+        if (copymove == null) {
+            copymove = new OperationNodeCopyMove(op.getSession());
+        }
+
+        copymove.setContext(ls, isCopy);
+    }
+
+    private void actionPaste() {
+        Node node = op.getFolder();
+
+        if (copymove == null || !copymove.canPaste(node)) {
+            return;
+        }
+
+        copymove.setTarget(node);
+        startLoader(LOADER_COPYMOVE);
     }
 }

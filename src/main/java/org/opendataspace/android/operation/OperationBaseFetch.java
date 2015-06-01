@@ -19,7 +19,7 @@ public abstract class OperationBaseFetch<T extends ObjectBase, U> extends Operat
 
         try {
             while (it.hasNext()) {
-                data.add(it.next());
+                data.add(it.nextThrow());
             }
         } finally {
             it.close();

@@ -4,11 +4,7 @@ import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.ObjectCache;
 import com.j256.ormlite.db.DatabaseType;
 import com.j256.ormlite.field.FieldType;
-import com.j256.ormlite.stmt.PreparedQuery;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.SelectArg;
-import com.j256.ormlite.stmt.SelectIterator;
-import com.j256.ormlite.stmt.StatementBuilder;
+import com.j256.ormlite.stmt.*;
 import com.j256.ormlite.stmt.mapped.MappedCreate;
 import com.j256.ormlite.stmt.mapped.MappedDelete;
 import com.j256.ormlite.stmt.mapped.MappedUpdate;
@@ -184,7 +180,7 @@ public abstract class DaoBase<T extends ObjectBase> {
         long res;
 
         try {
-            res = conn.queryForLong(checker, new Object[] {id}, new FieldType[] {info.getIdField()});
+            res = conn.queryForLong(checker, new Object[]{id}, new FieldType[]{info.getIdField()});
         } finally {
             source.releaseConnection(conn);
         }
@@ -221,6 +217,10 @@ public abstract class DaoBase<T extends ObjectBase> {
     protected abstract EventDaoBase<T> createEvent();
 
     public T get(long id) throws SQLException {
+        if (id == ObjectBase.INVALID_ID) {
+            return null;
+        }
+
         if (selectId == null) {
             selectIdArg = new SelectArg(id);
             selectId = new QueryBuilder<>(type, info, null).where().eq(ObjectBase.FIELD_ID, selectIdArg).prepare();

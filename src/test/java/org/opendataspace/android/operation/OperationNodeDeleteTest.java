@@ -22,15 +22,12 @@ public class OperationNodeDeleteTest {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         CmisSession session = TestUtil.setupSession(app, Repo.Type.PRIVATE);
         String name = "Test123";
-        CmisObject obj = session.getObjectByPath(name);
+        TestUtil.removeIfExists(session, name);
 
-        if (obj != null) {
-            session.delete(obj.getId());
-        }
-
-        obj = session.createFolder(new Node(session.getRoot(), session.getRepo()), name);
+        CmisObject obj = session.createFolder(new Node(session.getRoot(), session.getRepo()), name);
         Node node = new Node(obj, session.getRepo());
         OdsApp.get().getDatabase().getNodes().create(node);
+        session.createFolder(node, name);
         OperationNodeDelete op = new OperationNodeDelete(node, session);
         OperationStatus st = op.execute();
         Assert.assertEquals(true, st.isOk());

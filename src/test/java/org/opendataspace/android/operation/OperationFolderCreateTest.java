@@ -1,9 +1,7 @@
 package org.opendataspace.android.operation;
 
 import android.text.TextUtils;
-
 import junit.framework.Assert;
-import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
@@ -24,17 +22,14 @@ public class OperationFolderCreateTest {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         CmisSession session = TestUtil.setupSession(app, Repo.Type.PRIVATE);
         String name = "Test123";
-        CmisObject obj = session.getObjectByPath(name);
-
-        if (obj != null) {
-            session.delete(obj.getId());
-        }
+        TestUtil.removeIfExists(session, name);
 
         OperationFolderCreate op =
                 new OperationFolderCreate(session, new Node(session.getRoot(), session.getRepo()), name);
         OperationStatus st = op.execute();
         Assert.assertEquals(true, st.isOk());
-        Assert.assertEquals(false, TextUtils.isEmpty(op.getLastUuid()));
+        Assert.assertEquals(true, op.getNode() != null);
+        Assert.assertEquals(false, TextUtils.isEmpty(op.getNode().getUuid()));
 
         boolean found = false;
 
@@ -47,6 +42,6 @@ public class OperationFolderCreateTest {
         }
 
         Assert.assertEquals(true, found);
-        session.delete(op.getLastUuid());
+        session.delete(op.getNode());
     }
 }
