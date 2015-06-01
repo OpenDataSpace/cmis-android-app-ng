@@ -125,6 +125,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
         TextView tva = widget(R.id.action_nav_account);
         TextView tvd = widget(R.id.action_nav_accdesc);
         Account acc = OdsApp.get().getViewManager().getCurrentAccount();
+        accounts.exclude(acc);
         tva.setText(acc == null ? getString(R.string.nav_noaccount) : acc.getDisplayName());
         tvd.setText(acc == null ? "" : acc.getDescription());
     }

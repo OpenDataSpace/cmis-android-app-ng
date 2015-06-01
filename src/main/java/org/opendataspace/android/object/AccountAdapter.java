@@ -3,13 +3,16 @@ package org.opendataspace.android.object;
 import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
-
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.event.EventDaoAccount;
 import org.opendataspace.android.view.ViewAdapter;
 import org.opendataspace.android.view.ViewBase;
 
+import java.util.List;
+
 public class AccountAdapter extends ViewAdapter<Account> {
+
+    private Account excl;
 
     public AccountAdapter(ViewBase<Account> view, Context context) {
         super(view, context, R.layout.delegate_list_item2);
@@ -26,6 +29,18 @@ public class AccountAdapter extends ViewAdapter<Account> {
 
     @SuppressWarnings({"UnusedParameters", "unused"})
     public void onEventMainThread(EventDaoAccount event) {
+        invalidate();
+    }
+
+    @Override
+    protected void sort(List<Account> data) {
+        if (excl != null) {
+            data.remove(excl);
+        }
+    }
+
+    public void exclude(Account account) {
+        excl = account;
         invalidate();
     }
 }
