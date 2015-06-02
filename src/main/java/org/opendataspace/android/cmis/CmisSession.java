@@ -26,17 +26,17 @@ import java.util.Map;
 
 public class CmisSession {
 
-    private transient Session session;
-    private transient Folder root;
-
-    @Expose
-    private final Map<String, String> config;
-
     @Expose
     private final Repo repo;
 
+    @Expose
+    private final Account account;
+
+    private transient Session session;
+    private transient Folder root;
+
     public CmisSession(Account account, Repo repo) {
-        config = Cmis.createSessionSettings(account, repo);
+        this.account = account;
         this.repo = repo;
     }
 
@@ -112,7 +112,7 @@ public class CmisSession {
 
     private Session getSession() {
         if (session == null) {
-            session = Cmis.factory.createSession(config);
+            session = Cmis.factory.createSession(Cmis.createSessionSettings(account, repo));
         }
 
         return session;
@@ -195,5 +195,9 @@ public class CmisSession {
 
     public CmisObject getObjectById(String uuid) {
         return getSession().getObject(new ObjectIdImpl(uuid));
+    }
+
+    public Account getAccount() {
+        return account;
     }
 }

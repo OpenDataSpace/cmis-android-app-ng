@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewParent;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.event.EventDaoNode;
 import org.opendataspace.android.view.ViewAdapter;

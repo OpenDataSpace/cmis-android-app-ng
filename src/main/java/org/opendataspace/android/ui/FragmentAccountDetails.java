@@ -64,7 +64,7 @@ public class FragmentAccountDetails extends FragmentBaseInput
             break;
 
         case R.id.menu_account_cancel:
-            getMainActivity().getNavigation().backPressed();
+            getNavigation().backPressed();
             break;
 
         case R.id.menu_account_delete:
@@ -86,7 +86,7 @@ public class FragmentAccountDetails extends FragmentBaseInput
         }
 
         if (!isDirty() && op.getAccount().isValidId()) {
-            ac.getNavigation().backPressed();
+            getNavigation().backPressed();
             return true;
         }
 
@@ -114,7 +114,7 @@ public class FragmentAccountDetails extends FragmentBaseInput
         ac.stopWait();
 
         if (data.isOk()) {
-            ac.getNavigation().backPressed();
+            getNavigation().backPressed();
         } else {
             new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
                     .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> {

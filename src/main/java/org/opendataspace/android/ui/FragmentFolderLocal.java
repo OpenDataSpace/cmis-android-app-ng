@@ -18,6 +18,8 @@ import android.widget.EditText;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.Task;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.cmis.CmisSession;
+import org.opendataspace.android.object.Node;
 import org.opendataspace.android.operation.*;
 import org.opendataspace.android.storage.FileAdapter;
 import org.opendataspace.android.storage.FileInfo;
@@ -47,7 +49,9 @@ public class FragmentFolderLocal extends FragmentBaseList
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        adapter = new FileAdapter(getActivity(), this::showPopup);
+        adapter = new FileAdapter(getActivity(),
+                op.getMode() == OperationLocalBrowse.Mode.DEFAULT ? this::showPopup : null);
+
         setListAdapter(adapter);
         setEmptyText(getString(R.string.folder_empty));
         selectFile(op.getFolder());
@@ -63,7 +67,16 @@ public class FragmentFolderLocal extends FragmentBaseList
         FileInfo info = (FileInfo) adapter.getItem(position);
 
         if (!info.isDirectory()) {
-            getMainActivity().getNavigation().openFile(FragmentNodeLocal.class, new OperationLocalInfo(info));
+            switch (op.getMode()) {
+            case DEFAULT:
+                getNavigation().openFile(FragmentNodeLocal.class, new OperationLocalInfo(info));
+                break;
+
+            case SEL_FILES:
+                actionApply();
+                break;
+            }
+
             return;
         }
 
@@ -78,20 +91,33 @@ public class FragmentFolderLocal extends FragmentBaseList
         op.setFolder(file);
         setListShown(false, false);
         getLoaderManager().restartLoader(LOADER_BROWSE, null, this);
-        getMainActivity().getNavigation().updateTitle();
+        getNavigation().updateTitle();
     }
 
     @Override
     public String getTile(Context context) {
-        File file = op.getFolder();
+        switch (op.getMode()) {
+        case DEFAULT: {
+            File file = op.getFolder();
 
-        if (file == null) {
-            return context.getString(R.string.folder_libraries);
+            if (file == null) {
+                return context.getString(R.string.folder_libraries);
+            }
+
+            File root = Environment.getExternalStorageDirectory();
+            return file.equals(root) ? context.getString(R.string.folder_slash) :
+                    file.getAbsolutePath().replaceFirst(root.getAbsolutePath(), "");
         }
 
-        File root = Environment.getExternalStorageDirectory();
-        return file.equals(root) ? context.getString(R.string.folder_slash) :
-                file.getAbsolutePath().replaceFirst(root.getAbsolutePath(), "");
+        case SEL_FOLDER:
+            return context.getString(R.string.folder_pickfolder);
+
+        case SEL_FILES:
+            return context.getString(R.string.folder_pickfile);
+
+        default:
+            return super.getTile(context);
+        }
     }
 
     @Override
@@ -131,7 +157,7 @@ public class FragmentFolderLocal extends FragmentBaseList
         loadingDone();
 
         if (!data.isOk()) {
-            ActivityMain ac = getMainActivity();
+            Activity ac = getActivity();
             new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
                     .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> dialogInterface.cancel()).show();
             return;
@@ -161,7 +187,7 @@ public class FragmentFolderLocal extends FragmentBaseList
 
     @Override
     protected boolean onListItemLongClick(int position) {
-        if (selection != null) {
+        if (selection != null || op.getMode() != OperationLocalBrowse.Mode.DEFAULT) {
             return false;
         }
 
@@ -216,7 +242,7 @@ public class FragmentFolderLocal extends FragmentBaseList
 
         case R.id.menu_folder_details:
             if (moreItem != null) {
-                getMainActivity().getNavigation().openFile(FragmentNodeLocal.class, new OperationLocalInfo(moreItem));
+                getNavigation().openFile(FragmentNodeLocal.class, new OperationLocalInfo(moreItem));
             }
             break;
 
@@ -230,6 +256,19 @@ public class FragmentFolderLocal extends FragmentBaseList
 
         case R.id.menu_folder_paste:
             actionPaste();
+            break;
+
+
+        case R.id.menu_folder_apply:
+            actionApply();
+            break;
+
+        case R.id.menu_folder_upload:
+            actionUpload();
+            break;
+
+        case R.id.menu_folder_download:
+            actionDownload();
             break;
 
         default:
@@ -246,7 +285,7 @@ public class FragmentFolderLocal extends FragmentBaseList
             return;
         }
 
-        ActivityMain ac = getMainActivity();
+        Activity ac = getActivity();
         PopupMenu popup = new PopupMenu(ac, view);
         ac.getMenuInflater().inflate(R.menu.menu_local_more, popup.getMenu());
         onPrepareOptionsMenu(popup.getMenu());
@@ -257,11 +296,15 @@ public class FragmentFolderLocal extends FragmentBaseList
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem mi = menu.findItem(R.id.menu_folder_create);
+        boolean isDefault = op.getMode() == OperationLocalBrowse.Mode.DEFAULT;
 
-        if (mi != null) {
-            mi.setVisible(op.getFolder() != null);
-        }
+        setMenuVisibility(menu, R.id.menu_folder_create, isDefault);
+        setMenuVisibility(menu, R.id.menu_folder_paste, isDefault);
+        setMenuVisibility(menu, R.id.menu_folder_apply, !isDefault);
+        setMenuVisibility(menu, R.id.menu_folder_upload, isDefault);
+        setMenuVisibility(menu, R.id.menu_folder_download, isDefault);
+        setMenuVisibility(menu, R.id.menu_folder_cut, isDefault);
+        setMenuVisibility(menu, R.id.menu_folder_copy, isDefault);
     }
 
     private void actionCreateFolder() {
@@ -304,14 +347,7 @@ public class FragmentFolderLocal extends FragmentBaseList
     }
 
     private void actionDelete() {
-        List<FileInfo> ls = null;
-
-        if (selection != null) {
-            ls = adapter.getSelected();
-            selection.finish();
-        } else if (moreItem != null) {
-            ls = Collections.singletonList(moreItem);
-        }
+        List<FileInfo> ls = getSelection();
 
         if (ls == null || ls.isEmpty()) {
             return;
@@ -340,13 +376,10 @@ public class FragmentFolderLocal extends FragmentBaseList
     }
 
     private void actionCopyCut(boolean isCopy) {
-        List<FileInfo> ls = null;
+        List<FileInfo> ls = getSelection();
 
-        if (selection != null) {
-            ls = adapter.getSelected();
-            selection.finish();
-        } else if (moreItem != null) {
-            ls = Collections.singletonList(moreItem);
+        if (ls.isEmpty()) {
+            return;
         }
 
         copymove = new OperationLocalCopyMove();
@@ -362,5 +395,76 @@ public class FragmentFolderLocal extends FragmentBaseList
 
         copymove.setTarget(node);
         getLoaderManager().restartLoader(LOADER_COPYMOVE, null, this);
+    }
+
+    private List<FileInfo> getSelection() {
+        if (selection != null) {
+            List<FileInfo> ls = adapter.getSelected();
+            selection.finish();
+            return ls;
+        } else if (moreItem != null) {
+            return Collections.singletonList(moreItem);
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    private void actionApply() {
+        switch (op.getMode()) {
+        case DEFAULT:
+            return;
+
+        case SEL_FOLDER:
+            OdsApp.get().getPool().execute(new OperationNodeDownload(op.getSession(), op.getFolder(), op.getContext()));
+            break;
+
+        case SEL_FILES: {
+            List<FileInfo> ls = getSelection();
+            List<Node> context = op.getContext();
+
+            if (!ls.isEmpty() && context != null && !context.isEmpty()) {
+                OdsApp.get().getPool().execute(new OperationNodeUpload(op.getSession(), context.get(0), ls));
+            }
+        }
+        break;
+        }
+
+        getNavigation().backPressed();
+    }
+
+    private void actionUpload() {
+        List<FileInfo> ls = getSelection();
+
+        if (ls.isEmpty()) {
+            return;
+        }
+
+        // TODO select repo
+        CmisSession session = op.getSession();
+
+        if (session == null) {
+            return;
+        }
+
+        OperationFolderBrowse browse = new OperationFolderBrowse(session.getAccount(), session.getRepo(),
+                OperationFolderBrowse.Mode.SEL_FOLDER);
+
+        browse.setContext(ls);
+        getNavigation().openDialog(FragmentFolderCmis.class, browse);
+    }
+
+    private void actionDownload() {
+        CmisSession session = op.getSession();
+
+        if (session == null) {
+            return;
+        }
+
+        // TODO select repo
+        OperationFolderBrowse browse = new OperationFolderBrowse(session.getAccount(), session.getRepo(),
+                OperationFolderBrowse.Mode.SEL_FILES);
+
+        browse.setContext(Collections.singletonList(new FileInfo(op.getFolder(), null)));
+        getNavigation().openDialog(FragmentFolderCmis.class, browse);
     }
 }

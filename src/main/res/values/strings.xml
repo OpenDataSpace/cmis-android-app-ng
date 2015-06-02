@@ -111,6 +111,11 @@
     <string name="folder_cut">Cut</string>
     <string name="folder_copy">Copy</string>
     <string name="folder_paste">Paste</string>
+    <string name="folder_upload">Upload…</string>
+    <string name="folder_download">Download…</string>
+    <string name="folder_apply">Select</string>
+    <string name="folder_pickfile">Select files</string>
+    <string name="folder_pickfolder">Select the folder</string>
 
     <!-- node info -->
     <string name="node_title">Details</string>

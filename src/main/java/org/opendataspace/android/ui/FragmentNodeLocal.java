@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.Task;
 import org.opendataspace.android.app.beta.R;
@@ -163,7 +162,7 @@ public class FragmentNodeLocal extends FragmentBase {
             @Override
             public void onDone() throws Exception {
                 if (res) {
-                    getMainActivity().getNavigation().backPressed();
+                    getNavigation().backPressed();
                 } else {
                     new AlertDialog.Builder(getActivity()).setMessage(R.string.common_error).setCancelable(true)
                             .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> dialogInterface.cancel())

@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.ObjectCache;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.support.ConnectionSource;
+import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.object.MimeType;
 
@@ -25,24 +26,28 @@ public class DaoMime extends DaoBase<MimeType> {
         return null;
     }
 
-    public MimeType forFileName(String name) throws SQLException {
-        int dot = name.lastIndexOf(".".charAt(0));
-        String extension = dot > 0 ? name.substring(dot + 1).toLowerCase(Locale.getDefault()) : "";
-
-        if (byExt == null) {
-            byExtArg = new SelectArg();
-            byExt = queryBuilder().where().eq(MimeType.FIELD_EXT, byExtArg).prepare();
-        }
-
-        byExtArg.setValue(extension);
-        CloseableIterator<MimeType> it = iterate(byExt);
-
+    public MimeType forFileName(String name) {
         try {
-            if (it.hasNext()) {
-                return it.nextThrow();
+            int dot = name.lastIndexOf(".".charAt(0));
+            String extension = dot > 0 ? name.substring(dot + 1).toLowerCase(Locale.getDefault()) : "";
+
+            if (byExt == null) {
+                byExtArg = new SelectArg();
+                byExt = queryBuilder().where().eq(MimeType.FIELD_EXT, byExtArg).prepare();
             }
-        } finally {
-            it.closeQuietly();
+
+            byExtArg.setValue(extension);
+            CloseableIterator<MimeType> it = iterate(byExt);
+
+            try {
+                if (it.hasNext()) {
+                    return it.nextThrow();
+                }
+            } finally {
+                it.closeQuietly();
+            }
+        } catch (Exception ex) {
+            OdsLog.ex(getClass(), ex);
         }
 
         return null;

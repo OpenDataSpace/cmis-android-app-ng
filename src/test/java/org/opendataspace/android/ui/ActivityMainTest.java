@@ -13,6 +13,7 @@ import org.opendataspace.android.operation.OperationAccountUpdate;
 import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.util.ActivityController;
@@ -23,74 +24,77 @@ public class ActivityMainTest {
 
     @Test
     public void checkNoAccounts() throws Exception {
+        OdsApp app = (OdsApp) RuntimeEnvironment.application;
         ActivityMain ac = Robolectric.setupActivity(ActivityMain.class);
         TestUtil.waitRunnable();
-        Assert.assertEquals(FragmentAccountDetails.class, ac.getNavigation().getTopFragment().getClass());
+        Assert.assertEquals(FragmentAccountDetails.class, app.getNavigation().getTopFragment().getClass());
         ac.onBackPressed();
         Assert.assertEquals(true, Shadows.shadowOf(ac).isFinishing());
     }
 
     @Test
     public void checkNavigation() throws Exception {
+        OdsApp app = (OdsApp) RuntimeEnvironment.application;
         ActivityMain ac = TestUtil.setupActivity();
-        Assert.assertEquals(FragmentNavigation.class, ac.getNavigation().getTopFragment().getClass());
+        Assert.assertEquals(FragmentNavigation.class, app.getNavigation().getTopFragment().getClass());
         TestUtil.waitRunnable();
 
         // settings
-        navigateMenu(R.id.menu_main_settings, FragmentSettings.class, ac);
-        navigateBack(FragmentNavigation.class, ac);
+        navigateMenu(R.id.menu_main_settings, FragmentSettings.class, ac, app);
+        navigateBack(FragmentNavigation.class, ac, app);
 
         // about
-        navigateMenu(R.id.menu_main_about, FragmentAbout.class, ac);
-        navigateBack(FragmentNavigation.class, ac);
+        navigateMenu(R.id.menu_main_about, FragmentAbout.class, ac, app);
+        navigateBack(FragmentNavigation.class, ac, app);
 
         // accounts
-        navigateList(R.id.list_nav_accounts, ac.getString(R.string.nav_manage), FragmentAccountList.class, ac);
-        navigateMenu(R.id.menu_account_add, FragmentAccountDetails.class, ac);
-        navigateBack(FragmentAccountList.class, ac);
-        navigateBack(FragmentNavigation.class, ac);
-        navigateList(R.id.list_nav_accounts, ac.getString(R.string.nav_addaccount), FragmentAccountDetails.class, ac);
-        navigateBack(FragmentNavigation.class, ac);
+        navigateList(R.id.list_nav_accounts, ac.getString(R.string.nav_manage), FragmentAccountList.class, ac, app);
+        navigateMenu(R.id.menu_account_add, FragmentAccountDetails.class, ac, app);
+        navigateBack(FragmentAccountList.class, ac, app);
+        navigateBack(FragmentNavigation.class, ac, app);
+        navigateList(R.id.list_nav_accounts, ac.getString(R.string.nav_addaccount), FragmentAccountDetails.class, ac, app);
+        navigateBack(FragmentNavigation.class, ac, app);
 
         // folders
-        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_personal), FragmentFolderCmis.class, ac);
-        navigateBack(FragmentNavigation.class, ac);
-        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_shared), FragmentFolderCmis.class, ac);
-        navigateBack(FragmentNavigation.class, ac);
-        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_global), FragmentFolderCmis.class, ac);
-        navigateBack(FragmentNavigation.class, ac);
-        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_localfolder), FragmentFolderLocal.class, ac);
-        navigateBack(FragmentNavigation.class, ac);
+        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_personal), FragmentFolderCmis.class, ac, app);
+        navigateBack(FragmentNavigation.class, ac, app);
+        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_shared), FragmentFolderCmis.class, ac, app);
+        navigateBack(FragmentNavigation.class, ac, app);
+        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_global), FragmentFolderCmis.class, ac, app);
+        navigateBack(FragmentNavigation.class, ac, app);
+        navigateList(R.id.list_nav_folders, ac.getString(R.string.nav_localfolder), FragmentFolderLocal.class, ac, app);
+        navigateBack(FragmentNavigation.class, ac, app);
 
         // exit
         ac.onBackPressed();
         Assert.assertEquals(true, Shadows.shadowOf(ac).isFinishing());
     }
 
-    private void navigateList(int resId, String item, Class<?> cls, ActivityMain ac) {
+    private void navigateList(int resId, String item, Class<?> cls, ActivityMain ac, OdsApp app) {
         ListView lv = (ListView) ac.findViewById(resId);
         Shadows.shadowOf(lv).clickFirstItemContainingText(item);
-        Assert.assertEquals(cls, ac.getNavigation().getTopFragment().getClass());
+        Assert.assertEquals(cls, app.getNavigation().getTopFragment().getClass());
         ac.getSupportFragmentManager().executePendingTransactions();
     }
 
-    private void navigateMenu(int resId, Class<?> cls, ActivityMain ac) {
-        ac.getNavigation().getTopFragment().onOptionsItemSelected(new RoboMenuItem(resId));
-        Assert.assertEquals(cls, ac.getNavigation().getTopFragment().getClass());
+    private void navigateMenu(int resId, Class<?> cls, ActivityMain ac, OdsApp app) {
+        app.getNavigation().getTopFragment().onOptionsItemSelected(new RoboMenuItem(resId));
+        Assert.assertEquals(cls, app.getNavigation().getTopFragment().getClass());
         ac.getSupportFragmentManager().executePendingTransactions();
     }
 
-    private void navigateBack(Class<?> cls, ActivityMain ac) {
+    private void navigateBack(Class<?> cls, ActivityMain ac, OdsApp app) {
         ac.onBackPressed();
         Assert.assertEquals(false, Shadows.shadowOf(ac).isFinishing());
-        Assert.assertEquals(cls, ac.getNavigation().getTopFragment().getClass());
+        Assert.assertEquals(cls, app.getNavigation().getTopFragment().getClass());
     }
 
     @Test
     public void checkSerialization() throws Exception {
+        OdsApp app = (OdsApp) RuntimeEnvironment.application;
         ActivityMain ac = TestUtil.setupActivity();
         TestUtil.waitRunnable();
-        NavigationInterface nav = ac.getNavigation();
+        NavigationInterface nav = app.getNavigation();
         nav.openRootFolder(FragmentAccountList.class, null);
         nav.openFile(FragmentAccountDetails.class, new OperationAccountUpdate(TestUtil.getDefaultAccount()));
 
@@ -104,7 +108,7 @@ public class ActivityMainTest {
 
         ac = ActivityController.of(Robolectric.getShadowsAdapter(), ActivityMain.class).setup(bu).get();
         TestUtil.waitRunnable();
-        Assert.assertEquals(FragmentAccountDetails.class, ac.getNavigation().getTopFragment().getClass());
+        Assert.assertEquals(FragmentAccountDetails.class, app.getNavigation().getTopFragment().getClass());
         TestUtil.dismisActivity(ac);
     }
 }

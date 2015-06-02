@@ -7,6 +7,11 @@
             android:icon="@drawable/ic_remove"
             auto:showAsAction="ifRoom"/>
     <item
+            android:id="@+id/menu_folder_upload"
+            android:title="@string/folder_upload"
+            android:icon="@drawable/ic_upload"
+            auto:showAsAction="ifRoom"/>
+    <item
             android:id="@+id/menu_folder_cut"
             android:title="@string/folder_cut"
             auto:showAsAction="never"/>

@@ -10,7 +10,6 @@ import org.opendataspace.android.object.MimeType;
 import org.opendataspace.android.object.ObjectBaseId;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileInfo implements ObjectBaseId {
@@ -22,7 +21,7 @@ public class FileInfo implements ObjectBaseId {
     private final int special;
     private final long id;
 
-    public FileInfo(File file, DaoMime mime) throws SQLException {
+    public FileInfo(File file, DaoMime mime) {
         this.file = file;
         this.mime = (isDirectory() || mime == null) ? null : mime.forFileName(file.getName());
         this.special = 0;

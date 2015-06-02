@@ -12,24 +12,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.data.DataAdapterMerge;
 import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventAccountSelect;
-import org.opendataspace.android.object.Account;
-import org.opendataspace.android.object.AccountAdapter;
-import org.opendataspace.android.object.Action;
-import org.opendataspace.android.object.ActionAdapter;
-import org.opendataspace.android.object.Repo;
-import org.opendataspace.android.object.RepoAdapter;
-import org.opendataspace.android.operation.OperationAccountSelect;
-import org.opendataspace.android.operation.OperationAccountUpdate;
-import org.opendataspace.android.operation.OperationFolderBrowse;
-import org.opendataspace.android.operation.OperationLocalBrowse;
-import org.opendataspace.android.operation.OperationLoader;
-import org.opendataspace.android.operation.OperationStatus;
+import org.opendataspace.android.object.*;
+import org.opendataspace.android.operation.*;
 import org.opendataspace.android.view.ViewManager;
 
 public class FragmentNavigation extends FragmentBase implements LoaderManager.LoaderCallbacks<OperationStatus> {
@@ -98,7 +87,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
 
         switch (item.getItemId()) {
         case R.id.menu_main_about:
-            ac.getNavigation().openDialog(FragmentAbout.class, null);
+            getNavigation().openDialog(FragmentAbout.class, null);
             break;
 
         case R.id.menu_main_settings:
@@ -113,7 +102,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
     }
 
     private void actionSettings() {
-        getMainActivity().getNavigation().openDialog(FragmentSettings.class, null);
+        getNavigation().openDialog(FragmentSettings.class, null);
     }
 
     @SuppressWarnings({"UnusedParameters", "unused"})
@@ -164,7 +153,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
     private void executeAction(Action action) {
         switch (action.getId()) {
         case R.id.action_nav_manage:
-            getMainActivity().getNavigation().openRootFolder(FragmentAccountList.class, null);
+            getNavigation().openRootFolder(FragmentAccountList.class, null);
             break;
 
         case R.id.action_nav_settings:
@@ -172,12 +161,13 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
             break;
 
         case R.id.action_nav_addaccount:
-            getMainActivity().getNavigation()
+            getNavigation()
                     .openFile(FragmentAccountDetails.class, new OperationAccountUpdate(new Account()));
             break;
 
         case R.id.action_nav_localfolder:
-            getMainActivity().getNavigation().openRootFolder(FragmentFolderLocal.class, new OperationLocalBrowse());
+            getNavigation().openRootFolder(FragmentFolderLocal.class,
+                    new OperationLocalBrowse(OperationLocalBrowse.Mode.DEFAULT));
             break;
         }
     }
@@ -186,8 +176,9 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
         Object obj = view.getAdapter().getItem(idx);
 
         if (obj instanceof Repo) {
-            getMainActivity().getNavigation().openRootFolder(FragmentFolderCmis.class,
-                    new OperationFolderBrowse(OdsApp.get().getViewManager().getCurrentAccount(), (Repo) obj));
+            getNavigation().openRootFolder(FragmentFolderCmis.class,
+                    new OperationFolderBrowse(OdsApp.get().getViewManager().getCurrentAccount(), (Repo) obj,
+                            OperationFolderBrowse.Mode.DEFAULT));
         } else if (obj instanceof Action) {
             executeAction((Action) obj);
         }

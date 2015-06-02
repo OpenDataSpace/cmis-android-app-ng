@@ -26,6 +26,7 @@ import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.NodeAdapter;
 import org.opendataspace.android.object.ObjectBase;
 import org.opendataspace.android.operation.*;
+import org.opendataspace.android.storage.FileInfo;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +55,9 @@ public class FragmentFolderCmis extends FragmentBaseList
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        adapter = new NodeAdapter(OdsApp.get().getViewManager().getNodes(), getActivity(), this::showPopup);
+        adapter = new NodeAdapter(OdsApp.get().getViewManager().getNodes(), getActivity(),
+                op.getMode() == OperationFolderBrowse.Mode.DEFAULT ? this::showPopup : null);
+
         setListAdapter(adapter);
         setEmptyText(getString(R.string.folder_empty));
         OdsApp.bus.register(this, Event.PRIORITY_UI);
@@ -70,8 +73,21 @@ public class FragmentFolderCmis extends FragmentBaseList
 
     @Override
     public String getTile(Context context) {
-        Node node = op.getFolder();
-        return node != null ? node.getPath(context) : context.getString(R.string.folder_slash);
+        switch (op.getMode()) {
+        case DEFAULT: {
+            Node node = op.getFolder();
+            return node != null ? node.getPath(context) : context.getString(R.string.folder_slash);
+        }
+
+        case SEL_FOLDER:
+            return context.getString(R.string.folder_pickfolder);
+
+        case SEL_FILES:
+            return context.getString(R.string.folder_pickfile);
+
+        default:
+            return super.getTile(context);
+        }
     }
 
     @Override
@@ -102,7 +118,7 @@ public class FragmentFolderCmis extends FragmentBaseList
     @Override
     public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus data) {
         if (!data.isOk()) {
-            ActivityMain ac = getMainActivity();
+            Activity ac = getActivity();
             new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
                     .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> dialogInterface.cancel()).show();
 
@@ -121,7 +137,7 @@ public class FragmentFolderCmis extends FragmentBaseList
             return;
         }
 
-        NavigationInterface nav = getMainActivity().getNavigation();
+        NavigationInterface nav = getNavigation();
         nav.updateMenu();
         nav.updateTitle();
 
@@ -139,8 +155,15 @@ public class FragmentFolderCmis extends FragmentBaseList
         Node.Type type = node != null ? node.getType() : Node.Type.FOLDER;
 
         if (type == Node.Type.DOCUMENT) {
-            getMainActivity().getNavigation()
-                    .openFile(FragmentNodeInfo.class, new OperationNodeInfo(node, op.getSession()));
+            switch (op.getMode()) {
+            case DEFAULT:
+                getNavigation().openFile(FragmentNodeInfo.class, new OperationNodeInfo(node, op.getSession()));
+                break;
+
+            case SEL_FILES:
+                actionApply();
+                break;
+            }
 
             return;
         }
@@ -201,8 +224,7 @@ public class FragmentFolderCmis extends FragmentBaseList
 
         case R.id.menu_folder_details:
             if (moreItem != null) {
-                getMainActivity().getNavigation()
-                        .openFile(FragmentNodeInfo.class, new OperationNodeInfo(moreItem, op.getSession()));
+                getNavigation().openFile(FragmentNodeInfo.class, new OperationNodeInfo(moreItem, op.getSession()));
             }
             break;
 
@@ -216,6 +238,18 @@ public class FragmentFolderCmis extends FragmentBaseList
 
         case R.id.menu_folder_paste:
             actionPaste();
+            break;
+
+        case R.id.menu_folder_apply:
+            actionApply();
+            break;
+
+        case R.id.menu_folder_upload:
+            actionUpload();
+            break;
+
+        case R.id.menu_folder_download:
+            actionDownload();
             break;
 
         default:
@@ -256,23 +290,21 @@ public class FragmentFolderCmis extends FragmentBaseList
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem mi = menu.findItem(R.id.menu_folder_create);
         Node node = op.getFolder();
+        boolean isDefault = op.getMode() == OperationFolderBrowse.Mode.DEFAULT;
 
-        if (mi != null) {
-            mi.setVisible(node != null && node.canCreateFolder());
-        }
-
-        mi = menu.findItem(R.id.menu_folder_paste);
-
-        if (mi != null) {
-            mi.setVisible(node != null && copymove != null && copymove.canPaste(node));
-        }
+        setMenuVisibility(menu, R.id.menu_folder_create, isDefault && node != null && node.canCreateFolder());
+        setMenuVisibility(menu, R.id.menu_folder_paste, isDefault && node != null && copymove != null && copymove.canPaste(node));
+        setMenuVisibility(menu, R.id.menu_folder_apply, !isDefault);
+        setMenuVisibility(menu, R.id.menu_folder_upload, isDefault && node != null && node.canCreateDocument());
+        setMenuVisibility(menu, R.id.menu_folder_download, isDefault);
+        setMenuVisibility(menu, R.id.menu_folder_cut, isDefault);
+        setMenuVisibility(menu, R.id.menu_folder_copy, isDefault);
     }
 
     @Override
     protected boolean onListItemLongClick(int position) {
-        if (selection != null) {
+        if (selection != null || op.getMode() != OperationFolderBrowse.Mode.DEFAULT) {
             return false;
         }
 
@@ -306,16 +338,9 @@ public class FragmentFolderCmis extends FragmentBaseList
     }
 
     private void actionDelete() {
-        List<Node> ls = null;
+        List<Node> ls = getSelection();
 
-        if (selection != null) {
-            ls = adapter.getSelected();
-            selection.finish();
-        } else if (moreItem != null) {
-            ls = Collections.singletonList(moreItem);
-        }
-
-        if (ls == null || ls.isEmpty()) {
+        if (ls.isEmpty()) {
             return;
         }
 
@@ -333,10 +358,10 @@ public class FragmentFolderCmis extends FragmentBaseList
         for (EventDaoBase.Event<Node> cur : event.getEvents()) {
             if (cur.getObject().equals(op.getFolder())) {
                 if (cur.getOperation() == EventDaoBase.Operation.DELETE) {
-                    getMainActivity().getNavigation().backPressed();
+                    getNavigation().backPressed();
                 } else {
                     op.setFolder(cur.getObject());
-                    getMainActivity().getNavigation().updateMenu();
+                    getNavigation().updateMenu();
                 }
 
                 break;
@@ -351,7 +376,7 @@ public class FragmentFolderCmis extends FragmentBaseList
             return;
         }
 
-        ActivityMain ac = getMainActivity();
+        Activity ac = getActivity();
         PopupMenu popup = new PopupMenu(ac, view);
         ac.getMenuInflater().inflate(R.menu.menu_folder_more, popup.getMenu());
         onPrepareOptionsMenu(popup.getMenu());
@@ -361,13 +386,10 @@ public class FragmentFolderCmis extends FragmentBaseList
     }
 
     private void actionCopyCut(boolean isCopy) {
-        List<Node> ls = null;
+        List<Node> ls = getSelection();
 
-        if (selection != null) {
-            ls = adapter.getSelected();
-            selection.finish();
-        } else if (moreItem != null) {
-            ls = Collections.singletonList(moreItem);
+        if (ls.isEmpty()) {
+            return;
         }
 
         copymove = new OperationNodeCopyMove(op.getSession());
@@ -383,5 +405,60 @@ public class FragmentFolderCmis extends FragmentBaseList
 
         copymove.setTarget(node);
         startLoader(LOADER_COPYMOVE);
+    }
+
+    private void actionApply() {
+        switch (op.getMode()) {
+        case DEFAULT:
+            return;
+
+        case SEL_FOLDER:
+            OdsApp.get().getPool().execute(new OperationNodeUpload(op.getSession(), op.getFolder(), op.getContext()));
+            break;
+
+        case SEL_FILES: {
+            List<Node> ls = getSelection();
+            List<FileInfo> context = op.getContext();
+
+            if (!ls.isEmpty() && context != null && !context.isEmpty()) {
+                OdsApp.get().getPool().execute(new OperationNodeDownload(op.getSession(), op.getContext().get(0).getFile(), ls));
+            }
+        }
+        break;
+        }
+
+        getNavigation().backPressed();
+    }
+
+    private void actionDownload() {
+        List<Node> ls = getSelection();
+
+        if (ls.isEmpty()) {
+            return;
+        }
+
+        OperationLocalBrowse browse = new OperationLocalBrowse(OperationLocalBrowse.Mode.SEL_FOLDER);
+        browse.setContext(ls);
+        browse.setSession(op.getSession());
+        getNavigation().openDialog(FragmentFolderLocal.class, browse);
+    }
+
+    private void actionUpload() {
+        OperationLocalBrowse browse = new OperationLocalBrowse(OperationLocalBrowse.Mode.SEL_FILES);
+        browse.setContext(Collections.singletonList(op.getFolder()));
+        browse.setSession(op.getSession());
+        getNavigation().openDialog(FragmentFolderLocal.class, browse);
+    }
+
+    private List<Node> getSelection() {
+        if (selection != null) {
+            List<Node> ls = adapter.getSelected();
+            selection.finish();
+            return ls;
+        } else if (moreItem != null) {
+            return Collections.singletonList(moreItem);
+        } else {
+            return Collections.emptyList();
+        }
     }
 }

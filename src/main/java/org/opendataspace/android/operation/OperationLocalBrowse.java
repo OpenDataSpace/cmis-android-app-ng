@@ -2,11 +2,12 @@ package org.opendataspace.android.operation;
 
 import android.os.Build;
 import android.os.Environment;
-
 import com.google.gson.annotations.Expose;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.data.DaoMime;
+import org.opendataspace.android.object.Node;
 import org.opendataspace.android.storage.FileInfo;
 
 import java.io.File;
@@ -16,15 +17,27 @@ import java.util.List;
 
 public class OperationLocalBrowse extends OperationBase {
 
+    public enum Mode {DEFAULT, SEL_FOLDER, SEL_FILES}
+
     @Expose
     private File root;
 
     @Expose
     private File top;
 
+    @Expose
+    private final Mode mode;
+
+    @Expose
+    private List<Node> context;
+
+    @Expose
+    private CmisSession session;
+
     private final transient List<FileInfo> data = new ArrayList<>();
 
-    public OperationLocalBrowse() {
+    public OperationLocalBrowse(Mode mode) {
+        this.mode = mode;
     }
 
     public void setFolder(File root) {
@@ -92,5 +105,30 @@ public class OperationLocalBrowse extends OperationBase {
 
     public List<FileInfo> getData() {
         return data;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public List<Node> getContext() {
+        return Collections.unmodifiableList(context);
+    }
+
+    public void setContext(List<Node> val) {
+        if (context == null) {
+            context = new ArrayList<>();
+        }
+
+        context.clear();
+        context.addAll(val);
+    }
+
+    public CmisSession getSession() {
+        return session;
+    }
+
+    public void setSession(CmisSession session) {
+        this.session = session;
     }
 }

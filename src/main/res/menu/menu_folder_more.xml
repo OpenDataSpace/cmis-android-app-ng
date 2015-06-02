@@ -4,6 +4,9 @@
             android:id="@+id/menu_folder_details"
             android:title="@string/folder_details"/>
     <item
+            android:id="@+id/menu_folder_download"
+            android:title="@string/folder_download"/>
+    <item
             android:id="@+id/menu_folder_cut"
             android:title="@string/folder_cut"/>
     <item

@@ -6,7 +6,9 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.operation.OperationBase;
@@ -37,7 +39,7 @@ public class FragmentBase extends Fragment {
 
 
         if (ac != null) {
-            NavigationInterface nav = ac.getNavigation();
+            NavigationInterface nav = getNavigation();
 
             if (nav != null && nav.getTopFragment() != this) {
                 return;
@@ -67,5 +69,17 @@ public class FragmentBase extends Fragment {
 
     public boolean needDrawer() {
         return true;
+    }
+
+    protected NavigationInterface getNavigation() {
+        return OdsApp.get().getNavigation();
+    }
+
+    protected void setMenuVisibility(Menu menu, int id, boolean val) {
+        MenuItem mi = menu.findItem(id);
+
+        if (mi != null) {
+            mi.setVisible(val);
+        }
     }
 }

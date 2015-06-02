@@ -176,14 +176,6 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
             }
         }
 
-        if (hasFolder && !node.canCreateFolder()) {
-            return false;
-        }
-
-        if (hasDocument && !node.canCreateDocument()) {
-            return false;
-        }
-
-        return true;
+        return !(hasFolder && !node.canCreateFolder()) && !(hasDocument && !node.canCreateDocument());
     }
 }

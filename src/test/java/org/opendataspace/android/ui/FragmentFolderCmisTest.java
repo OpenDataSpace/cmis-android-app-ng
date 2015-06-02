@@ -24,7 +24,7 @@ public class FragmentFolderCmisTest {
         CmisSession session = TestUtil.setupSession(app, Repo.Type.GLOBAL);
         OperationFolderBrowse op =
                 new OperationFolderBrowse(app.getDatabase().getAccounts().get(app.getPrefs().getLastAccountId()),
-                        session.getRepo());
+                        session.getRepo(), OperationFolderBrowse.Mode.DEFAULT);
         FragmentFolderCmis fgm = new FragmentFolderCmis(op);
         ActivityMain ac = TestUtil.setupFragment(fgm);
         TestUtil.waitRunnable();

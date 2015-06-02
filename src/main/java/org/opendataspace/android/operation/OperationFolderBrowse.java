@@ -11,9 +11,16 @@ import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.ObjectBase;
 import org.opendataspace.android.object.Repo;
+import org.opendataspace.android.storage.FileInfo;
 import org.opendataspace.android.view.ViewNode;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class OperationFolderBrowse extends OperationBase {
+
+    public enum Mode {DEFAULT, SEL_FOLDER, SEL_FILES}
 
     @Expose
     private final Account account;
@@ -27,12 +34,19 @@ public class OperationFolderBrowse extends OperationBase {
     @Expose
     private boolean cdup;
 
+    @Expose
+    private final Mode mode;
+
+    @Expose
+    private List<FileInfo> context;
+
     private transient Task lastTask;
     private transient CmisSession session;
 
-    public OperationFolderBrowse(Account account, Repo repo) {
+    public OperationFolderBrowse(Account account, Repo repo, Mode mode) {
         this.repo = repo;
         this.account = account;
+        this.mode = mode;
     }
 
     @Override
@@ -92,5 +106,22 @@ public class OperationFolderBrowse extends OperationBase {
 
     public CmisSession getSession() {
         return session;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public List<FileInfo> getContext() {
+        return Collections.unmodifiableList(context);
+    }
+
+    public void setContext(List<FileInfo> val) {
+        if (context == null) {
+            context = new ArrayList<>();
+        }
+
+        context.clear();
+        context.addAll(val);
     }
 }

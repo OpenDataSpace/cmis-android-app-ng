@@ -20,7 +20,7 @@ public class OperationFolderBrowseTest {
         CmisSession session = TestUtil.setupSession(app, Repo.Type.PRIVATE);
         OperationFolderBrowse op =
                 new OperationFolderBrowse(app.getDatabase().getAccounts().get(app.getPrefs().getLastAccountId()),
-                        session.getRepo());
+                        session.getRepo(), OperationFolderBrowse.Mode.DEFAULT);
         OperationStatus st = op.execute();
         TestUtil.waitRunnable();
         Assert.assertEquals(true, st.isOk());

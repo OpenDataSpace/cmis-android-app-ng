@@ -4,11 +4,9 @@ import android.os.Environment;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.storage.FileInfo;
 import org.opendataspace.android.storage.Storage;
 import org.opendataspace.android.test.TestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowEnvironment;
 
 import java.io.File;
@@ -21,7 +19,6 @@ public class OperationLocalCopyMoveTest {
 
     @Test
     public void execute() throws SQLException {
-        OdsApp app = (OdsApp) RuntimeEnvironment.application;
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_MOUNTED);
         File f = Environment.getExternalStorageDirectory();
         File dir1 = new File(f, "test1");

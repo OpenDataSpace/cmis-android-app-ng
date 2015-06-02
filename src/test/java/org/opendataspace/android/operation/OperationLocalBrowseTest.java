@@ -22,7 +22,7 @@ public class OperationLocalBrowseTest {
         boolean res = dir.mkdir();
         org.junit.Assert.assertEquals(true, res);
 
-        OperationLocalBrowse op = new OperationLocalBrowse();
+        OperationLocalBrowse op = new OperationLocalBrowse(OperationLocalBrowse.Mode.DEFAULT);
         OperationStatus st = op.execute();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(true, op.getData().size() > 0);

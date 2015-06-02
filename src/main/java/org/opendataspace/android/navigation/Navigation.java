@@ -256,7 +256,7 @@ public class Navigation implements NavigationInterface {
         CompatKeyboard.hide(context);
         FragmentBase top = getTopFragment();
 
-        if (top.getClass().equals(cls)) {
+        if (top != null && top.getClass().equals(cls) && backstack.lastElement().getNavigationScope() == scope) {
             top.navigationRequest(op);
             return;
         }

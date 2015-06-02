@@ -45,12 +45,12 @@ public class FragmentAccountList extends FragmentBaseList {
         ActivityMain ac = getMainActivity();
 
         switch (item.getItemId()) {
-            case R.id.menu_account_add:
-                ac.getNavigation().openFile(FragmentAccountDetails.class, new OperationAccountUpdate(new Account()));
-                break;
+        case R.id.menu_account_add:
+            getNavigation().openFile(FragmentAccountDetails.class, new OperationAccountUpdate(new Account()));
+            break;
 
-            default:
-                return super.onOptionsItemSelected(item);
+        default:
+            return super.onOptionsItemSelected(item);
         }
 
         return true;
@@ -58,7 +58,7 @@ public class FragmentAccountList extends FragmentBaseList {
 
     @Override
     void onListItemClick(int position) {
-        getMainActivity().getNavigation()
+        getNavigation()
                 .openFile(FragmentAccountDetails.class, new OperationAccountUpdate(adapter.getObject(position)));
     }
 }

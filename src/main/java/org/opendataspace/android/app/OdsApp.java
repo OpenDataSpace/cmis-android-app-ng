@@ -1,7 +1,6 @@
 package org.opendataspace.android.app;
 
 import android.app.Application;
-
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -11,6 +10,7 @@ import io.fabric.sdk.android.Fabric;
 import org.opendataspace.android.app.beta.BuildConfig;
 import org.opendataspace.android.cmis.CmisRenditionCache;
 import org.opendataspace.android.data.DataBase;
+import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.view.ViewManager;
 
 import java.io.File;
@@ -34,6 +34,7 @@ public class OdsApp extends Application {
     private TaskPool pool;
     private ViewManager vm;
     private CmisRenditionCache cmiscache;
+    private NavigationInterface navigation;
 
     public static OdsApp get() {
         return instance;
@@ -109,5 +110,13 @@ public class OdsApp extends Application {
 
     public CmisRenditionCache getCmisCache() {
         return cmiscache;
+    }
+
+    public void setNavigation(NavigationInterface navigation) {
+        this.navigation = navigation;
+    }
+
+    public NavigationInterface getNavigation() {
+        return navigation;
     }
 }

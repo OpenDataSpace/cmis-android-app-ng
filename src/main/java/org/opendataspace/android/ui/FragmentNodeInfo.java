@@ -9,26 +9,17 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.event.EventDaoNode;
 import org.opendataspace.android.object.Node;
-import org.opendataspace.android.operation.OperationLoader;
-import org.opendataspace.android.operation.OperationNodeInfo;
-import org.opendataspace.android.operation.OperationNodeDelete;
-import org.opendataspace.android.operation.OperationNodeRename;
-import org.opendataspace.android.operation.OperationStatus;
+import org.opendataspace.android.operation.*;
 
 import java.lang.ref.WeakReference;
 
@@ -206,11 +197,11 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
             if (cur.getObject().equals(op.getNode())) {
                 if (cur.getOperation() == EventDaoBase.Operation.DELETE) {
                     getMainActivity().stopWait();
-                    getMainActivity().getNavigation().backPressed();
+                    getNavigation().backPressed();
                 } else {
                     op.setNode(cur.getObject());
                     updateInfo();
-                    getMainActivity().getNavigation().updateMenu();
+                    getNavigation().updateMenu();
                 }
 
                 break;
