@@ -7,11 +7,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
-
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.operation.OperationAccountConfig;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 
 public class Storage {
 
@@ -67,5 +69,59 @@ public class Storage {
         BitmapDrawable dr = new BitmapDrawable(res, bmp);
         dr.setBounds(0, 0, bmp.getWidth(), bmp.getHeight());
         return dr;
+    }
+
+    public static boolean copyFile(File source, File dest) throws IOException {
+        if (source.isDirectory()) {
+            if (!dest.mkdir()) {
+                return false;
+            }
+
+            boolean res = true;
+            File[] ls = source.listFiles(f -> !f.isHidden());
+
+            if (ls != null) {
+                for (File cur : ls) {
+                    res &= copyFile(cur, new File(dest, cur.getName()));
+                }
+            }
+
+            return res;
+        }
+
+        if (!dest.createNewFile()) {
+            return false;
+        }
+
+        FileChannel sc = null, dc = null;
+
+        try {
+            sc = new FileInputStream(source).getChannel();
+            dc = new FileInputStream(dest).getChannel();
+            dc.transferFrom(sc, 0, sc.size());
+        } finally {
+            if (sc != null) {
+                sc.close();
+            }
+            if (dc != null) {
+                dc.close();
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean deleteTree(File file) {
+        if (file.isDirectory()) {
+            File[] ls = file.listFiles();
+
+            if (ls != null) {
+                for (File cur : ls) {
+                    deleteTree(cur);
+                }
+            }
+        }
+
+        return file.delete();
     }
 }

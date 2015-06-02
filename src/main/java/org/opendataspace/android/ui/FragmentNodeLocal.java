@@ -17,7 +17,7 @@ import android.widget.TextView;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.Task;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.operation.OperationNodeLocal;
+import org.opendataspace.android.operation.OperationLocalInfo;
 import org.opendataspace.android.storage.FileInfo;
 
 import java.io.File;
@@ -25,9 +25,9 @@ import java.io.File;
 @SuppressLint("ValidFragment")
 public class FragmentNodeLocal extends FragmentBase {
 
-    private final OperationNodeLocal op;
+    private final OperationLocalInfo op;
 
-    public FragmentNodeLocal(OperationNodeLocal op) {
+    public FragmentNodeLocal(OperationLocalInfo op) {
         this.op = op;
     }
 

@@ -3,4 +3,13 @@
     <item
             android:id="@+id/menu_folder_details"
             android:title="@string/folder_details"/>
+    <item
+            android:id="@+id/menu_folder_cut"
+            android:title="@string/folder_cut"/>
+    <item
+            android:id="@+id/menu_folder_copy"
+            android:title="@string/folder_copy"/>
+    <item
+            android:id="@+id/menu_folder_delete"
+            android:title="@string/folder_delete"/>
 </menu>

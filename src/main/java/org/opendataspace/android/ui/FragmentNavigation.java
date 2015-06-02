@@ -27,7 +27,7 @@ import org.opendataspace.android.object.RepoAdapter;
 import org.opendataspace.android.operation.OperationAccountSelect;
 import org.opendataspace.android.operation.OperationAccountUpdate;
 import org.opendataspace.android.operation.OperationFolderBrowse;
-import org.opendataspace.android.operation.OperationFolderLocal;
+import org.opendataspace.android.operation.OperationLocalBrowse;
 import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationStatus;
 import org.opendataspace.android.view.ViewManager;
@@ -177,7 +177,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
             break;
 
         case R.id.action_nav_localfolder:
-            getMainActivity().getNavigation().openRootFolder(FragmentFolderLocal.class, new OperationFolderLocal());
+            getMainActivity().getNavigation().openRootFolder(FragmentFolderLocal.class, new OperationLocalBrowse());
             break;
         }
     }

@@ -3,12 +3,12 @@ package org.opendataspace.android.operation;
 import com.google.gson.annotations.Expose;
 import org.opendataspace.android.storage.FileInfo;
 
-public class OperationNodeLocal extends OperationBase {
+public class OperationLocalInfo extends OperationBase {
 
     @Expose
     private FileInfo file;
 
-    public OperationNodeLocal(FileInfo file) {
+    public OperationLocalInfo(FileInfo file) {
         this.file = file;
     }
 

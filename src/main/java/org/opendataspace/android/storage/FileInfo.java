@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.text.format.Formatter;
-
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.data.DaoMime;
 import org.opendataspace.android.object.MimeType;
@@ -25,7 +24,7 @@ public class FileInfo implements ObjectBaseId {
 
     public FileInfo(File file, DaoMime mime) throws SQLException {
         this.file = file;
-        this.mime = isDirectory() ? null : mime.forFileName(file.getName());
+        this.mime = (isDirectory() || mime == null) ? null : mime.forFileName(file.getName());
         this.special = 0;
         id = counter.incrementAndGet();
     }

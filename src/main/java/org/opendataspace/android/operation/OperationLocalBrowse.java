@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class OperationFolderLocal extends OperationBase {
+public class OperationLocalBrowse extends OperationBase {
 
     @Expose
     private File root;
@@ -24,10 +24,10 @@ public class OperationFolderLocal extends OperationBase {
 
     private final transient List<FileInfo> data = new ArrayList<>();
 
-    public OperationFolderLocal() {
+    public OperationLocalBrowse() {
     }
 
-    public void setRoot(File root) {
+    public void setFolder(File root) {
         this.root = root;
 
         if (top == null || root == null) {
@@ -35,7 +35,7 @@ public class OperationFolderLocal extends OperationBase {
         }
     }
 
-    public File getRoot() {
+    public File getFolder() {
         return root;
     }
 

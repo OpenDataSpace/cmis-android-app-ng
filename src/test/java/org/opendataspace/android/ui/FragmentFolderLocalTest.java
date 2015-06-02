@@ -2,12 +2,12 @@ package org.opendataspace.android.ui;
 
 import android.os.Environment;
 import android.widget.ListView;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.operation.OperationFolderLocal;
+import org.opendataspace.android.operation.OperationLocalBrowse;
+import org.opendataspace.android.storage.Storage;
 import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 import org.robolectric.Shadows;
@@ -29,7 +29,7 @@ public class FragmentFolderLocalTest {
         Assert.assertEquals(true, res);
         Assert.assertEquals(true, dir.exists());
 
-        OperationFolderLocal op = new OperationFolderLocal();
+        OperationLocalBrowse op = new OperationLocalBrowse();
         FragmentFolderLocal fgm = new FragmentFolderLocal(op);
         ActivityMain ac = TestUtil.setupFragment(fgm);
         TestUtil.waitRunnable();
@@ -56,6 +56,7 @@ public class FragmentFolderLocalTest {
         Assert.assertEquals(false, res);
 
         TestUtil.dismisActivity(ac);
+        Assert.assertEquals(true, Storage.deleteTree(dir));
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_UNMOUNTED);
     }
 }

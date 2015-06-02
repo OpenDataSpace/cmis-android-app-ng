@@ -4,14 +4,14 @@ import com.google.gson.annotations.Expose;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.object.Node;
 
-public class OperationNodeBrowse extends OperationBase {
+public class OperationNodeInfo extends OperationBase {
 
     @Expose
     private Node node;
 
     private final transient CmisSession session;
 
-    public OperationNodeBrowse(Node node, CmisSession session) {
+    public OperationNodeInfo(Node node, CmisSession session) {
         this.node = node;
         this.session = session;
     }

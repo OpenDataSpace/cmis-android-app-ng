@@ -140,7 +140,7 @@ public class FragmentFolderCmis extends FragmentBaseList
 
         if (type == Node.Type.DOCUMENT) {
             getMainActivity().getNavigation()
-                    .openFile(FragmentNodeInfo.class, new OperationNodeBrowse(node, op.getSession()));
+                    .openFile(FragmentNodeInfo.class, new OperationNodeInfo(node, op.getSession()));
 
             return;
         }
@@ -202,7 +202,7 @@ public class FragmentFolderCmis extends FragmentBaseList
         case R.id.menu_folder_details:
             if (moreItem != null) {
                 getMainActivity().getNavigation()
-                        .openFile(FragmentNodeInfo.class, new OperationNodeBrowse(moreItem, op.getSession()));
+                        .openFile(FragmentNodeInfo.class, new OperationNodeInfo(moreItem, op.getSession()));
             }
             break;
 
@@ -370,10 +370,7 @@ public class FragmentFolderCmis extends FragmentBaseList
             ls = Collections.singletonList(moreItem);
         }
 
-        if (copymove == null) {
-            copymove = new OperationNodeCopyMove(op.getSession());
-        }
-
+        copymove = new OperationNodeCopyMove(op.getSession());
         copymove.setContext(ls, isCopy);
     }
 

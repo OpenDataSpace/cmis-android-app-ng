@@ -25,7 +25,7 @@ import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.event.EventDaoNode;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.operation.OperationLoader;
-import org.opendataspace.android.operation.OperationNodeBrowse;
+import org.opendataspace.android.operation.OperationNodeInfo;
 import org.opendataspace.android.operation.OperationNodeDelete;
 import org.opendataspace.android.operation.OperationNodeRename;
 import org.opendataspace.android.operation.OperationStatus;
@@ -38,10 +38,10 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
     private final static int LOADER_DELETE = 1;
     private final static int LOADER_RENAME = 2;
 
-    private final OperationNodeBrowse op;
+    private final OperationNodeInfo op;
     private OperationNodeRename rename;
 
-    public FragmentNodeInfo(OperationNodeBrowse op) {
+    public FragmentNodeInfo(OperationNodeInfo op) {
         this.op = op;
     }
 
