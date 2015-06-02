@@ -7,6 +7,7 @@ import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
+import org.opendataspace.android.cmis.CmisOperations;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.data.DaoNode;
 import org.opendataspace.android.object.Node;
@@ -49,6 +50,10 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
                 status.setError(ex.getMessage());
                 res = false;
             }
+
+            if (isCancel()) {
+                throw new InterruptedException();
+            }
         }
 
         if (res) {
@@ -56,7 +61,11 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
         }
     }
 
-    private boolean processNode(Node node, Node to, boolean checkParent) throws SQLException {
+    private boolean processNode(Node node, Node to, boolean checkParent) throws Exception {
+        if (isCancel()) {
+            return false;
+        }
+
         switch (node.getType()) {
         case DOCUMENT:
             return processDocument(node, to);
@@ -69,14 +78,14 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
         }
     }
 
-    private boolean processFolder(Node node, Node to, boolean checkParent) throws SQLException {
+    private boolean processFolder(Node node, Node to, boolean checkParent) throws Exception {
         DaoNode dao = OdsApp.get().getDatabase().getNodes();
 
         if (checkParent) {
             Node p = to;
 
             while (p != null) {
-                if (p.equals(node)) {
+                if (p.equals(node) || isCancel()) {
                     return false;
                 }
 
@@ -84,15 +93,13 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
             }
         }
 
-        OperationFolderCreate create = new OperationFolderCreate(session, to, node.getName());
-        create.execute();
-        OperationFolderFetch fetch = new OperationFolderFetch(session, node);
-        fetch.execute();
+        Node folder = CmisOperations.createFolder(session, to, node.getName());
+        OperationFolderFetch.process(new OperationFolderFetch(session, node), this);
         CloseableIterator<Node> it = dao.forParent(session.getRepo(), node.getId());
 
         try {
             while (it.hasNext()) {
-                if (!processNode(it.nextThrow(), create.getNode(), false)) {
+                if (!processNode(it.nextThrow(), folder, false)) {
                     return false;
                 }
             }
@@ -101,8 +108,7 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
         }
 
         if (!isCopy) {
-            OperationNodeDelete del = new OperationNodeDelete(node, session);
-            del.execute();
+            CmisOperations.deleteNode(session, node);
         }
 
         return true;
@@ -111,16 +117,17 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
     private boolean processDocument(Node node, Node to) throws SQLException {
         Document doc = (Document) node.getCmisObject(session);
         DaoNode dao = OdsApp.get().getDatabase().getNodes();
-        CmisObject cmis;
 
         if (isCopy) {
-            cmis = doc.copy(new ObjectIdImpl(to.getUuid()));
+            CmisObject cmis = doc.copy(new ObjectIdImpl(to.getUuid()));
+            dao.create(new Node(cmis, to));
         } else {
-            cmis = doc.move(new ObjectIdImpl(node.getParentUuid()), new ObjectIdImpl(to.getUuid()));
-            dao.delete(node);
+            CmisObject cmis = doc.move(new ObjectIdImpl(node.getParentUuid()), new ObjectIdImpl(to.getUuid()));
+            node.merge(cmis);
+            node.setParentId(to.getId());
+            dao.update(node);
         }
 
-        dao.create(new Node(cmis, to));
         return true;
     }
 

@@ -11,11 +11,10 @@ import java.util.List;
 
 public abstract class OperationBaseFetch<T extends ObjectBase, U> extends OperationBaseCmis {
 
-    @Override
-    protected void doExecute(OperationStatus status) throws Exception {
+    public static <T extends ObjectBase, U> void process(OperationBaseFetch<T, U> fetch, OperationBase owner) throws Exception {
         List<T> data = new ArrayList<>();
-        DaoBase<T> dao = dao();
-        CloseableIterator<T> it = localObjects(dao);
+        DaoBase<T> dao = fetch.dao();
+        CloseableIterator<T> it = fetch.localObjects(dao);
 
         try {
             while (it.hasNext()) {
@@ -25,25 +24,25 @@ public abstract class OperationBaseFetch<T extends ObjectBase, U> extends Operat
             it.close();
         }
 
-        if (isCancel()) {
+        if (owner.isCancel()) {
             throw new InterruptedException();
         }
 
         OdsApp.get().getDatabase().transact(() -> {
             final List<T> copy = new ArrayList<>();
 
-            for (U cur : fetch()) {
-                T obj = find(cur, data);
+            for (U cur : fetch.fetch()) {
+                T obj = fetch.find(cur, data);
 
                 if (obj == null) {
-                    dao.create(createObject(cur));
-                } else if (merge(obj, cur)) {
+                    dao.create(fetch.createObject(cur));
+                } else if (fetch.merge(obj, cur)) {
                     dao.update(obj);
                 }
 
                 copy.add(obj);
 
-                if (isCancel()) {
+                if (owner.isCancel()) {
                     throw new InterruptedException();
                 }
             }
@@ -54,7 +53,7 @@ public abstract class OperationBaseFetch<T extends ObjectBase, U> extends Operat
                 }
             }
 
-            if (isCancel()) {
+            if (owner.isCancel()) {
                 throw new InterruptedException();
             }
 

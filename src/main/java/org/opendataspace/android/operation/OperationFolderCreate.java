@@ -1,7 +1,7 @@
 package org.opendataspace.android.operation;
 
 import com.google.gson.annotations.Expose;
-import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.cmis.CmisOperations;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.object.Node;
 
@@ -26,8 +26,7 @@ public class OperationFolderCreate extends OperationBaseCmis {
 
     @Override
     protected void doExecute(OperationStatus status) throws Exception {
-        node = new Node(session.createFolder(parent, name), parent);
-        OdsApp.get().getDatabase().getNodes().create(node);
+        node = CmisOperations.createFolder(session, parent, name);
         status.setOk();
     }
 

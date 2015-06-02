@@ -4,8 +4,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.AccountAdapter;
+import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.operation.OperationAccountSelect;
 import org.opendataspace.android.test.TestRunner;
@@ -21,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ViewManagerTest {
 
     @Test
-    public void checkSync() throws Exception {
+    public void sync() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         Account acc = TestUtil.getDefaultAccount();
         app.getDatabase().getAccounts().create(acc);
@@ -59,7 +61,7 @@ public class ViewManagerTest {
     }
 
     @Test
-    public void checkTransaction() throws Exception {
+    public void transaction() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         final Account acc = TestUtil.getDefaultAccount();
         app.getDatabase().getAccounts().create(acc);
@@ -106,12 +108,27 @@ public class ViewManagerTest {
     }
 
     @Test
-    public void checkInsertUpdate() throws Exception {
+    public void insertUpdate() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         final Account acc = TestUtil.getDefaultAccount();
         app.getDatabase().getAccounts().create(acc);
         app.getDatabase().getAccounts().createOrUpdate(acc);
 
         Assert.assertEquals(1, app.getViewManager().getAccounts().getCount());
+    }
+
+    @Test
+    public void outOfScope() throws Exception {
+        OdsApp app = (OdsApp) RuntimeEnvironment.application;
+        CmisSession session = TestUtil.setupSession(app, Repo.Type.PRIVATE);
+        app.getViewManager().getNodes().setScope(app.getDatabase().getAccounts().get(app.getPrefs().getLastAccountId()),
+                session.getRepo(), null);
+
+        Node node = new Node(null, session.getRepo());
+        app.getDatabase().getNodes().create(node);
+        Assert.assertEquals(1, app.getViewManager().getNodes().getCount());
+        node.setParentId(100500);
+        app.getDatabase().getNodes().update(node);
+        Assert.assertEquals(0, app.getViewManager().getNodes().getCount());
     }
 }

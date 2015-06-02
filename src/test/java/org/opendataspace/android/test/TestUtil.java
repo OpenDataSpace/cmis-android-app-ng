@@ -135,16 +135,6 @@ public class TestUtil {
         return ls;
     }
 
-    private static Repo repo(OdsApp app, Account acc, Repo.Type type) throws SQLException {
-        for (Repo cur : allOf(app.getDatabase().getRepos().forAccount(acc))) {
-            if (cur.getType() == type) {
-                return cur;
-            }
-        }
-
-        return null;
-    }
-
     public static CmisSession setupSession(OdsApp app, Repo.Type type) throws Exception {
         Account acc = TestUtil.getDefaultAccount();
         app.getDatabase().getAccounts().create(acc);
@@ -156,9 +146,13 @@ public class TestUtil {
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(true, app.getDatabase().getRepos().countOf() > 0);
 
-        Repo repo = TestUtil.repo(app, acc, type);
-        Assert.assertEquals(true, repo != null);
-        return new CmisSession(acc, repo);
+        for (Repo cur : allOf(app.getDatabase().getRepos().forAccount(acc))) {
+            if (cur.getType() == type) {
+                return new CmisSession(acc, cur);
+            }
+        }
+
+        throw new IllegalArgumentException();
     }
 
     public static void removeIfExists(CmisSession session, String name) {

@@ -30,7 +30,7 @@ public class Node extends ObjectBase {
 
     @Expose
     @DatabaseField(index = true, columnName = FIELD_PID, canBeNull = false)
-    private final long parentId;
+    private long parentId;
 
     @Expose
     @DatabaseField(columnName = FIELD_TYPE, canBeNull = false, dataType = DataType.ENUM_INTEGER,
@@ -238,5 +238,9 @@ public class Node extends ObjectBase {
 
     public long getSize() {
         return info.size;
+    }
+
+    public void setParentId(long val) {
+        parentId = val;
     }
 }

@@ -2,23 +2,20 @@ package org.opendataspace.android.view;
 
 import com.j256.ormlite.dao.CloseableIterator;
 import org.opendataspace.android.app.CompatDisposable;
-import org.opendataspace.android.event.Event;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.data.DaoBase;
+import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.object.ObjectBase;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable {
 
     private final List<T> data = new ArrayList<>();
-    private final Set<Long> deleted = new HashSet<>();
 
     ViewBase() {
         OdsApp.bus.register(this, Event.PRIORITY_VIEW);
@@ -28,16 +25,17 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
         for (EventDaoBase.Event<T> cur : event.getEvents()) {
             final T object = cur.getObject();
 
-            if (object == null || !isValid(object)) {
+            if (object == null) {
+                continue;
+            }
+
+            if (!isValid(object)) {
+                data.remove(object);
                 continue;
             }
 
             switch (cur.getOperation()) {
             case INSERT: {
-                if (deleted.contains(object.getId())) {
-                    continue;
-                }
-
                 int pos = data.indexOf(object);
 
                 if (pos != -1) {
@@ -49,9 +47,7 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
             break;
 
             case DELETE:
-                if (!data.remove(object)) {
-                    deleted.add(object.getId());
-                }
+                data.remove(object);
                 break;
 
             case UPDATE: {
@@ -68,7 +64,6 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
 
     public void sync(final DaoBase<T> dao) throws SQLException {
         data.clear();
-        deleted.clear();
 
         CloseableIterator<T> it = null;
 

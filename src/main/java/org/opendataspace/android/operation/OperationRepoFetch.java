@@ -27,7 +27,7 @@ public class OperationRepoFetch extends OperationBaseFetch<Repo, Repository> {
 
     @Override
     protected void doExecute(OperationStatus status) throws Exception {
-        super.doExecute(status);
+        process(this, this);
 
         if (!isCancel() && shouldConfig) {
             OdsApp.get().getPool().execute(new OperationAccountConfig(account));

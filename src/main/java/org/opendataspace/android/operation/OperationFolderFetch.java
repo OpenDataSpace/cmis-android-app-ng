@@ -28,7 +28,7 @@ public class OperationFolderFetch extends OperationBaseFetch<Node, CmisObject> {
 
     @Override
     protected void doExecute(OperationStatus status) throws Exception {
-        super.doExecute(status);
+        process(this, this);
         OdsApp.bus.post(new EventNodeUpdate());
         status.setOk();
     }

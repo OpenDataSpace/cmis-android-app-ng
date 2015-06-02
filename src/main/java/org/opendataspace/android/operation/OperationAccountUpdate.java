@@ -35,13 +35,7 @@ public class OperationAccountUpdate extends OperationBase {
                 throw new InterruptedException();
             }
 
-            OperationRepoFetch fetch = new OperationRepoFetch(account);
-            fetch.execute();
-
-            if (isCancel()) {
-                throw new InterruptedException();
-            }
-
+            OperationRepoFetch.process(new OperationRepoFetch(account), this);
             return null;
         });
 

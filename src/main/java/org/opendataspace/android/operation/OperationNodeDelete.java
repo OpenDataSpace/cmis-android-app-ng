@@ -1,8 +1,8 @@
 package org.opendataspace.android.operation;
 
 import com.google.gson.annotations.Expose;
-import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
+import org.opendataspace.android.cmis.CmisOperations;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.object.Node;
 
@@ -31,8 +31,7 @@ public class OperationNodeDelete extends OperationBaseCmis {
     protected void doExecute(OperationStatus status) throws Exception {
         for (Node cur : nodes) {
             try {
-                session.delete(cur);
-                OdsApp.get().getDatabase().getNodes().delete(cur);
+                CmisOperations.deleteNode(session, cur);
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);
             }
