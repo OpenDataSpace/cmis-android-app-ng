@@ -12,6 +12,7 @@ import org.opendataspace.android.operation.OperationAccountConfig;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
@@ -82,7 +83,7 @@ public class Storage {
 
             if (ls != null) {
                 for (File cur : ls) {
-                    res &= copyFile(cur, new File(dest, cur.getName()));
+                    res = res && copyFile(cur, new File(dest, cur.getName()));
                 }
             }
 
@@ -97,7 +98,7 @@ public class Storage {
 
         try {
             sc = new FileInputStream(source).getChannel();
-            dc = new FileInputStream(dest).getChannel();
+            dc = new FileOutputStream(dest).getChannel();
             dc.transferFrom(sc, 0, sc.size());
         } finally {
             if (sc != null) {

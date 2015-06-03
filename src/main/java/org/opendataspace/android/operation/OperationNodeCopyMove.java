@@ -44,7 +44,7 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
 
         for (Node cur : nodes) {
             try {
-                res &= processNode(cur, target, true);
+                res = res && processNode(cur, target, true);
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);
                 status.setError(ex.getMessage());

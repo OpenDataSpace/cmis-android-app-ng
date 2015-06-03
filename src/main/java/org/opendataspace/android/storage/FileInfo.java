@@ -1,6 +1,7 @@
 package org.opendataspace.android.storage;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.text.format.Formatter;
@@ -135,5 +136,10 @@ public class FileInfo implements ObjectBaseId {
     @Override
     public long getId() {
         return id;
+    }
+
+    public String getMimeType() {
+        String res = mime != null ? mime.getType() : null;
+        return TextUtils.isEmpty(res) ? "application/octet-stream" : res;
     }
 }

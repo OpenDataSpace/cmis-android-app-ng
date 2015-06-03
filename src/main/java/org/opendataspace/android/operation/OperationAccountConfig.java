@@ -4,9 +4,11 @@ import com.google.gson.annotations.Expose;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
+import org.opendataspace.android.cmis.CmisOperations;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.event.EventAccountConfig;
 import org.opendataspace.android.object.Account;
+import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.storage.Storage;
 
@@ -32,9 +34,9 @@ public class OperationAccountConfig extends OperationBase {
             return;
         }
 
-        CmisSession ses = new CmisSession(account, repo);
-        boolean res = checkFile(ses, BRAND_ICON);
-        res = checkFile(ses, BRAND_LARGE) && res;
+        CmisSession session = new CmisSession(account, repo);
+        boolean res = checkFile(session, BRAND_ICON);
+        res = checkFile(session, BRAND_LARGE) || res;
 
         if (res) {
             OdsApp.bus.post(new EventAccountConfig());
@@ -43,29 +45,29 @@ public class OperationAccountConfig extends OperationBase {
         status.setOk();
     }
 
-    private boolean checkFile(CmisSession ses, String name) {
+    private boolean checkFile(CmisSession session, String name) {
         try {
             if (isCancel()) {
                 return false;
             }
 
-            CmisObject cmo = ses.getObjectByPath("branding/android/res/drawable-xxhdpi/" + name);
+            CmisObject cmis = session.getObjectByPath("branding/android/res/drawable-xxhdpi/" + name);
 
-            if (cmo == null) {
-                cmo = ses.getObjectByPath("branding/android/res/drawable-xhdpi/" + name);
+            if (cmis == null) {
+                cmis = session.getObjectByPath("branding/android/res/drawable-xhdpi/" + name);
             }
 
-            if (cmo == null) {
-                cmo = ses.getObjectByPath("branding/android/res/drawable/" + name);
+            if (cmis == null) {
+                cmis = session.getObjectByPath("branding/android/res/drawable/" + name);
             }
 
-            if (cmo == null) {
+            if (cmis == null) {
                 return false;
             }
 
             File f = Storage.getConfigFile(OdsApp.get().getApplicationContext(), name, account);
 
-            if (f != null && f.exists() && f.length() == ses.size(cmo)) {
+            if (f != null && f.exists() && f.length() == session.size(cmis)) {
                 return false;
             }
 
@@ -73,7 +75,7 @@ public class OperationAccountConfig extends OperationBase {
                 return false;
             }
 
-            ses.save(cmo, f);
+            CmisOperations.download(session, new Node(cmis, session.getRepo()), f);
             return true;
         } catch (Exception ex) {
             OdsLog.ex(getClass(), ex);

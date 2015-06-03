@@ -20,7 +20,7 @@ public class OperationLocalBrowseTest {
         File f = Environment.getExternalStorageDirectory();
         File dir = new File(f, "test");
         boolean res = dir.mkdir();
-        org.junit.Assert.assertEquals(true, res);
+        Assert.assertEquals(true, res);
 
         OperationLocalBrowse op = new OperationLocalBrowse(null, OperationLocalBrowse.Mode.DEFAULT);
         OperationStatus st = op.execute();

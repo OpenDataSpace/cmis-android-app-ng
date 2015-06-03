@@ -30,9 +30,9 @@ public class OperationLocalCopyMove extends OperationBase {
                 File dest = new File(target, source.getName());
 
                 if (isCopy) {
-                    res &= Storage.copyFile(source, dest);
+                    res = res && Storage.copyFile(source, dest);
                 } else {
-                    res &= source.renameTo(dest);
+                    res = res && source.renameTo(dest);
                 }
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);

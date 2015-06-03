@@ -5,26 +5,35 @@ import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.client.runtime.OperationContextImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.data.ObjectInFolderData;
 import org.apache.chemistry.opencmis.commons.data.ObjectInFolderList;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.IncludeRelationships;
+import org.apache.chemistry.opencmis.commons.enums.Updatability;
+import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.spi.NavigationService;
 import org.apache.chemistry.opencmis.commons.spi.ObjectService;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.Repo;
+import org.opendataspace.android.storage.FileInfo;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CmisSession {
+
+    private static final Set<Updatability> CREATE_UPDATABILITY = new HashSet<Updatability>();
+
+    static {
+        CREATE_UPDATABILITY.add(Updatability.ONCREATE);
+        CREATE_UPDATABILITY.add(Updatability.READWRITE);
+    }
+
 
     @Expose
     private final Repo repo;
@@ -70,40 +79,6 @@ public class CmisSession {
         }
 
         return root;
-    }
-
-    public void save(CmisObject cmo, File f) throws IOException {
-        OutputStream os = null;
-        InputStream src = null;
-
-        try {
-            long downloaded = 0, sz = size(cmo);
-            Session session = getSession();
-            os = new BufferedOutputStream(new FileOutputStream(f));
-            src = session.getBinding().getObjectService()
-                    .getContentStream(session.getRepositoryInfo().getId(), cmo.getId(), null, null, null, null)
-                    .getStream();
-
-            byte[] buffer = new byte[1024];
-
-            while (sz - downloaded > 0) {
-                int read = src.read(buffer);
-
-                if (read == -1) {
-                    break;
-                }
-
-                os.write(buffer, 0, read);
-                downloaded += read;
-            }
-        } finally {
-            if (os != null) {
-                os.close();
-            }
-            if (src != null) {
-                src.close();
-            }
-        }
     }
 
     public long size(CmisObject obj) {
@@ -199,5 +174,39 @@ public class CmisSession {
 
     public Account getAccount() {
         return account;
+    }
+
+    public ContentStream getStream(Node node) {
+        return getSession().getBinding().getObjectService().getContentStream(repo.getUuid(), node.getUuid(), null, null,
+                null, null);
+    }
+
+    public CmisObject createDocument(Node folder, String name, FileInfo info) throws IOException {
+        FileInputStream is = null;
+
+        try {
+            Session session = getSession();
+            ContentStream cs = null;
+
+            if (info != null) {
+                File f = info.getFile();
+                is = new FileInputStream(f);
+                cs = session.getObjectFactory().createContentStream(f.getName(), f.length(), info.getMimeType(), is);
+            }
+
+            Map<String, Serializable> properties = new HashMap<>();
+            properties.put(PropertyIds.OBJECT_TYPE_ID, BaseTypeId.CMIS_DOCUMENT.value());
+            properties.put(PropertyIds.NAME, name);
+
+            String id = session.getBinding().getObjectService().createDocument(repo.getUuid(),
+                    session.getObjectFactory().convertProperties(properties, null, null, CREATE_UPDATABILITY),
+                    folder.getUuid(), cs, VersioningState.MAJOR, null, null, null, null);
+
+            return session.getObject(id);
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
     }
 }
