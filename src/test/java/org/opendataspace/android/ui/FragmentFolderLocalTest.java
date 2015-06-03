@@ -29,7 +29,7 @@ public class FragmentFolderLocalTest {
         Assert.assertEquals(true, res);
         Assert.assertEquals(true, dir.exists());
 
-        OperationLocalBrowse op = new OperationLocalBrowse(OperationLocalBrowse.Mode.DEFAULT);
+        OperationLocalBrowse op = new OperationLocalBrowse(null, OperationLocalBrowse.Mode.DEFAULT);
         FragmentFolderLocal fgm = new FragmentFolderLocal(op);
         ActivityMain ac = TestUtil.setupFragment(fgm);
         TestUtil.waitRunnable();

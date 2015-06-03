@@ -3,7 +3,6 @@ package org.opendataspace.android.object;
 import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
-
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.event.EventDaoRepo;
 import org.opendataspace.android.view.ViewAdapter;
@@ -17,7 +16,6 @@ public class RepoAdapter extends ViewAdapter<Repo> {
     public RepoAdapter(ViewBase<Repo> view, Context context) {
         super(view, context, R.layout.delegate_list_item1);
     }
-
 
     @Override
     public void updateView(Repo item, View view) {

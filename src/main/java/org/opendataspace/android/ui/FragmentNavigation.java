@@ -167,7 +167,8 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
 
         case R.id.action_nav_localfolder:
             getNavigation().openRootFolder(FragmentFolderLocal.class,
-                    new OperationLocalBrowse(OperationLocalBrowse.Mode.DEFAULT));
+                    new OperationLocalBrowse(OdsApp.get().getViewManager().getCurrentAccount(),
+                            OperationLocalBrowse.Mode.DEFAULT));
             break;
         }
     }

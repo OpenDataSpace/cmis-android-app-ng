@@ -21,6 +21,7 @@ import org.opendataspace.android.operation.OperationBase;
 import org.opendataspace.android.ui.*;
 
 import java.util.Collections;
+import java.util.ListIterator;
 import java.util.Stack;
 
 public class Navigation implements NavigationInterface {
@@ -37,6 +38,7 @@ public class Navigation implements NavigationInterface {
     private final Stack<NavigationState> backstack = new Stack<>();
     private final boolean isTablet;
     private final ActionBarDrawerToggle toggle;
+    private ActivityDialog dialog;
 
     public Navigation(ActivityMain activity, Bundle state) {
         fm = activity.getSupportFragmentManager();
@@ -61,26 +63,7 @@ public class Navigation implements NavigationInterface {
         FragmentNavigation nav = new FragmentNavigation();
         nav.setNonMain();
         applyFragment(R.id.main_view_drawer, nav, TAG_NAVGATION);
-
-        if (backstack.isEmpty()) {
-            backstack.add(new NavigationState(NavigationScope.MAIN, FragmentNavigation.class, null));
-
-            try {
-                if (OdsApp.get().getDatabase().getAccounts().countOf() == 0) {
-                    if (isTablet) {
-                        navigate(backstack.lastElement());
-                    }
-
-                    OperationAccountUpdate op = new OperationAccountUpdate(new Account());
-                    op.setIsFirstAccount();
-                    backstack.add(new NavigationState(NavigationScope.DETAILS, FragmentAccountDetails.class, op));
-                }
-            } catch (Exception ex) {
-                OdsLog.ex(getClass(), ex);
-            }
-        }
-
-        navigate(backstack.lastElement());
+        initialize();
     }
 
     private void applyFragment(int frameId, Fragment f, String tag) {
@@ -104,6 +87,13 @@ public class Navigation implements NavigationInterface {
     }
 
     private void navigate(NavigationState ns) {
+        if (isTablet && ns.getNavigationScope() == NavigationScope.DIALOG && dialog == null) {
+            Intent intent = new Intent(context, ActivityDialog.class);
+            intent.putExtra(ActivityDialog.ARG_NAV_STATE, OdsApp.gson.toJson(ns, NavigationState.class));
+            context.startActivity(intent);
+            return;
+        }
+
         FragmentBase fgm = createFragment(ns);
 
         if (fgm == null) {
@@ -123,9 +113,7 @@ public class Navigation implements NavigationInterface {
                 break;
 
             case DIALOG:
-                Intent intent = new Intent(context, ActivityDialog.class);
-                intent.putExtra(ActivityDialog.ARG_NAV_STATE, OdsApp.gson.toJson(ns, NavigationState.class));
-                context.startActivity(intent);
+                dialog.applyFragmment(fgm);
                 return;
             }
         } else {
@@ -167,13 +155,24 @@ public class Navigation implements NavigationInterface {
     }
 
     private void addBackstack(NavigationState ns) {
-        if (!isTablet || ns.getNavigationScope() != NavigationScope.DIALOG) {
-            backstack.add(ns);
+        if (isTablet && ns.getNavigationScope() == NavigationScope.DIALOG) {
+            return;
         }
+
+        if (!backstack.isEmpty() && backstack.lastElement().getNavigationScope() == NavigationScope.DIALOG) {
+            backstack.pop();
+        }
+
+        backstack.add(ns);
     }
 
     @Override
     public boolean backPressed() {
+        if (dialog != null) {
+            dialog.onBackPressed();
+            return true;
+        }
+
         if (backstack.size() < 2) {
             return false;
         }
@@ -190,7 +189,11 @@ public class Navigation implements NavigationInterface {
         if (isTablet && state.getNavigationScope() == NavigationScope.DETAILS) {
             applyFragment(R.id.main_view_details, null, TAG_DETAILS);
         } else {
-            navigate(backstack.lastElement());
+            try {
+                navigate(backstack.lastElement());
+            } catch (Exception ex) {
+                OdsLog.ex(getClass(), ex);
+            }
         }
 
         return true;
@@ -267,6 +270,47 @@ public class Navigation implements NavigationInterface {
 
         NavigationState ns = new NavigationState(scope, cls, op);
         addBackstack(ns);
-        navigate(ns);
+
+        try {
+            navigate(ns);
+        } catch (Exception ex) {
+            OdsLog.ex(getClass(), ex);
+        }
+    }
+
+    @Override
+    public void setDialog(ActivityDialog dialog) {
+        this.dialog = dialog;
+    }
+
+    private void initialize() {
+        if (backstack.isEmpty()) {
+            backstack.add(new NavigationState(NavigationScope.MAIN, FragmentNavigation.class, null));
+
+            try {
+                if (OdsApp.get().getDatabase().getAccounts().countOf() == 0) {
+                    OperationAccountUpdate op = new OperationAccountUpdate(new Account());
+                    op.setIsFirstAccount();
+                    backstack.add(new NavigationState(NavigationScope.DETAILS, FragmentAccountDetails.class, op));
+                }
+            } catch (Exception ex) {
+                OdsLog.ex(getClass(), ex);
+            }
+        }
+
+        ListIterator<NavigationState> it = backstack.listIterator(backstack.size());
+
+        while (it.hasPrevious()) {
+            NavigationState cur = it.previous();
+            try {
+                navigate(cur);
+            } catch (Exception ex) {
+                OdsLog.ex(getClass(), ex);
+            }
+
+            if (!isTablet || cur.getNavigationScope() == NavigationScope.MAIN) {
+                break;
+            }
+        }
     }
 }

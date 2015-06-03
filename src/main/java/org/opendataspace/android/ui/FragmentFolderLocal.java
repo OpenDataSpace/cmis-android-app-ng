@@ -18,7 +18,7 @@ import android.widget.EditText;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.Task;
 import org.opendataspace.android.app.beta.R;
-import org.opendataspace.android.cmis.CmisSession;
+import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.operation.*;
 import org.opendataspace.android.storage.FileAdapter;
@@ -91,7 +91,6 @@ public class FragmentFolderLocal extends FragmentBaseList
         op.setFolder(file);
         setListShown(false, false);
         getLoaderManager().restartLoader(LOADER_BROWSE, null, this);
-        getNavigation().updateTitle();
     }
 
     @Override
@@ -154,7 +153,9 @@ public class FragmentFolderLocal extends FragmentBaseList
 
     @Override
     public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus data) {
-        loadingDone();
+        if (loader.getId() == LOADER_BROWSE) {
+            browseFinished();
+        }
 
         if (!data.isOk()) {
             Activity ac = getActivity();
@@ -174,14 +175,21 @@ public class FragmentFolderLocal extends FragmentBaseList
         }
     }
 
-    @Override
-    public void onLoaderReset(Loader<OperationStatus> loader) {
-        loadingDone();
+    private void browseFinished() {
+        if (getView() == null) {
+            return;
+        }
+
+        NavigationInterface nav = getNavigation();
+        nav.updateMenu();
+        nav.updateTitle();
+        setListShown(true, false);
     }
 
-    private void loadingDone() {
-        if (getView() != null) {
-            setListShown(true, false);
+    @Override
+    public void onLoaderReset(Loader<OperationStatus> loader) {
+        if (loader.getId() == LOADER_BROWSE) {
+            browseFinished();
         }
     }
 
@@ -297,14 +305,16 @@ public class FragmentFolderLocal extends FragmentBaseList
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         boolean isDefault = op.getMode() == OperationLocalBrowse.Mode.DEFAULT;
+        boolean hasContext = op.getFolder() != null;
 
-        setMenuVisibility(menu, R.id.menu_folder_create, isDefault);
-        setMenuVisibility(menu, R.id.menu_folder_paste, isDefault);
+        setMenuVisibility(menu, R.id.menu_folder_create, isDefault && hasContext);
+        setMenuVisibility(menu, R.id.menu_folder_paste, isDefault && hasContext);
         setMenuVisibility(menu, R.id.menu_folder_apply, !isDefault);
-        setMenuVisibility(menu, R.id.menu_folder_upload, isDefault);
-        setMenuVisibility(menu, R.id.menu_folder_download, isDefault);
-        setMenuVisibility(menu, R.id.menu_folder_cut, isDefault);
-        setMenuVisibility(menu, R.id.menu_folder_copy, isDefault);
+        setMenuVisibility(menu, R.id.menu_folder_delete, isDefault && hasContext);
+        setMenuVisibility(menu, R.id.menu_folder_upload, isDefault && hasContext);
+        setMenuVisibility(menu, R.id.menu_folder_download, isDefault && hasContext);
+        setMenuVisibility(menu, R.id.menu_folder_cut, isDefault && hasContext);
+        setMenuVisibility(menu, R.id.menu_folder_copy, isDefault && hasContext);
     }
 
     private void actionCreateFolder() {
@@ -439,32 +449,20 @@ public class FragmentFolderLocal extends FragmentBaseList
             return;
         }
 
-        // TODO select repo
-        CmisSession session = op.getSession();
-
-        if (session == null) {
-            return;
-        }
-
-        OperationFolderBrowse browse = new OperationFolderBrowse(session.getAccount(), session.getRepo(),
-                OperationFolderBrowse.Mode.SEL_FOLDER);
-
+        OperationFolderBrowse browse = new OperationFolderBrowse(op.getAccount(), null, OperationFolderBrowse.Mode.SEL_FOLDER);
         browse.setContext(ls);
-        getNavigation().openDialog(FragmentFolderCmis.class, browse);
+        getNavigation().openDialog(FragmentRepoList.class, browse);
     }
 
     private void actionDownload() {
-        CmisSession session = op.getSession();
+        File folder = op.getFolder();
 
-        if (session == null) {
+        if (folder == null) {
             return;
         }
 
-        // TODO select repo
-        OperationFolderBrowse browse = new OperationFolderBrowse(session.getAccount(), session.getRepo(),
-                OperationFolderBrowse.Mode.SEL_FILES);
-
-        browse.setContext(Collections.singletonList(new FileInfo(op.getFolder(), null)));
-        getNavigation().openDialog(FragmentFolderCmis.class, browse);
+        OperationFolderBrowse browse = new OperationFolderBrowse(op.getAccount(), null, OperationFolderBrowse.Mode.SEL_FILES);
+        browse.setContext(Collections.singletonList(new FileInfo(folder, null)));
+        getNavigation().openDialog(FragmentRepoList.class, browse);
     }
 }

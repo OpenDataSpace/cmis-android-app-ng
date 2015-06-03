@@ -42,8 +42,6 @@ public class FragmentAccountList extends FragmentBaseList {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        ActivityMain ac = getMainActivity();
-
         switch (item.getItemId()) {
         case R.id.menu_account_add:
             getNavigation().openFile(FragmentAccountDetails.class, new OperationAccountUpdate(new Account()));

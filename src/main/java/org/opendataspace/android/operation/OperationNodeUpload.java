@@ -6,7 +6,7 @@ import org.opendataspace.android.storage.FileInfo;
 
 import java.util.List;
 
-public class OperationNodeUpload extends OperationBase {
+public class OperationNodeUpload extends OperationBaseCmis {
 
     public OperationNodeUpload(CmisSession session, Node folder, List<FileInfo> context) {
     }

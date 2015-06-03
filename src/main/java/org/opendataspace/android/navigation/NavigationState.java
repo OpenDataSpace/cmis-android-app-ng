@@ -30,7 +30,8 @@ public class NavigationState {
         return cls;
     }
 
+    @SuppressWarnings("ConstantConditions")
     public OperationBase getOperation() {
-        return (OperationBase) op.getObject();
+        return op != null ? (OperationBase) op.getObject() : null;
     }
 }

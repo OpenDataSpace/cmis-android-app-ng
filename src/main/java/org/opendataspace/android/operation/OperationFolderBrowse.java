@@ -26,7 +26,7 @@ public class OperationFolderBrowse extends OperationBase {
     private final Account account;
 
     @Expose
-    private final Repo repo;
+    private Repo repo;
 
     @Expose
     private Node folder;
@@ -123,5 +123,17 @@ public class OperationFolderBrowse extends OperationBase {
 
         context.clear();
         context.addAll(val);
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setRepo(Repo repo) {
+        this.repo = repo;
+    }
+
+    public Repo getRepo() {
+        return repo;
     }
 }

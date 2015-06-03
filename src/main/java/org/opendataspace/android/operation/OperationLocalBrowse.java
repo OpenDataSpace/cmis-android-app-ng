@@ -7,6 +7,7 @@ import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.data.DaoMime;
+import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.storage.FileInfo;
 
@@ -34,10 +35,14 @@ public class OperationLocalBrowse extends OperationBase {
     @Expose
     private CmisSession session;
 
+    @Expose
+    private final Account account;
+
     private final transient List<FileInfo> data = new ArrayList<>();
 
-    public OperationLocalBrowse(Mode mode) {
+    public OperationLocalBrowse(Account account, Mode mode) {
         this.mode = mode;
+        this.account = account;
     }
 
     public void setFolder(File root) {
@@ -130,5 +135,9 @@ public class OperationLocalBrowse extends OperationBase {
 
     public void setSession(CmisSession session) {
         this.session = session;
+    }
+
+    public Account getAccount() {
+        return account;
     }
 }

@@ -3,7 +3,6 @@ package org.opendataspace.android.ui;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
@@ -29,15 +28,7 @@ public class ActivityDialog extends ActivityBase {
                 throw new IllegalArgumentException();
             }
 
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.dialog_view_frame, fgm, TAG_CONTENT);
-            ft.commitAllowingStateLoss();
-
-            ActionBar bar = getSupportActionBar();
-
-            if (bar != null) {
-                bar.setTitle(fgm.getTile(this));
-            }
+            applyFragmment(fgm);
         } catch (Exception ex) {
             OdsLog.ex(getClass(), ex);
             finish();
@@ -57,5 +48,29 @@ public class ActivityDialog extends ActivityBase {
 
     private FragmentBase getFragment() {
         return (FragmentBase) getSupportFragmentManager().findFragmentByTag(TAG_CONTENT);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        OdsApp.get().getNavigation().setDialog(this);
+    }
+
+    @Override
+    protected void onStop() {
+        OdsApp.get().getNavigation().setDialog(null);
+        super.onStop();
+    }
+
+    public void applyFragmment(FragmentBase fgm) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.dialog_view_frame, fgm, TAG_CONTENT);
+        ft.commitAllowingStateLoss();
+
+        ActionBar bar = getSupportActionBar();
+
+        if (bar != null) {
+            bar.setTitle(fgm.getTile(this));
+        }
     }
 }

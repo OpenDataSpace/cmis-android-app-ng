@@ -121,14 +121,10 @@ public class FragmentFolderCmis extends FragmentBaseList
             Activity ac = getActivity();
             new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
                     .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> dialogInterface.cancel()).show();
-
-            return;
         }
 
-        switch (loader.getId()) {
-        case LOADER_BROWSE:
+        if (loader.getId() == LOADER_BROWSE) {
             browseFinished(false);
-            break;
         }
     }
 
@@ -148,7 +144,9 @@ public class FragmentFolderCmis extends FragmentBaseList
 
     @Override
     public void onLoaderReset(Loader<OperationStatus> loader) {
-        // nothing
+        if (loader.getId() == LOADER_BROWSE) {
+            browseFinished(false);
+        }
     }
 
     private void selectNode(Node node, boolean cdup) {
@@ -296,6 +294,7 @@ public class FragmentFolderCmis extends FragmentBaseList
         setMenuVisibility(menu, R.id.menu_folder_create, isDefault && node != null && node.canCreateFolder());
         setMenuVisibility(menu, R.id.menu_folder_paste, isDefault && node != null && copymove != null && copymove.canPaste(node));
         setMenuVisibility(menu, R.id.menu_folder_apply, !isDefault);
+        setMenuVisibility(menu, R.id.menu_folder_delete, isDefault);
         setMenuVisibility(menu, R.id.menu_folder_upload, isDefault && node != null && node.canCreateDocument());
         setMenuVisibility(menu, R.id.menu_folder_download, isDefault);
         setMenuVisibility(menu, R.id.menu_folder_cut, isDefault);
@@ -437,14 +436,14 @@ public class FragmentFolderCmis extends FragmentBaseList
             return;
         }
 
-        OperationLocalBrowse browse = new OperationLocalBrowse(OperationLocalBrowse.Mode.SEL_FOLDER);
+        OperationLocalBrowse browse = new OperationLocalBrowse(op.getSession().getAccount(), OperationLocalBrowse.Mode.SEL_FOLDER);
         browse.setContext(ls);
         browse.setSession(op.getSession());
         getNavigation().openDialog(FragmentFolderLocal.class, browse);
     }
 
     private void actionUpload() {
-        OperationLocalBrowse browse = new OperationLocalBrowse(OperationLocalBrowse.Mode.SEL_FILES);
+        OperationLocalBrowse browse = new OperationLocalBrowse(op.getSession().getAccount(), OperationLocalBrowse.Mode.SEL_FILES);
         browse.setContext(Collections.singletonList(op.getFolder()));
         browse.setSession(op.getSession());
         getNavigation().openDialog(FragmentFolderLocal.class, browse);

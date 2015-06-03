@@ -52,6 +52,7 @@
     <string name="nav_shared">Shared</string>
     <string name="nav_global">Global</string>
     <string name="nav_localfolder">Local Files</string>
+    <string name="nav_norepo">No repositories…</string>
 
     <!-- about -->
     <string name="about_info">
