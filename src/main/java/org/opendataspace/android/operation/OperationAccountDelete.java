@@ -3,13 +3,9 @@ package org.opendataspace.android.operation;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.dao.CloseableIterator;
 import org.opendataspace.android.app.OdsApp;
-import org.opendataspace.android.data.DaoAccount;
-import org.opendataspace.android.data.DaoNode;
-import org.opendataspace.android.data.DaoRepo;
-import org.opendataspace.android.data.DataBase;
+import org.opendataspace.android.data.*;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Repo;
-import org.opendataspace.android.storage.Storage;
 
 public class OperationAccountDelete extends OperationBase {
 
@@ -35,6 +31,7 @@ public class OperationAccountDelete extends OperationBase {
 
             DaoRepo repos = db.getRepos();
             DaoNode nodes = db.getNodes();
+            DaoCacheEntry ce = db.getCacheEntries();
             CloseableIterator<Repo> it = repos.allRepos(account);
 
             try {
@@ -46,6 +43,7 @@ public class OperationAccountDelete extends OperationBase {
                     Repo repo = it.nextThrow();
                     repos.delete(repo);
                     nodes.deleteByRepo(repo);
+                    ce.deleteByRepo(repo);
                 }
             } finally {
                 it.closeQuietly();
@@ -54,7 +52,7 @@ public class OperationAccountDelete extends OperationBase {
             return null;
         });
 
-        Storage.deleteTree(Storage.getAccountFolder(OdsApp.get().getApplicationContext(), account));
+        OdsApp.get().getCacheManager().accountDeleted(account);
 
         if (app.getPrefs().getLastAccountId() == account.getId()) {
             CloseableIterator<Account> ita = accounts.iterate(accounts.queryBuilder().limit(1l).prepare());

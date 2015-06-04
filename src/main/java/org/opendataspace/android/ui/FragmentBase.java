@@ -71,11 +71,11 @@ public class FragmentBase extends Fragment {
         return true;
     }
 
-    protected NavigationInterface getNavigation() {
+    NavigationInterface getNavigation() {
         return OdsApp.get().getNavigation();
     }
 
-    protected void setMenuVisibility(Menu menu, int id, boolean val) {
+    void setMenuVisibility(Menu menu, int id, boolean val) {
         MenuItem mi = menu.findItem(id);
 
         if (mi != null) {

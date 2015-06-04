@@ -3,6 +3,7 @@ package org.opendataspace.android.object;
 import com.google.gson.annotations.Expose;
 
 class AccountInfo {
+
     @Expose
     public String host = "";
 

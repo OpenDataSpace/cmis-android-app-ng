@@ -11,6 +11,7 @@ import org.opendataspace.android.app.beta.BuildConfig;
 import org.opendataspace.android.cmis.CmisRenditionCache;
 import org.opendataspace.android.data.DataBase;
 import org.opendataspace.android.navigation.NavigationInterface;
+import org.opendataspace.android.storage.CacheManager;
 import org.opendataspace.android.view.ViewManager;
 
 import java.io.File;
@@ -35,6 +36,7 @@ public class OdsApp extends Application {
     private ViewManager vm;
     private CmisRenditionCache cmiscache;
     private NavigationInterface navigation;
+    private CacheManager localcache;
 
     public static OdsApp get() {
         return instance;
@@ -65,21 +67,23 @@ public class OdsApp extends Application {
         pool = new TaskPool();
         vm = new ViewManager();
         cmiscache = new CmisRenditionCache(getApplicationContext(), pool.getCmisService());
+        localcache = new CacheManager(getApplicationContext(), database.getCacheEntries());
     }
 
     @Override
     public void onTerminate() {
         pool.stop();
-        OpenHelperManager.releaseHelper();
-
         vm.dispose();
         cmiscache.dispose();
+        OpenHelperManager.releaseHelper();
 
         instance = null;
         prefs = null;
         database = null;
         pool = null;
         vm = null;
+        cmiscache = null;
+        localcache = null;
 
         super.onTerminate();
     }
@@ -118,5 +122,9 @@ public class OdsApp extends Application {
 
     public NavigationInterface getNavigation() {
         return navigation;
+    }
+
+    public CacheManager getCacheManager() {
+        return localcache;
     }
 }

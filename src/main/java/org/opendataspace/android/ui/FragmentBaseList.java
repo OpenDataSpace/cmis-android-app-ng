@@ -282,7 +282,7 @@ class FragmentBaseList extends FragmentBase {
         return list;
     }
 
-    protected boolean onListItemLongClick(int position) {
+    boolean onListItemLongClick(int position) {
         return false;
     }
 }

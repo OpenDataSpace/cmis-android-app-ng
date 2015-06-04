@@ -29,14 +29,24 @@ public class OperationNodeDelete extends OperationBaseCmis {
 
     @Override
     protected void doExecute(OperationStatus status) throws Exception {
+        boolean res = true;
+
         for (Node cur : nodes) {
             try {
                 CmisOperations.deleteNode(session, cur);
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);
+                status.setError(ex.getMessage());
+                res = false;
+            }
+
+            if (isCancel()) {
+                throw new InterruptedException();
             }
         }
 
-        status.setOk();
+        if (res) {
+            status.setOk();
+        }
     }
 }

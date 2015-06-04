@@ -12,7 +12,7 @@ public abstract class DataAdapterBase extends BaseAdapter {
     protected final Context context;
     private final int resId;
 
-    protected DataAdapterBase(final Context context, final int resId) {
+    DataAdapterBase(final Context context, final int resId) {
         inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.resId = resId;
         this.context = context;

@@ -1,7 +1,6 @@
 package org.opendataspace.android.object;
 
 import android.text.TextUtils;
-
 import com.google.gson.annotations.Expose;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Property;
@@ -50,6 +49,9 @@ class NodeInfo {
 
     @Expose
     int permissions = 0;
+
+    @Expose
+    long local = ObjectBase.INVALID_ID;
 
     public NodeInfo() {
         // nothing

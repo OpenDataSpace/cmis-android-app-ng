@@ -5,10 +5,9 @@ import com.j256.ormlite.dao.CloseableIterator;
 import org.apache.chemistry.opencmis.client.api.Repository;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.cmis.Cmis;
-import org.opendataspace.android.data.DaoBase;
-import org.opendataspace.android.data.DaoRepo;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Repo;
+import org.opendataspace.android.storage.CacheManager;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -37,13 +36,8 @@ public class OperationRepoFetch extends OperationBaseFetch<Repo, Repository> {
     }
 
     @Override
-    protected CloseableIterator<Repo> localObjects(DaoBase<Repo> dao) throws SQLException {
-        return ((DaoRepo) dao).allRepos(account);
-    }
-
-    @Override
-    protected DaoBase<Repo> dao() {
-        return OdsApp.get().getDatabase().getRepos();
+    protected CloseableIterator<Repo> localObjects() throws SQLException {
+        return OdsApp.get().getDatabase().getRepos().allRepos(account);
     }
 
     @Override
@@ -65,13 +59,30 @@ public class OperationRepoFetch extends OperationBaseFetch<Repo, Repository> {
     }
 
     @Override
-    protected Repo createObject(Repository val) {
-        return new Repo(val, account);
+    protected void create(Repository val) throws SQLException {
+        OdsApp.get().getDatabase().getRepos().create(new Repo(val, account));
     }
 
     @Override
-    protected boolean merge(Repo obj, Repository val) {
-        return obj.merge(val);
+    protected void merge(Repo obj, Repository val) throws SQLException {
+        if (obj.merge(val)) {
+            OdsApp.get().getDatabase().getRepos().update(obj);
+        }
+    }
+
+    @Override
+    protected void delete(Repo obj) throws SQLException {
+        OdsApp.get().getDatabase().getRepos().delete(obj);
+        OdsApp.get().getDatabase().getCacheEntries().deleteByRepo(obj);
+    }
+
+    @Override
+    protected void cleanup(List<Repo> ls) throws SQLException {
+        CacheManager cm = OdsApp.get().getCacheManager();
+
+        for (Repo cur : ls) {
+            cm.repoDeleted(account, cur);
+        }
     }
 
     public void withoutConfig() {

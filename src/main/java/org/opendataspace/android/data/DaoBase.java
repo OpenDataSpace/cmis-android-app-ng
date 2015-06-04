@@ -5,34 +5,25 @@ import com.j256.ormlite.dao.ObjectCache;
 import com.j256.ormlite.db.DatabaseType;
 import com.j256.ormlite.field.FieldType;
 import com.j256.ormlite.stmt.*;
-import com.j256.ormlite.stmt.mapped.MappedCreate;
-import com.j256.ormlite.stmt.mapped.MappedDelete;
-import com.j256.ormlite.stmt.mapped.MappedUpdate;
 import com.j256.ormlite.support.CompiledStatement;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.support.DatabaseConnection;
 import com.j256.ormlite.table.TableInfo;
-import org.opendataspace.android.app.OdsApp;
-import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.object.ObjectBase;
 
 import java.sql.SQLException;
 
-public abstract class DaoBase<T extends ObjectBase> {
+public class DaoBase<T extends ObjectBase> {
 
-    private final ConnectionSource source;
-    private final TableInfo<T, Long> info;
-    private final DatabaseType type;
-    private final ObjectCache cache;
+    final ConnectionSource source;
+    final TableInfo<T, Long> info;
+    final DatabaseType type;
+    final ObjectCache cache;
 
-    private MappedCreate<T, Long> creator;
-    private MappedUpdate<T, Long> updater;
-    private MappedDelete<T, Long> deleter;
     private PreparedQuery<T> selectAll;
     private PreparedQuery<T> selectId;
     private String checker;
     private String countof;
-    private EventDaoBase<T> event;
     private SelectArg selectIdArg;
 
     DaoBase(ConnectionSource source, ObjectCache cache, Class<T> dataClass) throws SQLException {
@@ -40,64 +31,6 @@ public abstract class DaoBase<T extends ObjectBase> {
         this.cache = cache;
         type = source.getDatabaseType();
         info = new TableInfo<>(source, null, dataClass);
-        event = createEvent();
-    }
-
-    public void create(T val) throws SQLException {
-        if (creator == null) {
-            creator = MappedCreate.build(type, info);
-        }
-
-        DatabaseConnection conn = source.getReadWriteConnection();
-
-        try {
-            int res = creator.insert(type, conn, val, cache);
-
-            if (res > 0 && event != null) {
-                event.addInsert(val);
-                fire(conn);
-            }
-        } finally {
-            source.releaseConnection(conn);
-        }
-    }
-
-    public void update(T val) throws SQLException {
-        if (updater == null) {
-            updater = MappedUpdate.build(type, info);
-        }
-
-        DatabaseConnection conn = source.getReadWriteConnection();
-
-        try {
-            int res = updater.update(conn, val, cache);
-
-            if (res > 0 && event != null) {
-                event.addUpdate(val);
-                fire(conn);
-            }
-        } finally {
-            source.releaseConnection(conn);
-        }
-    }
-
-    public void delete(T val) throws SQLException {
-        if (deleter == null) {
-            deleter = MappedDelete.build(type, info);
-        }
-
-        DatabaseConnection conn = source.getReadWriteConnection();
-
-        try {
-            int res = deleter.delete(conn, val, cache);
-
-            if (res > 0 && event != null) {
-                event.addDelete(val);
-                fire(conn);
-            }
-        } finally {
-            source.releaseConnection(conn);
-        }
     }
 
     public CloseableIterator<T> iterate() throws SQLException {
@@ -135,18 +68,6 @@ public abstract class DaoBase<T extends ObjectBase> {
 
     public QueryBuilder<T, Long> queryBuilder() {
         return new QueryBuilder<>(type, info, null);
-    }
-
-    public void createOrUpdate(T val) throws SQLException {
-        if (val == null) {
-            return;
-        }
-
-        if (exists(val)) {
-            update(val);
-        } else {
-            create(val);
-        }
     }
 
     private Object extractId(T val) throws SQLException {
@@ -188,13 +109,6 @@ public abstract class DaoBase<T extends ObjectBase> {
         return res != 0;
     }
 
-    void fire(DatabaseConnection conn) throws SQLException {
-        if (conn.isAutoCommit() && event != null && !event.isEmpty()) {
-            OdsApp.bus.post(event);
-            event = createEvent();
-        }
-    }
-
     public long countOf() throws SQLException {
         if (countof == null) {
             QueryBuilder count = queryBuilder();
@@ -213,8 +127,6 @@ public abstract class DaoBase<T extends ObjectBase> {
 
         return res;
     }
-
-    protected abstract EventDaoBase<T> createEvent();
 
     public T get(long id) throws SQLException {
         if (id == ObjectBase.INVALID_ID) {
@@ -240,30 +152,7 @@ public abstract class DaoBase<T extends ObjectBase> {
         return null;
     }
 
-    public DeleteBuilder<T, Long> deleteBuilder() {
+    DeleteBuilder<T, Long> deleteBuilder() {
         return new DeleteBuilder<>(type, info, null);
-    }
-
-    public int delete(PreparedDelete<T> preparedDelete, long extra) throws SQLException {
-        DatabaseConnection conn = source.getReadWriteConnection();
-        CompiledStatement stmt = null;
-
-        try {
-            stmt = preparedDelete.compile(conn, StatementBuilder.StatementType.DELETE);
-            int res = stmt.runUpdate();
-
-            if (res > 0 && event != null) {
-                event.addReset(extra);
-                fire(conn);
-            }
-
-            return res;
-        } finally {
-            if (stmt != null) {
-                stmt.close();
-            }
-
-            source.releaseConnection(conn);
-        }
     }
 }

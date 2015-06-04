@@ -2,19 +2,17 @@ package org.opendataspace.android.operation;
 
 import com.j256.ormlite.dao.CloseableIterator;
 import org.opendataspace.android.app.OdsApp;
-import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.object.ObjectBase;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class OperationBaseFetch<T extends ObjectBase, U> extends OperationBaseCmis {
+abstract class OperationBaseFetch<T extends ObjectBase, U> extends OperationBaseCmis {
 
     public static <T extends ObjectBase, U> void process(OperationBaseFetch<T, U> fetch, OperationBase owner) throws Exception {
         List<T> data = new ArrayList<>();
-        DaoBase<T> dao = fetch.dao();
-        CloseableIterator<T> it = fetch.localObjects(dao);
+        CloseableIterator<T> it = fetch.localObjects();
 
         try {
             while (it.hasNext()) {
@@ -28,6 +26,8 @@ public abstract class OperationBaseFetch<T extends ObjectBase, U> extends Operat
             throw new InterruptedException();
         }
 
+        final List<T> deleted = new ArrayList<>();
+
         OdsApp.get().getDatabase().transact(() -> {
             final List<T> copy = new ArrayList<>();
 
@@ -35,9 +35,9 @@ public abstract class OperationBaseFetch<T extends ObjectBase, U> extends Operat
                 T obj = fetch.find(cur, data);
 
                 if (obj == null) {
-                    dao.create(fetch.createObject(cur));
-                } else if (fetch.merge(obj, cur)) {
-                    dao.update(obj);
+                    fetch.create(cur);
+                } else {
+                    fetch.merge(obj, cur);
                 }
 
                 copy.add(obj);
@@ -49,7 +49,8 @@ public abstract class OperationBaseFetch<T extends ObjectBase, U> extends Operat
 
             for (T cur : data) {
                 if (copy.indexOf(cur) == -1) {
-                    dao.delete(cur);
+                    deleted.add(cur);
+                    fetch.delete(cur);
                 }
             }
 
@@ -59,17 +60,23 @@ public abstract class OperationBaseFetch<T extends ObjectBase, U> extends Operat
 
             return null;
         });
+
+        if (!deleted.isEmpty()) {
+            fetch.cleanup(deleted);
+        }
     }
 
-    protected abstract CloseableIterator<T> localObjects(DaoBase<T> dao) throws SQLException;
-
-    protected abstract DaoBase<T> dao();
+    protected abstract CloseableIterator<T> localObjects() throws SQLException;
 
     protected abstract List<U> fetch();
 
     protected abstract T find(U val, List<T> ls);
 
-    protected abstract T createObject(U val) throws SQLException;
+    protected abstract void create(U val) throws SQLException;
 
-    protected abstract boolean merge(T obj, U val) throws SQLException;
+    protected abstract void merge(T obj, U val) throws SQLException;
+
+    protected abstract void delete(T obj) throws SQLException;
+
+    protected abstract void cleanup(List<T> ls) throws SQLException;
 }

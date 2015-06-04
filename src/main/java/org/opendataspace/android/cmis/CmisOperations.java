@@ -2,7 +2,10 @@ package org.opendataspace.android.cmis;
 
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.data.DaoNode;
+import org.opendataspace.android.data.DataBase;
 import org.opendataspace.android.object.Node;
+import org.opendataspace.android.storage.CacheRemoveTransaction;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,7 +23,18 @@ public class CmisOperations {
 
     public static void deleteNode(CmisSession session, Node node) throws SQLException {
         session.delete(node);
-        OdsApp.get().getDatabase().getNodes().delete(node);
+        OdsApp app = OdsApp.get();
+        DataBase db = app.getDatabase();
+        DaoNode nodes = db.getNodes();
+        CacheRemoveTransaction t = new CacheRemoveTransaction();
+
+        db.transact(() -> {
+            nodes.delete(node);
+            app.getCacheManager().prepareRemove(nodes, session.getRepo(), node, t);
+            return null;
+        });
+
+        t.commit();
     }
 
     public static boolean download(CmisSession session, Node node, File file) throws IOException {
@@ -35,7 +49,7 @@ public class CmisOperations {
             size = node.getSize();
         }
 
-        FileOutputStream fs = new FileOutputStream(file);
+        FileOutputStream fs = new FileOutputStream(file, false);
 
         try {
             fs.getChannel().transferFrom(Channels.newChannel(stream.getStream()), 0, size);

@@ -27,7 +27,7 @@ import java.util.*;
 
 public class CmisSession {
 
-    private static final Set<Updatability> CREATE_UPDATABILITY = new HashSet<Updatability>();
+    private static final Set<Updatability> CREATE_UPDATABILITY = new HashSet<>();
 
     static {
         CREATE_UPDATABILITY.add(Updatability.ONCREATE);

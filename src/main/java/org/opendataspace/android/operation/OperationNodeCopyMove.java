@@ -67,11 +67,12 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
         }
 
         switch (node.getType()) {
-        case DOCUMENT:
-            return processDocument(node, to);
-
         case FOLDER:
             return processFolder(node, to, checkParent);
+
+        case DOCUMENT:
+            processDocument(node, to);
+            // no break
 
         default:
             return true;
@@ -114,7 +115,7 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
         return true;
     }
 
-    private boolean processDocument(Node node, Node to) throws SQLException {
+    private void processDocument(Node node, Node to) throws SQLException {
         Document doc = (Document) node.getCmisObject(session);
         DaoNode dao = OdsApp.get().getDatabase().getNodes();
 
@@ -127,8 +128,6 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
             node.setParentId(to.getId());
             dao.update(node);
         }
-
-        return true;
     }
 
     public void setContext(List<Node> nodes, boolean isCopy) {
@@ -140,7 +139,7 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
         }
     }
 
-    public boolean isEmpty() {
+    private boolean isEmpty() {
         return nodes.isEmpty();
     }
 

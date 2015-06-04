@@ -30,11 +30,6 @@ public class TestNavigation implements NavigationInterface {
     }
 
     @Override
-    public void openFolder(Class<? extends FragmentBase> cls, OperationBase op) {
-        // nothing
-    }
-
-    @Override
     public void openFile(Class<? extends FragmentBase> cls, OperationBase op) {
         // nothing
     }

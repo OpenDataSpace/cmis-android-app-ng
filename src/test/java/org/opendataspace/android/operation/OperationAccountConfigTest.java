@@ -1,7 +1,6 @@
 package org.opendataspace.android.operation;
 
 import android.graphics.drawable.Drawable;
-
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,8 +45,9 @@ public class OperationAccountConfigTest {
     }
 
     private void cleanup(OdsApp app, Account account) {
-        File f1 = Storage.getConfigFile(app.getApplicationContext(), OperationAccountConfig.BRAND_ICON, account);
-        File f2 = Storage.getConfigFile(app.getApplicationContext(), OperationAccountConfig.BRAND_LARGE, account);
+        File folder = Storage.getLocalFolder(app.getApplicationContext(), account, null, Storage.CATEGORY_CONFIG);
+        File f1 = new File(folder, OperationAccountConfig.BRAND_ICON);
+        File f2 = new File(folder, OperationAccountConfig.BRAND_LARGE);
 
         Assert.assertEquals(true, !f1.exists() || f1.delete());
         Assert.assertEquals(true, !f2.exists() || f2.delete());

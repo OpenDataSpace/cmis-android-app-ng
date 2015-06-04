@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import org.opendataspace.android.object.Account;
+import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.operation.OperationAccountConfig;
 
 import java.io.File;
@@ -18,7 +19,8 @@ import java.nio.channels.FileChannel;
 
 public class Storage {
 
-    private static final String CATEGORY_CONFIG = "config";
+    public static final String CATEGORY_CONFIG = "config";
+    public static final String CATEGORY_CACHE = "cache";
 
     public static File getAccountFolder(Context context, Account account) {
         if (account == null || context == null) {
@@ -34,14 +36,20 @@ public class Storage {
         return new File(ext, account.getFolderName());
     }
 
-    public static File getLocalFolder(Context context, Account account, String category) {
-        File ext = getAccountFolder(context, account);
+    public static File getLocalFolder(Context context, Account account, Repo repo, String category) {
+        File res = getAccountFolder(context, account);
 
-        if (ext == null) {
+        if (res == null) {
             return null;
         }
 
-        File res = new File(ext, category);
+        if (repo != null) {
+            res = new File(res, repo.getFolderName());
+        }
+
+        if (category != null) {
+            res = new File(res, category);
+        }
 
         if (!res.exists() && !res.mkdirs()) {
             return null;
@@ -51,7 +59,7 @@ public class Storage {
     }
 
     public static Drawable getBrandingDrawable(Context context, Account account, String name) {
-        File ext = getLocalFolder(context, account, CATEGORY_CONFIG);
+        File ext = getLocalFolder(context, account, null, CATEGORY_CONFIG);
 
         if (ext == null) {
             return null;
@@ -126,6 +134,10 @@ public class Storage {
     }
 
     public static boolean deleteTree(File file) {
+        if (file == null) {
+            return false;
+        }
+
         if (file.isDirectory()) {
             File[] ls = file.listFiles();
 

@@ -1,7 +1,6 @@
 package org.opendataspace.android.object;
 
 import android.content.Context;
-
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -150,5 +149,9 @@ public class Repo extends ObjectBase {
 
     public String getRootFolderUuid() {
         return info.rootUuid;
+    }
+
+    public String getFolderName() {
+        return info.name;
     }
 }

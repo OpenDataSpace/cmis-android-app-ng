@@ -8,7 +8,7 @@ import org.opendataspace.android.object.Account;
 
 import java.sql.SQLException;
 
-public class DaoAccount extends DaoBase<Account> {
+public class DaoAccount extends DaoBaseView<Account> {
 
     DaoAccount(ConnectionSource source, ObjectCache cache) throws SQLException {
         super(source, cache, Account.class);

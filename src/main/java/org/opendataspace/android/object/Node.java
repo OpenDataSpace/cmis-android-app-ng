@@ -188,6 +188,10 @@ public class Node extends ObjectBase {
                 DateFormat.getTimeFormat(context).format(info.mdt.getTime()) : "";
     }
 
+    public long getModifiedTs() {
+        return info.mdt != null ? info.mdt.getTimeInMillis() : 0;
+    }
+
     public String getModifiedBy() {
         return info.mdu;
     }
@@ -242,5 +246,13 @@ public class Node extends ObjectBase {
 
     public void setParentId(long val) {
         parentId = val;
+    }
+
+    public long getCacheEntryId() {
+        return info.local;
+    }
+
+    public void setCacheEntry(CacheEntry ce) {
+        info.local = ce.getId();
     }
 }

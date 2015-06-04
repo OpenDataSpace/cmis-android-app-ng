@@ -125,10 +125,6 @@ public class OperationFolderBrowse extends OperationBase {
         context.addAll(val);
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
     public void setRepo(Repo repo) {
         this.repo = repo;
     }

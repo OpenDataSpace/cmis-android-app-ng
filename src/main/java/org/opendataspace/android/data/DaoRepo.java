@@ -12,7 +12,7 @@ import org.opendataspace.android.object.Repo;
 
 import java.sql.SQLException;
 
-public class DaoRepo extends DaoBase<Repo> {
+public class DaoRepo extends DaoBaseView<Repo> {
 
     private PreparedQuery<Repo> byAccount;
     private SelectArg byAccountArg;

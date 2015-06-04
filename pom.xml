@@ -46,7 +46,8 @@
                 <artifactId>android-maven-plugin</artifactId>
                 <configuration>
                     <includeLibsJarsFromAar>true</includeLibsJarsFromAar>
-                    <androidManifestFile>${project.build.directory}/filtered-manifest/AndroidManifest.xml</androidManifestFile>
+                    <androidManifestFile>${project.build.directory}/filtered-manifest/AndroidManifest.xml
+                    </androidManifestFile>
                     <sdk>
                         <platform>22</platform>
                     </sdk>
@@ -128,7 +129,8 @@
                 <artifactId>crashlytics-maven</artifactId>
                 <version>1.12.0</version>
                 <configuration>
-                    <androidManifestPath>${project.build.directory}/filtered-manifest/AndroidManifest.xml</androidManifestPath>
+                    <androidManifestPath>${project.build.directory}/filtered-manifest/AndroidManifest.xml
+                    </androidManifestPath>
                 </configuration>
                 <executions>
                     <execution>
@@ -162,6 +164,8 @@
                     <files>
                         <file>build.properties</file>
                     </files>
+                    <outputFile/>
+                    <properties/>
                 </configuration>
             </plugin>
             <plugin>
@@ -185,8 +189,10 @@
                             <keypass>${ods.sign.password}</keypass>
                             <alias>beta</alias>
                             <arguments>
-                                <argument>-sigalg</argument><argument>MD5withRSA</argument>
-                                <argument>-digestalg</argument><argument>SHA1</argument>
+                                <argument>-sigalg</argument>
+                                <argument>MD5withRSA</argument>
+                                <argument>-digestalg</argument>
+                                <argument>SHA1</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -230,7 +236,8 @@
                                     <filtering>false</filtering>
                                 </resource>
                                 <resource>
-                                    <directory>${project.build.directory}/unpacked-libs/cas_appcompat-v7_22.0.0/res</directory>
+                                    <directory>${project.build.directory}/unpacked-libs/cas_appcompat-v7_22.0.0/res
+                                    </directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>
@@ -250,8 +257,11 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <sourceFile>${project.build.directory}/unpacked-libs/cas_cardview-v7_22.0.0/res/values/values.xml</sourceFile>
-                            <destinationFile>${project.build.directory}/combined-resources/values/values-1.xml</destinationFile>
+                            <sourceFile>
+                                ${project.build.directory}/unpacked-libs/cas_cardview-v7_22.0.0/res/values/values.xml
+                            </sourceFile>
+                            <destinationFile>${project.build.directory}/combined-resources/values/values-1.xml
+                            </destinationFile>
                         </configuration>
                     </execution>
                 </executions>

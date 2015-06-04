@@ -225,11 +225,6 @@ public class Navigation implements NavigationInterface {
     }
 
     @Override
-    public void openFolder(Class<? extends FragmentBase> cls, OperationBase op) {
-        navigate(cls, op, NavigationScope.MAIN, false);
-    }
-
-    @Override
     public void openDrawer() {
         drawer.openDrawer(Gravity.START);
     }

@@ -6,24 +6,18 @@ import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.support.ConnectionSource;
 import org.opendataspace.android.app.OdsLog;
-import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.object.MimeType;
 
 import java.sql.SQLException;
 import java.util.Locale;
 
-public class DaoMime extends DaoBase<MimeType> {
+public class DaoMime extends DaoBaseSimple<MimeType> {
 
     private PreparedQuery<MimeType> byExt;
     private SelectArg byExtArg;
 
     DaoMime(ConnectionSource source, ObjectCache cache) throws SQLException {
         super(source, cache, MimeType.class);
-    }
-
-    @Override
-    protected EventDaoBase<MimeType> createEvent() {
-        return null;
     }
 
     public MimeType forFileName(String name) {

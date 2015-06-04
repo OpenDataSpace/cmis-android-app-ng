@@ -65,9 +65,15 @@ public class OperationAccountConfig extends OperationBase {
                 return false;
             }
 
-            File f = Storage.getConfigFile(OdsApp.get().getApplicationContext(), name, account);
+            File f = Storage.getLocalFolder(OdsApp.get().getApplicationContext(), account, null, Storage.CATEGORY_CONFIG);
 
-            if (f != null && f.exists() && f.length() == session.size(cmis)) {
+            if (f == null) {
+                return false;
+            }
+
+            f = new File(f, name);
+
+            if (f.exists() && f.length() == session.size(cmis)) {
                 return false;
             }
 
