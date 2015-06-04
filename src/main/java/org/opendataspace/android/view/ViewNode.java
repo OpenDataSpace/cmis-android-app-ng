@@ -54,4 +54,9 @@ public class ViewNode extends ViewBase<Node> {
 
         return session;
     }
+
+    @Override
+    boolean shouldReset(long extra) {
+        return repo != null && repo.getId() == extra;
+    }
 }

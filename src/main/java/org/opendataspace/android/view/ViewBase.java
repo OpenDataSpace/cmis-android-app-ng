@@ -58,6 +58,12 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
                 }
             }
             break;
+
+            case RESET:
+                if (shouldReset(cur.getExtra())) {
+                    data.clear();
+                }
+                break;
             }
         }
     }
@@ -104,6 +110,10 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
     }
 
     boolean isValid(T val) {
+        return true;
+    }
+
+    boolean shouldReset(long extra) {
         return true;
     }
 

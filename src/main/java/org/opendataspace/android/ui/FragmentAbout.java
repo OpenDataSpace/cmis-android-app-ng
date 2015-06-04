@@ -62,8 +62,8 @@ public class FragmentAbout extends FragmentBase {
 
     private void updateBranding() {
         try {
-            Drawable d = Storage.getBrandingDrawable(getActivity(), OperationAccountConfig.BRAND_LARGE,
-                    OdsApp.get().getViewManager().getCurrentAccount());
+            Drawable d = Storage.getBrandingDrawable(getActivity(), OdsApp.get().getViewManager().getCurrentAccount(), OperationAccountConfig.BRAND_LARGE
+            );
 
             if (d != null) {
                 TextView tva = widget(R.id.text_about_info);

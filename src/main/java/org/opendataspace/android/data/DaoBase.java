@@ -176,7 +176,7 @@ public abstract class DaoBase<T extends ObjectBase> {
             checker = count.prepareStatementString();
         }
 
-        DatabaseConnection conn = source.getReadWriteConnection();
+        DatabaseConnection conn = source.getReadOnlyConnection();
         long res;
 
         try {
@@ -202,7 +202,7 @@ public abstract class DaoBase<T extends ObjectBase> {
             countof = count.prepareStatementString();
         }
 
-        DatabaseConnection conn = source.getReadWriteConnection();
+        DatabaseConnection conn = source.getReadOnlyConnection();
         long res;
 
         try {
@@ -238,5 +238,32 @@ public abstract class DaoBase<T extends ObjectBase> {
         }
 
         return null;
+    }
+
+    public DeleteBuilder<T, Long> deleteBuilder() {
+        return new DeleteBuilder<>(type, info, null);
+    }
+
+    public int delete(PreparedDelete<T> preparedDelete, long extra) throws SQLException {
+        DatabaseConnection conn = source.getReadWriteConnection();
+        CompiledStatement stmt = null;
+
+        try {
+            stmt = preparedDelete.compile(conn, StatementBuilder.StatementType.DELETE);
+            int res = stmt.runUpdate();
+
+            if (res > 0 && event != null) {
+                event.addReset(extra);
+                fire(conn);
+            }
+
+            return res;
+        } finally {
+            if (stmt != null) {
+                stmt.close();
+            }
+
+            source.releaseConnection(conn);
+        }
     }
 }

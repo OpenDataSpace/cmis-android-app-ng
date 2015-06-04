@@ -8,11 +8,12 @@ import java.util.List;
 
 public class EventDaoBase<T extends ObjectBase> {
 
-    public enum Operation {INSERT, DELETE, UPDATE}
+    public enum Operation {INSERT, DELETE, UPDATE, RESET}
 
     public static class Event<T> {
         private final T object;
         private final Operation operation;
+        private long extra;
 
         public Event(T object, Operation operation) {
             this.object = object;
@@ -25,6 +26,14 @@ public class EventDaoBase<T extends ObjectBase> {
 
         public Operation getOperation() {
             return operation;
+        }
+
+        public long getExtra() {
+            return extra;
+        }
+
+        public void setExtra(long extra) {
+            this.extra = extra;
         }
     }
 
@@ -44,6 +53,12 @@ public class EventDaoBase<T extends ObjectBase> {
 
     public void addDelete(T val) {
         data.add(new Event<>(val, Operation.DELETE));
+    }
+
+    public void addReset(long extra) {
+        Event<T> ev = new Event<>(null, Operation.RESET);
+        ev.setExtra(extra);
+        data.add(ev);
     }
 
     public boolean isEmpty() {

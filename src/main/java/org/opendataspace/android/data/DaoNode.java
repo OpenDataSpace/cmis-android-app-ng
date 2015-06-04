@@ -2,6 +2,7 @@ package org.opendataspace.android.data;
 
 import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.ObjectCache;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.support.ConnectionSource;
@@ -39,5 +40,12 @@ public class DaoNode extends DaoBase<Node> {
         byParentPidArg.setValue(parentId);
         byParentRidArg.setValue(repo.getId());
         return iterate(byParent);
+    }
+
+    public void deleteByRepo(Repo repo) throws SQLException {
+        DeleteBuilder<Node, Long> builder = deleteBuilder();
+        long id = repo.getId();
+        builder.where().eq(Node.FIELD_RID, id);
+        delete(builder.prepare(), id);
     }
 }

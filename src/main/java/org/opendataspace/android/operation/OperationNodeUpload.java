@@ -41,6 +41,10 @@ public class OperationNodeUpload extends OperationBaseCmis {
                 res = false;
                 status.setError(ex.getMessage());
             }
+
+            if (isCancel()) {
+                throw new InterruptedException();
+            }
         }
 
         if (res) {

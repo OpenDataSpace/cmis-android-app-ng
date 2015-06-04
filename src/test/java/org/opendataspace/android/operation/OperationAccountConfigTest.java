@@ -26,9 +26,9 @@ public class OperationAccountConfigTest {
         cleanup(app, account);
 
         Drawable d1 =
-                Storage.getBrandingDrawable(app.getApplicationContext(), OperationAccountConfig.BRAND_ICON, account);
+                Storage.getBrandingDrawable(app.getApplicationContext(), account, OperationAccountConfig.BRAND_ICON);
         Drawable d2 =
-                Storage.getBrandingDrawable(app.getApplicationContext(), OperationAccountConfig.BRAND_LARGE, account);
+                Storage.getBrandingDrawable(app.getApplicationContext(), account, OperationAccountConfig.BRAND_LARGE);
         Assert.assertEquals(true, d1 == null);
         Assert.assertEquals(true, d2 == null);
 
@@ -37,8 +37,8 @@ public class OperationAccountConfigTest {
         Assert.assertEquals(true, st.isOk());
         TestUtil.waitRunnable();
 
-        d1 = Storage.getBrandingDrawable(app.getApplicationContext(), OperationAccountConfig.BRAND_ICON, account);
-        d2 = Storage.getBrandingDrawable(app.getApplicationContext(), OperationAccountConfig.BRAND_LARGE, account);
+        d1 = Storage.getBrandingDrawable(app.getApplicationContext(), account, OperationAccountConfig.BRAND_ICON);
+        d2 = Storage.getBrandingDrawable(app.getApplicationContext(), account, OperationAccountConfig.BRAND_LARGE);
         Assert.assertEquals(true, d1 != null);
         Assert.assertEquals(true, d2 != null);
 

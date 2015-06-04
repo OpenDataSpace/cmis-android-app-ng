@@ -18,8 +18,10 @@ import java.nio.channels.FileChannel;
 
 public class Storage {
 
-    public static File getConfigFile(Context context, String name, Account account) {
-        if (account == null) {
+    private static final String CATEGORY_CONFIG = "config";
+
+    public static File getAccountFolder(Context context, Account account) {
+        if (account == null || context == null) {
             return null;
         }
 
@@ -29,24 +31,35 @@ public class Storage {
             return null;
         }
 
-        return new File(createFolder(ext.getParentFile(), "config" + File.separator + account.getFolderName()), name);
+        return new File(ext, account.getFolderName());
     }
 
-    private static File createFolder(File f, String extendedPath) {
-        File tmpFolder = new File(f, extendedPath);
+    public static File getLocalFolder(Context context, Account account, String category) {
+        File ext = getAccountFolder(context, account);
 
-        if (!tmpFolder.exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            tmpFolder.mkdirs();
+        if (ext == null) {
+            return null;
         }
 
-        return tmpFolder;
+        File res = new File(ext, category);
+
+        if (!res.exists() && !res.mkdirs()) {
+            return null;
+        }
+
+        return res;
     }
 
-    public static Drawable getBrandingDrawable(Context context, String name, Account account) {
-        File f = getConfigFile(context, name, account);
+    public static Drawable getBrandingDrawable(Context context, Account account, String name) {
+        File ext = getLocalFolder(context, account, CATEGORY_CONFIG);
 
-        if (f == null || !f.exists()) {
+        if (ext == null) {
+            return null;
+        }
+
+        File f = new File(ext, name);
+
+        if (!f.exists()) {
             return null;
         }
 
