@@ -22,12 +22,14 @@ public class FragmentRepoListTest {
         CmisSession session = TestUtil.setupSession(app, Repo.Type.PRIVATE);
         app.getViewManager().getRepos().setAccount(session.getAccount());
         app.getViewManager().getRepos().sync(app.getDatabase().getRepos());
-        OperationFolderBrowse op = new OperationFolderBrowse(session.getAccount(), null, OperationFolderBrowse.Mode.SEL_FILES);
+        OperationFolderBrowse op =
+                new OperationFolderBrowse(session.getAccount(), null, OperationFolderBrowse.Mode.SEL_FILES);
         Assert.assertEquals(null, op.getRepo());
         FragmentRepoList fgm = new FragmentRepoList(op);
         ActivityMain ac = TestUtil.setupFragment(fgm);
         Assert.assertEquals(app.getViewManager().getRepos().getCount(), fgm.getList().getCount());
-        Shadows.shadowOf(fgm.getList()).clickFirstItemContainingText(session.getRepo().getDisplayName(fgm.getActivity()));
+        Shadows.shadowOf(fgm.getList())
+                .clickFirstItemContainingText(session.getRepo().getDisplayName(fgm.getActivity()));
         Assert.assertEquals(session.getRepo(), op.getRepo());
         TestUtil.dismisActivity(ac);
     }

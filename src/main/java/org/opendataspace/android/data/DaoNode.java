@@ -50,7 +50,8 @@ public class DaoNode extends DaoBaseView<Node> {
 
         try {
             long id = repo.getId();
-            stmt = deleteBuilder().where().eq(Node.FIELD_RID, id).prepare().compile(conn, StatementBuilder.StatementType.DELETE);
+            stmt = deleteBuilder().where().eq(Node.FIELD_RID, id).prepare()
+                    .compile(conn, StatementBuilder.StatementType.DELETE);
             int res = stmt.runUpdate();
 
             if (res > 0 && event != null) {

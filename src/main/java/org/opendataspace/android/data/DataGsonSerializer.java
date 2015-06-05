@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class DataGsonSerializer<T> extends BaseDataType {
 
     protected DataGsonSerializer(Class<T> cls) {
-        super(SqlType.STRING, new Class[]{cls});
+        super(SqlType.STRING, new Class[] {cls});
     }
 
     @SuppressWarnings("unchecked")

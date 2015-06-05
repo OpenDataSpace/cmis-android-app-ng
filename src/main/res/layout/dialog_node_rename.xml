@@ -6,11 +6,11 @@
               android:padding="@dimen/pad">
 
     <EditText
-            android:id="@+id/edit_dialog_name"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:inputType="text|textCapWords"
-            android:hint="@string/node_renamehint">
+        android:id="@+id/edit_dialog_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inputType="text|textCapWords"
+        android:hint="@string/node_renamehint">
 
         <requestFocus/>
     </EditText>

@@ -78,8 +78,8 @@ public class ActivityBase extends AppCompatActivity {
                 return;
             }
 
-            Drawable d = Storage.getBrandingDrawable(this, OdsApp.get().getViewManager().getCurrentAccount(), OperationAccountConfig.BRAND_ICON
-            );
+            Drawable d = Storage.getBrandingDrawable(this, OdsApp.get().getViewManager().getCurrentAccount(),
+                    OperationAccountConfig.BRAND_ICON);
 
             if (d != null) {
                 bar.setIcon(d);

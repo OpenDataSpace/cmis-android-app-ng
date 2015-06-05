@@ -65,7 +65,8 @@ public class OperationAccountConfig extends OperationBase {
                 return false;
             }
 
-            File f = Storage.getLocalFolder(OdsApp.get().getApplicationContext(), account, null, Storage.CATEGORY_CONFIG);
+            File f = Storage.getLocalFolder(OdsApp.get().getApplicationContext(), account, null,
+                    Storage.CATEGORY_CONFIG);
 
             if (f == null) {
                 return false;

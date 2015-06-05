@@ -121,8 +121,9 @@ public class ViewManagerTest {
     public void outOfScope() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         CmisSession session = TestUtil.setupSession(app, Repo.Type.PRIVATE);
-        app.getViewManager().getNodes().setScope(app.getDatabase().getAccounts().get(app.getPrefs().getLastAccountId()),
-                session.getRepo(), null);
+        app.getViewManager().getNodes()
+                .setScope(app.getDatabase().getAccounts().get(app.getPrefs().getLastAccountId()), session.getRepo(),
+                        null);
 
         Node node = new Node(null, session.getRepo());
         app.getDatabase().getNodes().create(node);

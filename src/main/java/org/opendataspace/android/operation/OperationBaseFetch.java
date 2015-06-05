@@ -10,7 +10,8 @@ import java.util.List;
 
 abstract class OperationBaseFetch<T extends ObjectBase, U> extends OperationBaseCmis {
 
-    public static <T extends ObjectBase, U> void process(OperationBaseFetch<T, U> fetch, OperationBase owner) throws Exception {
+    public static <T extends ObjectBase, U> void process(OperationBaseFetch<T, U> fetch, OperationBase owner) throws
+            Exception {
         List<T> data = new ArrayList<>();
         CloseableIterator<T> it = fetch.localObjects();
 
