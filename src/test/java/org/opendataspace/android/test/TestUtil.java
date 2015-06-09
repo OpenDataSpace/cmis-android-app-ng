@@ -41,6 +41,18 @@ public class TestUtil {
             if (f.exists()) {
                 props.load(new FileReader(new File("build.properties")));
             }
+
+            if (props.getProperty("test.acc.url") == null) {
+                props.put("test.acc.url", System.getenv("TEST_URL"));
+            }
+
+            if (props.getProperty("test.acc.login") == null) {
+                props.put("test.acc.url", System.getenv("TEST_LOGIN"));
+            }
+
+            if (props.getProperty("test.acc.pwd") == null) {
+                props.put("test.acc.url", System.getenv("TEST_PWD"));
+            }
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
