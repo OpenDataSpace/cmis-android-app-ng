@@ -75,7 +75,7 @@
                         <outputApk>${project.build.directory}/${project.artifactId}.apk</outputApk>
                     </zipalign>
                     <proguard>
-                        <skip>true</skip>
+                        <skip>false</skip>
                         <config>${basedir}/proguard-project.txt</config>
                         <includeJdkLibs>false</includeJdkLibs>
                     </proguard>
@@ -309,6 +309,7 @@
             <groupId>android</groupId>
             <artifactId>android</artifactId>
             <version>5.1.1_r2</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.android.support</groupId>
