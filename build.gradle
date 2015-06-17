@@ -25,6 +25,15 @@ def applyProperty(Properties p, String id, String var) {
     return false;
 }
 
+def getVersionCode(String version) {
+    def matcher = version =~ /(\d+).(\d+).(\d+)/;
+
+    if (!matcher.matches())
+        return 1;
+
+    return String.format('%d%02d%04d', matcher.group(1).toInteger(), matcher.group(2).toInteger(), matcher.group(3).toInteger()).toInteger();
+}
+
 def getBuildProperties() {
     def Properties p = new Properties()
     def File f = file('build.properties');
@@ -35,13 +44,14 @@ def getBuildProperties() {
         fis.close();
     }
 
-    def res = applyProperty(p, 'ods.sign.password', signPassword);
-    res = applyProperty(p, 'ods.key.fabric', propFabric) || res;
-    res = applyProperty(p, 'ods.repo.user', repoUser) || res;
-    res = applyProperty(p, 'ods.repo.password', repoPassword) || res;
-    res = applyProperty(p, 'test.acc.url', testUrl) || res;
-    res = applyProperty(p, 'test.acc.login', testLogin) || res;
-    res = applyProperty(p, 'test.acc.pwd', testPwd) || res;
+    def res = applyProperty(p, 'ods.sign.password', pSignPwd);
+    res = applyProperty(p, 'ods.key.fabric', pKeyFabric) || res;
+    res = applyProperty(p, 'ods.repo.user', pRepoUser) || res;
+    res = applyProperty(p, 'ods.repo.password', pRepoPwd) || res;
+    res = applyProperty(p, 'test.acc.url', pTestUrl) || res;
+    res = applyProperty(p, 'test.acc.login', pTestUser) || res;
+    res = applyProperty(p, 'test.acc.pwd', pTestPwd) || res;
+    res = applyProperty(p, 'ods.app.version', pAppVersion) || res;
 
     if (res) {
         FileOutputStream fos = new FileOutputStream(f);
@@ -89,8 +99,8 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 22
-        versionCode 1
-        versionName '2.0.0'
+        versionCode getVersionCode(props['ods.app.version'])
+        versionName props['ods.app.version']
         resConfigs 'en', 'de', 'fr'
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         manifestPlaceholders = ['ods.key.fabric': props['ods.key.fabric']]
