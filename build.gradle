@@ -44,20 +44,21 @@ def getBuildProperties() {
         fis.close();
     }
 
-    def res = applyProperty(p, 'ods.sign.password', pSignPwd);
-    res = applyProperty(p, 'ods.key.fabric', pKeyFabric) || res;
-    res = applyProperty(p, 'ods.repo.user', pRepoUser) || res;
-    res = applyProperty(p, 'ods.repo.password', pRepoPwd) || res;
-    res = applyProperty(p, 'test.acc.url', pTestUrl) || res;
+    def res = applyProperty(p, 'test.acc.url', pTestUrl);
     res = applyProperty(p, 'test.acc.login', pTestUser) || res;
     res = applyProperty(p, 'test.acc.pwd', pTestPwd) || res;
-    res = applyProperty(p, 'ods.app.version', pAppVersion) || res;
 
     if (res) {
         FileOutputStream fos = new FileOutputStream(f);
         p.store(fos, null);
         fos.close();
     }
+
+    applyProperty(p, 'ods.sign.password', pSignPwd);
+    applyProperty(p, 'ods.key.fabric', pKeyFabric);
+    applyProperty(p, 'ods.repo.user', pRepoUser);
+    applyProperty(p, 'ods.repo.password', pRepoPwd);
+    applyProperty(p, 'ods.app.version', pAppVersion);
 
     return p;
 }
@@ -66,6 +67,7 @@ def Properties props = getBuildProperties();
 
 retrolambda {
     javaVersion JavaVersion.VERSION_1_7
+    jvmArgs '-noverify'
 }
 
 android {
