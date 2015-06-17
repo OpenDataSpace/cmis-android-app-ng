@@ -16,8 +16,43 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'io.fabric'
 
-def Properties props = new Properties()
-props.load(new FileInputStream(file('build.properties')))
+def applyProperty(Properties p, String id, String var) {
+    if (var != null && var != '' && p[id] != var) {
+        p[id] = var;
+        return true;
+    }
+
+    return false;
+}
+
+def getBuildProperties() {
+    def Properties p = new Properties()
+    def File f = file('build.properties');
+
+    if (f.exists()) {
+        FileInputStream fis = new FileInputStream(f);
+        p.load(fis);
+        fis.close();
+    }
+
+    def res = applyProperty(p, 'ods.sign.password', signPassword);
+    res = applyProperty(p, 'ods.key.fabric', propFabric) || res;
+    res = applyProperty(p, 'ods.repo.user', repoUser) || res;
+    res = applyProperty(p, 'ods.repo.password', repoPassword) || res;
+    res = applyProperty(p, 'test.acc.url', testUrl) || res;
+    res = applyProperty(p, 'test.acc.login', testLogin) || res;
+    res = applyProperty(p, 'test.acc.pwd', testPwd) || res;
+
+    if (res) {
+        FileOutputStream fos = new FileOutputStream(f);
+        p.store(fos, null);
+        fos.close();
+    }
+
+    return p;
+}
+
+def Properties props = getBuildProperties();
 
 retrolambda {
     javaVersion JavaVersion.VERSION_1_7
@@ -87,8 +122,8 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:22.1.1'
-    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:cardview-v7:22.0.0'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.j256.ormlite:ormlite-android:4.48'

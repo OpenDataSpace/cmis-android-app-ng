@@ -21,15 +21,6 @@ public class TestRunner extends RobolectricTestRunner {
     @Override
     protected AndroidManifest getAppManifest(Config config) {
         String type = getType();
-
-        if (type == null) {
-            FileFsFile res = FileFsFile.from("target/combined-resources");
-            FileFsFile assets = FileFsFile.from("target/generated-sources/combined-assets");
-            FileFsFile manifest = FileFsFile.from("target/AndroidManifest.xml");
-
-            return new AndroidManifest(manifest, res, assets);
-        }
-
         String flavor = getFlavor();
         String applicationId = getApplicationId();
         FileFsFile res = FileFsFile.from("build/intermediates", "res", flavor, type);

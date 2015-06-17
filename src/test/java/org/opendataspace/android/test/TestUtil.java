@@ -2,6 +2,7 @@ package org.opendataspace.android.test;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+
 import com.j256.ormlite.dao.CloseableIterator;
 import junit.framework.Assert;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
@@ -40,18 +41,6 @@ public class TestUtil {
         try {
             if (f.exists()) {
                 props.load(new FileReader(new File("build.properties")));
-            }
-
-            if (props.getProperty("test.acc.url") == null) {
-                props.put("test.acc.url", System.getenv("TEST_URL"));
-            }
-
-            if (props.getProperty("test.acc.login") == null) {
-                props.put("test.acc.url", System.getenv("TEST_LOGIN"));
-            }
-
-            if (props.getProperty("test.acc.pwd") == null) {
-                props.put("test.acc.url", System.getenv("TEST_PWD"));
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);
@@ -175,8 +164,10 @@ public class TestUtil {
         }
     }
 
-    public static boolean hasChild(OdsApp app, Repo repo, Node parent, String name, Node.Type type) throws java.sql.SQLException {
-        for (Node cur : TestUtil.allOf(app.getDatabase().getNodes().forParent(repo, parent != null ? parent.getId() : ObjectBase.INVALID_ID))) {
+    public static boolean hasChild(OdsApp app, Repo repo, Node parent, String name, Node.Type type) throws
+            java.sql.SQLException {
+        for (Node cur : TestUtil.allOf(app.getDatabase().getNodes()
+                .forParent(repo, parent != null ? parent.getId() : ObjectBase.INVALID_ID))) {
             if (cur.getType() == type && name.equals(cur.getName())) {
                 return true;
             }
