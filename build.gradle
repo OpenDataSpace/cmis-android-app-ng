@@ -101,7 +101,7 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 22
-        versionCode getVersionCode(props['ods.app.version'])
+        versionCode getVersionCode(props['ods.app.version'].toString())
         versionName props['ods.app.version']
         resConfigs 'en', 'de', 'fr'
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
@@ -117,7 +117,17 @@ android {
         exclude 'com/j256/ormlite/core/LICENSE.txt'
         exclude 'com/j256/ormlite/core/README.txt'
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            File apk = output.outputFile;
+            String newName = apk.name.replace('.apk', '-' + defaultConfig.versionName.toString() + '.apk');
+            output.outputFile = new File(apk.parentFile, newName);
+        }
+    }
 }
+
+project.archivesBaseName = 'ods-android'
 
 repositories {
     mavenCentral()
