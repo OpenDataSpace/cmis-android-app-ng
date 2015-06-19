@@ -1,16 +1,23 @@
 # ods
 
 -keepclassmembers class * implements com.j256.ormlite.field.DataPersister {
-    public static ** getSerializer();
+    public static ** getSingleton();
 }
 
 -keepclassmembers class * extends org.opendataspace.android.ui.FragmentBase {
     public <init>(org.opendataspace.android.ui.operations.Operation*);
+    public <init>(...);
 }
 
 -keepclassmembers class ** {
     public void onEvent*(**);
 }
+
+-keepclassmembers class org.opendataspace.android.data.DataBase {
+    public <init>(android.content.Context);
+}
+
+-keep class org.apache.chemistry.** { *; }
 
 -dontwarn java.lang.invoke.*
 -dontwarn java.nio.file.*

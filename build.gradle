@@ -85,7 +85,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             shrinkResources true
             proguardFile 'proguard-project.txt'
             //noinspection GroovyAssignabilityCheck

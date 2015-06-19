@@ -1,6 +1,7 @@
 package org.opendataspace.android.app;
 
 import android.app.Application;
+
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -47,11 +48,13 @@ public class OdsApp extends Application {
         super.onCreate();
 
         instance = this;
+        prefs = new OdsPreferences(this);
 
         try {
             if (isRealApp()) {
                 CompatPRNG.apply();
 
+                //noinspection PointlessBooleanExpression
                 if (!BuildConfig.DEBUG) {
                     Fabric.with(this, new Crashlytics());
                     Crashlytics.setUserIdentifier(prefs.getInstallId());
@@ -62,7 +65,6 @@ public class OdsApp extends Application {
             OdsLog.ex(getClass(), ex);
         }
 
-        prefs = new OdsPreferences(this);
         database = OpenHelperManager.getHelper(this, DataBase.class);
         pool = new TaskPool();
         vm = new ViewManager();
