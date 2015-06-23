@@ -22,7 +22,7 @@ public class AccountTest {
         Assert.assertEquals("/cmis/atom", acc.getUri().getPath());
         acc.setUseJson(true);
         Assert.assertEquals("/cmis/browser", acc.getUri().getPath());
-        Assert.assertEquals("https://" + domain, acc.getDisplayUri());
+        Assert.assertEquals(domain, acc.getDisplayUri());
 
         String path = "/test/path";
         acc.setUri("http://" + domain + path);
@@ -32,6 +32,6 @@ public class AccountTest {
         Assert.assertEquals(path, acc.getUri().getPath());
         acc.setUseJson(true);
         Assert.assertEquals(path, acc.getUri().getPath());
-        Assert.assertEquals(domain + path, acc.getDisplayUri());
+        Assert.assertEquals("http://" + domain + path, acc.getDisplayUri());
     }
 }

@@ -12,6 +12,7 @@ import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.OdsPreferences;
 import org.opendataspace.android.app.beta.BuildConfig;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
@@ -88,5 +89,10 @@ public class CmisAuthProvider extends AbstractAuthenticationProvider {
         fixedHeaders.put("Authorization", Collections
                 .singletonList("Basic " + Base64.encodeToString((session.get(SessionParameter.USER).toString() + ":" +
                         session.get(SessionParameter.PASSWORD).toString()).getBytes(), Base64.NO_WRAP)));
+    }
+
+    @Override
+    public HostnameVerifier getHostnameVerifier() {
+        return (s, sslSession) -> true;
     }
 }

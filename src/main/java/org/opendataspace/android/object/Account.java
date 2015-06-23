@@ -74,8 +74,8 @@ public class Account extends ObjectBase {
 
         StringBuilder b = new StringBuilder();
 
-        if (info.useHttps) {
-            b.append("https://");
+        if (!info.useHttps) {
+            b.append("http://");
         }
 
         b.append(info.host);
@@ -103,7 +103,7 @@ public class Account extends ObjectBase {
             path = "";
         }
 
-        info.useHttps = "https".equals(url.getProtocol());
+        info.useHttps = "https".equals(url.getProtocol()) || !val.startsWith("http:");
         info.host = url.getHost();
         info.path = path;
         info.port = url.getPort();

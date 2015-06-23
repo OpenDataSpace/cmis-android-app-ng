@@ -21,6 +21,7 @@ public class Cmis {
         settings.put(SessionParameter.USER, account.getLogin());
         settings.put(SessionParameter.PASSWORD, account.getPassword());
         settings.put(SessionParameter.AUTHENTICATION_PROVIDER_CLASS, CmisAuthProvider.class.getCanonicalName());
+        settings.put(SessionParameter.HTTP_INVOKER_CLASS, CmisHttpInvoker.class.getCanonicalName());
 
         if (account.isUseJson()) {
             settings.put(SessionParameter.BINDING_TYPE, BindingType.BROWSER.value());
