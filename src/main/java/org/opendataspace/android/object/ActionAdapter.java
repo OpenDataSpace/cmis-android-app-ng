@@ -12,16 +12,16 @@ import java.util.List;
 
 public class ActionAdapter extends ArrayAdapter<Action> {
 
-    public ActionAdapter(Context context, List<Action> objects) {
-        super(context, R.layout.delegate_list_item1, R.id.text_listitem_primary, objects);
+    public ActionAdapter(Context context, List<Action> objects, int layout) {
+        super(context, layout, R.id.text_listitem_primary, objects);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View vw = super.getView(position, convertView, parent);
-        TextView tv = (TextView) vw.findViewById(R.id.text_listitem_primary);
+        TextView tv1 = (TextView) vw.findViewById(R.id.text_listitem_primary);
         Action ac = getItem(position);
-        tv.setCompoundDrawablesWithIntrinsicBounds(ac.getIconId(), 0, 0, 0);
+        tv1.setCompoundDrawablesWithIntrinsicBounds(ac.getIconId(), 0, 0, 0);
         return vw;
     }
 }

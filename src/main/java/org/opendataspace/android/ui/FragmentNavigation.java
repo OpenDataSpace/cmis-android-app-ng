@@ -12,13 +12,24 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
+
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.data.DataAdapterMerge;
 import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventAccountSelect;
-import org.opendataspace.android.object.*;
-import org.opendataspace.android.operation.*;
+import org.opendataspace.android.object.Account;
+import org.opendataspace.android.object.AccountAdapter;
+import org.opendataspace.android.object.Action;
+import org.opendataspace.android.object.ActionAdapter;
+import org.opendataspace.android.object.Repo;
+import org.opendataspace.android.object.RepoAdapter;
+import org.opendataspace.android.operation.OperationAccountSelect;
+import org.opendataspace.android.operation.OperationAccountUpdate;
+import org.opendataspace.android.operation.OperationFolderBrowse;
+import org.opendataspace.android.operation.OperationLoader;
+import org.opendataspace.android.operation.OperationLocalBrowse;
+import org.opendataspace.android.operation.OperationStatus;
 import org.opendataspace.android.view.ViewManager;
 
 public class FragmentNavigation extends FragmentBase implements LoaderManager.LoaderCallbacks<OperationStatus> {
@@ -44,13 +55,15 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
 
         DataAdapterMerge adpa = new DataAdapterMerge();
         adpa.addAdapter(accounts = new AccountAdapter(vm.getAccounts(), ac));
-        adpa.addAdapter(new ActionAdapter(ac, Action.listOf(ac, R.id.action_nav_addaccount, R.id.action_nav_manage)));
+        adpa.addAdapter(new ActionAdapter(ac, Action.listOf(ac, R.id.action_nav_addaccount, R.id.action_nav_manage),
+                R.layout.delegate_list_item2));
         lva.setAdapter(adpa);
         lva.setOnItemClickListener((adapterView, view1, i, l) -> selectItem(adapterView, i));
 
         DataAdapterMerge adpf = new DataAdapterMerge();
         adpf.addAdapter(repos = new RepoAdapter(vm.getRepos(), ac));
-        adpf.addAdapter(new ActionAdapter(ac, Action.listOf(ac, R.id.action_nav_localfolder)));
+        adpf.addAdapter(
+                new ActionAdapter(ac, Action.listOf(ac, R.id.action_nav_localfolder), R.layout.delegate_list_item1));
         lvf.setAdapter(adpf);
         lvf.setOnItemClickListener((adapterView, view1, i, l) -> selectFolder(adapterView, i));
 
@@ -161,8 +174,7 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
             break;
 
         case R.id.action_nav_addaccount:
-            getNavigation()
-                    .openFile(FragmentAccountDetails.class, new OperationAccountUpdate(new Account()));
+            getNavigation().openFile(FragmentAccountDetails.class, new OperationAccountUpdate(new Account()));
             break;
 
         case R.id.action_nav_localfolder:

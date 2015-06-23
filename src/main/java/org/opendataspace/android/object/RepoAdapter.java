@@ -3,6 +3,7 @@ package org.opendataspace.android.object;
 import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
+
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.event.EventDaoRepo;
 import org.opendataspace.android.view.ViewAdapter;
