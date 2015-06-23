@@ -2,6 +2,7 @@ package org.opendataspace.android.ui;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.Navigation;
@@ -16,8 +17,7 @@ public class ActivityMain extends ActivityBase {
         super.onCreate(savedInstanceState);
 
         OdsApp app = OdsApp.get();
-        setContentView(
-                app.getPrefs().isTablet() ? R.layout.activity_main_tablet : R.layout.activity_main_phone);
+        setContentView(app.getPrefs().isTablet() ? R.layout.activity_main_tablet : R.layout.activity_main_phone);
 
         nav = createNavigation(savedInstanceState);
         app.setNavigation(nav);
@@ -60,7 +60,6 @@ public class ActivityMain extends ActivityBase {
     @Override
     public void onDestroy() {
         nav = null;
-        OdsApp.get().setNavigation(null);
         super.onDestroy();
     }
 }

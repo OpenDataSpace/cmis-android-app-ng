@@ -1,6 +1,5 @@
 package org.opendataspace.android.navigation;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -11,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
+
 import org.opendataspace.android.app.CompatKeyboard;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
@@ -18,8 +18,13 @@ import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.operation.OperationAccountUpdate;
 import org.opendataspace.android.operation.OperationBase;
-import org.opendataspace.android.ui.*;
+import org.opendataspace.android.ui.ActivityDialog;
+import org.opendataspace.android.ui.ActivityMain;
+import org.opendataspace.android.ui.FragmentAccountDetails;
+import org.opendataspace.android.ui.FragmentBase;
+import org.opendataspace.android.ui.FragmentNavigation;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.ListIterator;
 import java.util.Stack;
@@ -31,20 +36,15 @@ public class Navigation implements NavigationInterface {
     private static final String TAG_DETAILS = "details";
     private static final String ARG_BACKSTACK = "ods.backstack";
 
-    private final FragmentManager fm;
-    private final ActionBar bar;
-    private final DrawerLayout drawer;
-    private final Activity context;
+    private final WeakReference<ActivityMain> context;
     private final Stack<NavigationState> backstack = new Stack<>();
     private final boolean isTablet;
     private final ActionBarDrawerToggle toggle;
     private ActivityDialog dialog;
 
     public Navigation(ActivityMain activity, Bundle state) {
-        fm = activity.getSupportFragmentManager();
-        bar = activity.getSupportActionBar();
-        drawer = (DrawerLayout) activity.findViewById(R.id.main_view_root);
-        context = activity;
+        DrawerLayout drawer = (DrawerLayout) activity.findViewById(R.id.main_view_root);
+        context = new WeakReference<>(activity);
         isTablet = OdsApp.get().getPrefs().isTablet();
         toggle = new ActionBarDrawerToggle(activity, drawer, R.string.common_opendrawer, R.string.common_closedrawer);
 
@@ -68,6 +68,13 @@ public class Navigation implements NavigationInterface {
 
     private void applyFragment(int frameId, Fragment f, String tag) {
         try {
+            ActivityMain ac = context.get();
+
+            if (ac == null) {
+                return;
+            }
+
+            FragmentManager fm = ac.getSupportFragmentManager();
             final FragmentTransaction ft = fm.beginTransaction();
 
             if (f != null) {
@@ -87,10 +94,16 @@ public class Navigation implements NavigationInterface {
     }
 
     private void navigate(NavigationState ns) {
+        ActivityMain ac = context.get();
+
+        if (ac == null) {
+            return;
+        }
+
         if (isTablet && ns.getNavigationScope() == NavigationScope.DIALOG && dialog == null) {
-            Intent intent = new Intent(context, ActivityDialog.class);
+            Intent intent = new Intent(ac, ActivityDialog.class);
             intent.putExtra(ActivityDialog.ARG_NAV_STATE, OdsApp.gson.toJson(ns, NavigationState.class));
-            context.startActivity(intent);
+            ac.startActivity(intent);
             return;
         }
 
@@ -120,15 +133,29 @@ public class Navigation implements NavigationInterface {
             applyFragment(R.id.main_view_frame, fgm, TAG_MAIN);
         }
 
+        ActionBar bar = ac.getSupportActionBar();
         updateMenu();
-        bar.setTitle(fgm.getTile(context));
-        bar.setDisplayHomeAsUpEnabled(needDrawer);
+
+        if (bar != null) {
+            bar.setTitle(fgm.getTile(ac));
+            bar.setDisplayHomeAsUpEnabled(needDrawer);
+        }
+
         toggle.syncState();
+
+        DrawerLayout drawer = (DrawerLayout) ac.findViewById(R.id.main_view_root);
         drawer.setDrawerLockMode(needDrawer ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
                 Gravity.START);
     }
 
     private void closeDrawer() {
+        ActivityMain ac = context.get();
+
+        if (ac == null) {
+            return;
+        }
+
+        DrawerLayout drawer = (DrawerLayout) ac.findViewById(R.id.main_view_root);
         drawer.closeDrawer(Gravity.START);
     }
 
@@ -168,6 +195,12 @@ public class Navigation implements NavigationInterface {
 
     @Override
     public boolean backPressed() {
+        ActivityMain ac = context.get();
+
+        if (ac == null) {
+            return false;
+        }
+
         if (dialog != null) {
             dialog.onBackPressed();
             return true;
@@ -183,7 +216,7 @@ public class Navigation implements NavigationInterface {
             return true;
         }
 
-        CompatKeyboard.hide(context);
+        CompatKeyboard.hide(ac);
         NavigationState state = backstack.pop();
 
         if (isTablet && state.getNavigationScope() == NavigationScope.DETAILS) {
@@ -201,17 +234,29 @@ public class Navigation implements NavigationInterface {
 
     @Override
     public FragmentBase getTopFragment() {
-        return (FragmentBase) fm.findFragmentByTag(
+        ActivityMain ac = context.get();
+
+        if (ac == null) {
+            return null;
+        }
+
+        return (FragmentBase) ac.getSupportFragmentManager().findFragmentByTag(
                 (isTablet && backstack.lastElement().getNavigationScope() == NavigationScope.DETAILS) ? TAG_DETAILS :
                         TAG_MAIN);
     }
 
     private void goHome() {
+        ActivityMain ac = context.get();
+
+        if (ac == null) {
+            return;
+        }
+
         if (backstack.size() < 2) {
             return;
         }
 
-        CompatKeyboard.hide(context);
+        CompatKeyboard.hide(ac);
         backstack.setSize(1);
 
         if (isTablet) {
@@ -226,21 +271,41 @@ public class Navigation implements NavigationInterface {
 
     @Override
     public void openDrawer() {
+        ActivityMain ac = context.get();
+
+        if (ac == null) {
+            return;
+        }
+
+        DrawerLayout drawer = (DrawerLayout) ac.findViewById(R.id.main_view_root);
         drawer.openDrawer(Gravity.START);
     }
 
     @Override
     public void updateTitle() {
+        ActivityMain ac = context.get();
+
+        if (ac == null) {
+            return;
+        }
+
+        ActionBar bar = ac.getSupportActionBar();
         FragmentBase fgm = getTopFragment();
 
-        if (fgm != null) {
-            bar.setTitle(fgm.getTile(context));
+        if (bar != null && fgm != null) {
+            bar.setTitle(fgm.getTile(ac));
         }
     }
 
     @Override
     public void updateMenu() {
-        ActivityCompat.invalidateOptionsMenu(context);
+        ActivityMain ac = context.get();
+
+        if (ac == null) {
+            return;
+        }
+
+        ActivityCompat.invalidateOptionsMenu(ac);
     }
 
     @Override
@@ -250,8 +315,14 @@ public class Navigation implements NavigationInterface {
 
     private void navigate(Class<? extends FragmentBase> cls, OperationBase op, NavigationScope scope,
                           boolean needHome) {
+        ActivityMain ac = context.get();
+
+        if (ac == null) {
+            return;
+        }
+
         closeDrawer();
-        CompatKeyboard.hide(context);
+        CompatKeyboard.hide(ac);
         FragmentBase top = getTopFragment();
 
         if (top != null && top.getClass().equals(cls) && backstack.lastElement().getNavigationScope() == scope) {
