@@ -27,4 +27,20 @@ public class OperationStatus {
     public String getMessage(Context context) {
         return TextUtils.isEmpty(message) ? context.getString(R.string.common_error) : message;
     }
+
+    public void setError(Exception ex) {
+        Throwable cause = ex;
+
+        while (cause != null) {
+            Throwable parent = cause.getCause();
+
+            if (parent == null) {
+                break;
+            }
+
+            cause = parent;
+        }
+
+        setError(cause != null ? cause.getMessage() : null);
+    }
 }

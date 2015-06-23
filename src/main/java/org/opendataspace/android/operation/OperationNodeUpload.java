@@ -39,7 +39,7 @@ public class OperationNodeUpload extends OperationBaseCmis {
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);
                 res = false;
-                status.setError(ex.getMessage());
+                status.setError(ex);
             }
 
             if (isCancel()) {

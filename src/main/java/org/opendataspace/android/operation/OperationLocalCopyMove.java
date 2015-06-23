@@ -36,7 +36,7 @@ public class OperationLocalCopyMove extends OperationBase {
                 }
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);
-                status.setError(ex.getMessage());
+                status.setError(ex);
                 res = false;
             }
 
