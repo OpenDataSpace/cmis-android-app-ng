@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.event.Event;
@@ -25,7 +26,17 @@ import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.NodeAdapter;
 import org.opendataspace.android.object.ObjectBase;
-import org.opendataspace.android.operation.*;
+import org.opendataspace.android.operation.OperationBase;
+import org.opendataspace.android.operation.OperationFolderBrowse;
+import org.opendataspace.android.operation.OperationFolderCreate;
+import org.opendataspace.android.operation.OperationLoader;
+import org.opendataspace.android.operation.OperationLocalBrowse;
+import org.opendataspace.android.operation.OperationNodeCopyMove;
+import org.opendataspace.android.operation.OperationNodeDelete;
+import org.opendataspace.android.operation.OperationNodeDownload;
+import org.opendataspace.android.operation.OperationNodeInfo;
+import org.opendataspace.android.operation.OperationNodeUpload;
+import org.opendataspace.android.operation.OperationStatus;
 import org.opendataspace.android.storage.FileInfo;
 
 import java.util.Collections;
@@ -55,7 +66,7 @@ public class FragmentFolderCmis extends FragmentBaseList
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        adapter = new NodeAdapter(OdsApp.get().getViewManager().getNodes(), getActivity(),
+        adapter = new NodeAdapter(op.getView(), getActivity(),
                 op.getMode() == OperationFolderBrowse.Mode.DEFAULT ? this::showPopup : null);
 
         setListAdapter(adapter);
@@ -67,6 +78,7 @@ public class FragmentFolderCmis extends FragmentBaseList
     @Override
     public void onDestroyView() {
         OdsApp.bus.unregister(this);
+        op.getView().dispose();
         adapter.dispose();
         super.onDestroyView();
     }
@@ -292,7 +304,8 @@ public class FragmentFolderCmis extends FragmentBaseList
         boolean isDefault = op.getMode() == OperationFolderBrowse.Mode.DEFAULT;
 
         setMenuVisibility(menu, R.id.menu_folder_create, isDefault && node != null && node.canCreateFolder());
-        setMenuVisibility(menu, R.id.menu_folder_paste, isDefault && node != null && copymove != null && copymove.canPaste(node));
+        setMenuVisibility(menu, R.id.menu_folder_paste,
+                isDefault && node != null && copymove != null && copymove.canPaste(node));
         setMenuVisibility(menu, R.id.menu_folder_apply, !isDefault);
         setMenuVisibility(menu, R.id.menu_folder_delete, isDefault);
         setMenuVisibility(menu, R.id.menu_folder_upload, isDefault && node != null && node.canCreateDocument());
@@ -420,7 +433,8 @@ public class FragmentFolderCmis extends FragmentBaseList
             List<FileInfo> context = op.getContext();
 
             if (!ls.isEmpty() && context != null && !context.isEmpty()) {
-                OdsApp.get().getPool().execute(new OperationNodeDownload(op.getSession(), op.getContext().get(0).getFile(), ls));
+                OdsApp.get().getPool()
+                        .execute(new OperationNodeDownload(op.getSession(), op.getContext().get(0).getFile(), ls));
             }
         }
         break;
@@ -436,14 +450,16 @@ public class FragmentFolderCmis extends FragmentBaseList
             return;
         }
 
-        OperationLocalBrowse browse = new OperationLocalBrowse(op.getSession().getAccount(), OperationLocalBrowse.Mode.SEL_FOLDER);
+        OperationLocalBrowse browse =
+                new OperationLocalBrowse(op.getSession().getAccount(), OperationLocalBrowse.Mode.SEL_FOLDER);
         browse.setContext(ls);
         browse.setSession(op.getSession());
         getNavigation().openDialog(FragmentFolderLocal.class, browse);
     }
 
     private void actionUpload() {
-        OperationLocalBrowse browse = new OperationLocalBrowse(op.getSession().getAccount(), OperationLocalBrowse.Mode.SEL_FILES);
+        OperationLocalBrowse browse =
+                new OperationLocalBrowse(op.getSession().getAccount(), OperationLocalBrowse.Mode.SEL_FILES);
         browse.setContext(Collections.singletonList(op.getFolder()));
         browse.setSession(op.getSession());
         getNavigation().openDialog(FragmentFolderLocal.class, browse);

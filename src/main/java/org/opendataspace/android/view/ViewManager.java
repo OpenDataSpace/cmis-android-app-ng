@@ -8,13 +8,11 @@ public class ViewManager implements CompatDisposable {
 
     private final ViewAccount accounts;
     private final ViewRepo repos;
-    private final ViewNode nodes;
     private Account current;
 
     public ViewManager() {
         accounts = new ViewAccount();
         repos = new ViewRepo();
-        nodes = new ViewNode();
     }
 
     public ViewAccount getAccounts() {
@@ -25,15 +23,14 @@ public class ViewManager implements CompatDisposable {
         return repos;
     }
 
-    public ViewNode getNodes() {
-        return nodes;
+    public ViewNode createNodeView() {
+        return new ViewNode();
     }
 
     @Override
     public void dispose() {
         accounts.dispose();
         repos.dispose();
-        nodes.dispose();
     }
 
     public Account getCurrentAccount() {

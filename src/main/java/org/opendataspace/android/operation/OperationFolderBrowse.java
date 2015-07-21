@@ -42,17 +42,18 @@ public class OperationFolderBrowse extends OperationBase {
 
     private transient Task lastTask;
     private transient CmisSession session;
+    private transient final ViewNode view;
 
     public OperationFolderBrowse(Account account, Repo repo, Mode mode) {
         this.repo = repo;
         this.account = account;
         this.mode = mode;
+        view = OdsApp.get().getViewManager().createNodeView();
     }
 
     @Override
     protected void doExecute(OperationStatus status) throws Exception {
         OdsApp app = OdsApp.get();
-        ViewNode nodes = app.getViewManager().getNodes();
         DaoNode dao = app.getDatabase().getNodes();
 
         if (folder != null && cdup) {
@@ -64,20 +65,20 @@ public class OperationFolderBrowse extends OperationBase {
             throw new InterruptedException();
         }
 
-        session = nodes.setScope(account, repo, folder);
+        session = view.setScope(account, repo, folder);
 
         if (folder == null) {
             folder = new Node(session.getRoot(), repo);
         }
 
         DaoMime mime = app.getDatabase().getMime();
-        nodes.sync(dao);
+        view.sync(dao);
 
         if (isCancel()) {
             throw new InterruptedException();
         }
 
-        for (Node cur : nodes.getObjects()) {
+        for (Node cur : view.getObjects()) {
             if (cur.getType() == Node.Type.DOCUMENT) {
                 cur.setMimeType(mime.forFileName(cur.getName()));
             }
@@ -131,5 +132,9 @@ public class OperationFolderBrowse extends OperationBase {
 
     public Repo getRepo() {
         return repo;
+    }
+
+    public ViewNode getView() {
+        return view;
     }
 }
