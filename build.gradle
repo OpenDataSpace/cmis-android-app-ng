@@ -144,8 +144,8 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:22.2.0'
-    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:support-v4:22.2.1'
+    compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:cardview-v7:22.0.0'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.j256.ormlite:ormlite-android:4.48'
@@ -159,9 +159,6 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.apache.maven:maven-ant-tasks:2.1.3'
-
-    testCompile('org.robolectric:robolectric:3.0-rc3') {
-        exclude group: 'commons-logging', module: 'commons-logging'
-        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-    }
+    testCompile 'org.robolectric:robolectric:3.0'
+    testCompile 'org.robolectric:shadows-support-v4:3.0'
 }
