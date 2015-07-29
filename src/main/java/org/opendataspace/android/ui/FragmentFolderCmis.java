@@ -476,4 +476,8 @@ public class FragmentFolderCmis extends FragmentBaseList
             return Collections.emptyList();
         }
     }
+
+    public OperationNodeCopyMove getCopyMove() {
+        return copymove;
+    }
 }

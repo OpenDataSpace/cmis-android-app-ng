@@ -47,6 +47,7 @@ public class OperationNodeUpload extends OperationBaseCmis {
             }
         }
 
+
         if (res) {
             status.setOk();
         }

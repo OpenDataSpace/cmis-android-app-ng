@@ -156,7 +156,7 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
         boolean hasFolder = false;
 
         for (Node cur : nodes) {
-            if (cur.equals(node) || node.getParentId() == cur.getId()) {
+            if (cur.equals(node) || node.getParentId() == cur.getId() || cur.getParentId() == node.getId()) {
                 return false;
             }
 
@@ -176,5 +176,13 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
         }
 
         return !(hasFolder && !node.canCreateFolder()) && !(hasDocument && !node.canCreateDocument());
+    }
+
+    public List<Node> getNodes() {
+        return nodes;
+    }
+
+    public boolean willCopy() {
+        return isCopy;
     }
 }
