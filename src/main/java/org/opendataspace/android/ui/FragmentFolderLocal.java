@@ -15,12 +15,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.Task;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.object.Node;
-import org.opendataspace.android.operation.*;
+import org.opendataspace.android.operation.OperationFolderBrowse;
+import org.opendataspace.android.operation.OperationLoader;
+import org.opendataspace.android.operation.OperationLocalBrowse;
+import org.opendataspace.android.operation.OperationLocalCopyMove;
+import org.opendataspace.android.operation.OperationLocalInfo;
+import org.opendataspace.android.operation.OperationNodeDownload;
+import org.opendataspace.android.operation.OperationNodeUpload;
+import org.opendataspace.android.operation.OperationStatus;
 import org.opendataspace.android.storage.FileAdapter;
 import org.opendataspace.android.storage.FileInfo;
 
@@ -449,7 +457,8 @@ public class FragmentFolderLocal extends FragmentBaseList
             return;
         }
 
-        OperationFolderBrowse browse = new OperationFolderBrowse(op.getAccount(), null, OperationFolderBrowse.Mode.SEL_FOLDER);
+        OperationFolderBrowse browse =
+                new OperationFolderBrowse(op.getAccount(), null, OperationFolderBrowse.Mode.SEL_FOLDER);
         browse.setContext(ls);
         getNavigation().openDialog(FragmentRepoList.class, browse);
     }
@@ -461,8 +470,13 @@ public class FragmentFolderLocal extends FragmentBaseList
             return;
         }
 
-        OperationFolderBrowse browse = new OperationFolderBrowse(op.getAccount(), null, OperationFolderBrowse.Mode.SEL_FILES);
+        OperationFolderBrowse browse =
+                new OperationFolderBrowse(op.getAccount(), null, OperationFolderBrowse.Mode.SEL_FILES);
         browse.setContext(Collections.singletonList(new FileInfo(folder, null)));
         getNavigation().openDialog(FragmentRepoList.class, browse);
+    }
+
+    public OperationLocalCopyMove getCopyMove() {
+        return copymove;
     }
 }
