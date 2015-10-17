@@ -2,6 +2,7 @@ package org.opendataspace.android.ui;
 
 import android.os.Bundle;
 import android.widget.ListView;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +53,8 @@ public class ActivityMainTest {
         navigateMenu(R.id.menu_account_add, FragmentAccountDetails.class, ac, app);
         navigateBack(FragmentAccountList.class, ac, app);
         navigateBack(FragmentNavigation.class, ac, app);
-        navigateList(R.id.list_nav_accounts, ac.getString(R.string.nav_addaccount), FragmentAccountDetails.class, ac, app);
+        navigateList(R.id.list_nav_accounts, ac.getString(R.string.nav_addaccount), FragmentAccountDetails.class, ac,
+                app);
         navigateBack(FragmentNavigation.class, ac, app);
 
         // folders

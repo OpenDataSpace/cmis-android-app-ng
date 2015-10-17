@@ -50,7 +50,7 @@ public class OperationLoader extends TaskLoader<OperationStatus> {
     @Override
     protected void onStopLoading() {
         op.setCancel(true);
-        cancelLoad();
+        stopLoad();
         status = null;
     }
 

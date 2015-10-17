@@ -44,12 +44,12 @@ public abstract class TaskLoader<T> extends Loader<T> {
 
     @Override
     protected void onForceLoad() {
-        cancelLoad();
+        stopLoad();
         current = new InternalTask();
         OdsApp.get().getPool().execute(current, isCmis());
     }
 
-    protected void cancelLoad() {
+    protected void stopLoad() {
         if (current != null) {
             OdsApp.get().getPool().cancel(current);
             current = null;
