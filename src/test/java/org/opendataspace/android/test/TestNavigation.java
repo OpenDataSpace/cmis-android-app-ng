@@ -1,6 +1,7 @@
 package org.opendataspace.android.test;
 
 import android.os.Bundle;
+
 import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.operation.OperationBase;
 import org.opendataspace.android.ui.ActivityDialog;
@@ -9,8 +10,11 @@ import org.opendataspace.android.ui.FragmentBase;
 @SuppressWarnings("unused")
 public class TestNavigation implements NavigationInterface {
 
+    private int backCnt = 0;
+
     @Override
     public boolean backPressed() {
+        backCnt++;
         return true;
     }
 
@@ -57,5 +61,9 @@ public class TestNavigation implements NavigationInterface {
     @Override
     public void setDialog(ActivityDialog val) {
         // nothing
+    }
+
+    public int getBackCnt() {
+        return backCnt;
     }
 }

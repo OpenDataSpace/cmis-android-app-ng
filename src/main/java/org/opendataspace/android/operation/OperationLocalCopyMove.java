@@ -66,4 +66,12 @@ public class OperationLocalCopyMove extends OperationBase {
     public boolean isEmpty() {
         return nodes.isEmpty();
     }
+
+    public List<FileInfo> getNodes() {
+        return nodes;
+    }
+
+    public boolean willCopy() {
+        return isCopy;
+    }
 }
