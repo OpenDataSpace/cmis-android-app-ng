@@ -20,6 +20,7 @@ import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.storage.FileInfo;
+import org.opendataspace.android.storage.LimitInputStream;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -28,6 +29,7 @@ import java.util.*;
 public class CmisSession {
 
     private static final Set<Updatability> CREATE_UPDATABILITY = new HashSet<>();
+    private static final long CHUNK_SIZE = 4 * 1024 * 1024;
 
     static {
         CREATE_UPDATABILITY.add(Updatability.ONCREATE);
@@ -161,8 +163,8 @@ public class CmisSession {
 
     public void delete(Node node) {
         if (node.getType() == Node.Type.FOLDER) {
-            getSession().getBinding().getObjectService().deleteTree(repo.getUuid(), node.getUuid(), true, null, false,
-                    null);
+            getSession().getBinding().getObjectService()
+                    .deleteTree(repo.getUuid(), node.getUuid(), true, null, false, null);
         } else {
             getSession().delete(new ObjectIdImpl(node.getUuid()));
         }
@@ -177,8 +179,8 @@ public class CmisSession {
     }
 
     public ContentStream getStream(Node node) {
-        return getSession().getBinding().getObjectService().getContentStream(repo.getUuid(), node.getUuid(), null, null,
-                null, null);
+        return getSession().getBinding().getObjectService()
+                .getContentStream(repo.getUuid(), node.getUuid(), null, null, null, null);
     }
 
     public CmisObject createDocument(Node folder, String name, FileInfo info) throws IOException {
@@ -186,23 +188,60 @@ public class CmisSession {
 
         try {
             Session session = getSession();
-            ContentStream cs = null;
-
-            if (info != null) {
-                File f = info.getFile();
-                is = new FileInputStream(f);
-                cs = session.getObjectFactory().createContentStream(f.getName(), f.length(), info.getMimeType(), is);
-            }
-
             Map<String, Serializable> properties = new HashMap<>();
             properties.put(PropertyIds.OBJECT_TYPE_ID, BaseTypeId.CMIS_DOCUMENT.value());
             properties.put(PropertyIds.NAME, name);
 
-            String id = session.getBinding().getObjectService().createDocument(repo.getUuid(),
-                    session.getObjectFactory().convertProperties(properties, null, null, CREATE_UPDATABILITY),
-                    folder.getUuid(), cs, VersioningState.MAJOR, null, null, null, null);
+            if (info != null) {
+                File f = info.getFile();
+                is = new FileInputStream(f);
 
-            return session.getObject(id);
+                ObjectFactory objectFactory = session.getObjectFactory();
+                Document doc = null;
+                long pos = 0, total = f.length();
+
+                try {
+                    while (pos < total) {
+                        LimitInputStream lis = new LimitInputStream(is, CHUNK_SIZE);
+                        long sz = Math.min(CHUNK_SIZE, total - pos);
+                        pos += sz;
+                        ContentStream c = objectFactory.createContentStream(f.getName(), sz, info.getMimeType(), lis);
+
+                        if (doc == null) {
+                            String newId = session.getBinding().getObjectService().createDocument(repo.getUuid(),
+                                    session.getObjectFactory()
+                                            .convertProperties(properties, null, null, CREATE_UPDATABILITY),
+                                    folder.getUuid(), null, VersioningState.CHECKEDOUT, null, null, null, null);
+
+                            if (newId != null) {
+                                doc = (Document) session.getObject(newId);
+                            } else {
+                                break;
+                            }
+                        }
+
+                        doc.appendContentStream(c, pos < total, true);
+                    }
+                } catch (Exception ex) {
+                    if (doc != null) {
+                        doc.cancelCheckOut();
+                    }
+
+                    throw ex;
+                }
+
+                if (doc != null) {
+                    doc.checkIn(true, null, null, null);
+                }
+
+                return doc;
+            } else {
+                String id = session.getBinding().getObjectService().createDocument(repo.getUuid(),
+                        session.getObjectFactory().convertProperties(properties, null, null, CREATE_UPDATABILITY),
+                        folder.getUuid(), null, VersioningState.MAJOR, null, null, null, null);
+
+                return session.getObject(id);
+            }
         } finally {
             if (is != null) {
                 is.close();
