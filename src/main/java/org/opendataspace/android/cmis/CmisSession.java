@@ -1,7 +1,13 @@
 package org.opendataspace.android.cmis;
 
 import com.google.gson.annotations.Expose;
-import org.apache.chemistry.opencmis.client.api.*;
+import org.apache.chemistry.opencmis.client.api.CmisObject;
+import org.apache.chemistry.opencmis.client.api.Document;
+import org.apache.chemistry.opencmis.client.api.Folder;
+import org.apache.chemistry.opencmis.client.api.ObjectFactory;
+import org.apache.chemistry.opencmis.client.api.OperationContext;
+import org.apache.chemistry.opencmis.client.api.Rendition;
+import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.client.runtime.OperationContextImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -22,9 +28,18 @@ import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.storage.FileInfo;
 import org.opendataspace.android.storage.LimitInputStream;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class CmisSession {
 
@@ -188,11 +203,12 @@ public class CmisSession {
 
         try {
             Session session = getSession();
+            boolean hasPwc = session.getRepositoryInfo().getCapabilities().isPwcUpdatableSupported();
             Map<String, Serializable> properties = new HashMap<>();
             properties.put(PropertyIds.OBJECT_TYPE_ID, BaseTypeId.CMIS_DOCUMENT.value());
             properties.put(PropertyIds.NAME, name);
 
-            if (info != null) {
+            if (hasPwc && info != null) {
                 File f = info.getFile();
                 is = new FileInputStream(f);
 
@@ -236,9 +252,17 @@ public class CmisSession {
 
                 return doc;
             } else {
+                ContentStream c = null;
+
+                if (info != null) {
+                    File f = info.getFile();
+                    is = new FileInputStream(f);
+                    c = session.getObjectFactory().createContentStream(f.getName(), f.length(), info.getMimeType(), is);
+                }
+
                 String id = session.getBinding().getObjectService().createDocument(repo.getUuid(),
                         session.getObjectFactory().convertProperties(properties, null, null, CREATE_UPDATABILITY),
-                        folder.getUuid(), null, VersioningState.MAJOR, null, null, null, null);
+                        folder.getUuid(), c, VersioningState.MAJOR, null, null, null, null);
 
                 return session.getObject(id);
             }

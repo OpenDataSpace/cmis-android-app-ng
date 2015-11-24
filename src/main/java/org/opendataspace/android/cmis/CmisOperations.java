@@ -1,9 +1,6 @@
 package org.opendataspace.android.cmis;
 
-import org.apache.chemistry.opencmis.client.api.CmisObject;
-import org.apache.chemistry.opencmis.client.api.ObjectFactory;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
-import org.apache.chemistry.opencmis.commons.spi.ObjectService;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.data.DaoNode;
 import org.opendataspace.android.data.DataBase;
