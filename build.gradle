@@ -72,7 +72,7 @@ retrolambda {
 
 android {
     compileSdkVersion 'android-23'
-    buildToolsVersion '23.0.1'
+    buildToolsVersion '23.0.2'
 
     signingConfigs {
         release {
@@ -133,6 +133,24 @@ repositories {
 
     maven {
         url "https://artifactory.dataspace.cc/artifactory/libs-release"
+
+        credentials {
+            username props['ods.repo.user']
+            password props['ods.repo.password']
+        }
+    }
+
+    maven {
+        url pBranchRepo1
+
+        credentials {
+            username props['ods.repo.user']
+            password props['ods.repo.password']
+        }
+    }
+
+    maven {
+        url pBranchRepo2
 
         credentials {
             username props['ods.repo.user']
