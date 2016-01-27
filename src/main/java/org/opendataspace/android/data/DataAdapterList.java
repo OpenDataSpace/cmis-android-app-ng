@@ -70,6 +70,7 @@ public abstract class DataAdapterList<T extends ObjectBaseId> extends DataAdapte
         return selected.contains(id);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View vw = super.getView(position, convertView, parent);

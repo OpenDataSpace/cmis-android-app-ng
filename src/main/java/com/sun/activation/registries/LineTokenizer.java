@@ -1,13 +1,14 @@
 package com.sun.activation.registries;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Vector;
 
 class LineTokenizer {
     private int currentPosition;
     private final int maxPosition;
     private final String str;
-    private final Vector<String> stack = new Vector<>();
+    private final List<String> stack = new ArrayList<>();
     private static final String singles = "=";    // single character tokens
 
     /**
@@ -55,8 +56,8 @@ class LineTokenizer {
     public String nextToken() {
         int size = stack.size();
         if (size > 0) {
-            String t = stack.elementAt(size - 1);
-            stack.removeElementAt(size - 1);
+            String t = stack.get(size - 1);
+            stack.remove(size - 1);
             return t;
         }
         skipWhiteSpace();

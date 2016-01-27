@@ -10,12 +10,16 @@
     <application
         android:name="org.opendataspace.android.app.OdsApp"
         android:allowBackup="false"
+        android:fullBackupContent="false"
         android:icon="@drawable/ic_logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/OdsApp"
         tools:ignore="UnusedAttribute">
-        <activity android:name="org.opendataspace.android.ui.ActivityMain">
+
+        <activity
+            android:name="org.opendataspace.android.ui.ActivityMain"
+            android:theme="@style/OdsApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

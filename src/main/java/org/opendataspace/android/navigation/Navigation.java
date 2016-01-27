@@ -42,6 +42,7 @@ public class Navigation implements NavigationInterface {
     private final ActionBarDrawerToggle toggle;
     private ActivityDialog dialog;
 
+    @SuppressWarnings("deprecation")
     public Navigation(ActivityMain activity, Bundle state) {
         DrawerLayout drawer = (DrawerLayout) activity.findViewById(R.id.main_view_root);
         context = new WeakReference<>(activity);

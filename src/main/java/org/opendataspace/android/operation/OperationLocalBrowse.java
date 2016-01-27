@@ -2,6 +2,7 @@ package org.opendataspace.android.operation;
 
 import android.os.Build;
 import android.os.Environment;
+
 import com.google.gson.annotations.Expose;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
@@ -85,7 +86,7 @@ public class OperationLocalBrowse extends OperationBase {
             addSpecial(Environment.DIRECTORY_DOWNLOADS, R.id.action_local_downloads);
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-                addSpecial(Environment.DIRECTORY_DOCUMENTS, R.id.action_local_documents);
+                addSpecial("Documents" /* Environment.DIRECTORY_DOCUMENTS */, R.id.action_local_documents);
             }
 
             addSpecial(Environment.DIRECTORY_PICTURES, R.id.action_local_pictures);
