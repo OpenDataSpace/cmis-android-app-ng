@@ -176,7 +176,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
 
     //noinspection GradleDynamicVersion
-    compile 'org.apache.chemistry.opencmis:chemistry-opencmis-android-client:0.13.0.126+'
+    compile 'org.apache.chemistry.opencmis:chemistry-opencmis-android-client:+'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.apache.maven:maven-ant-tasks:2.1.3'
