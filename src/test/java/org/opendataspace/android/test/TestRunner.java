@@ -6,13 +6,18 @@ import org.junit.runners.model.InitializationError;
 import org.opendataspace.android.app.beta.BuildConfig;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.internal.dependency.CachedDependencyResolver;
+import org.robolectric.internal.dependency.DependencyResolver;
 import org.robolectric.manifest.AndroidManifest;
 import org.robolectric.res.FileFsFile;
 import org.robolectric.util.ReflectionHelpers;
 
+import java.io.File;
 import java.util.Properties;
 
 public class TestRunner extends RobolectricTestRunner {
+
+    private DependencyResolver dr;
 
     public TestRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
@@ -23,7 +28,7 @@ public class TestRunner extends RobolectricTestRunner {
         String type = getType();
         String flavor = getFlavor();
         String applicationId = getApplicationId();
-        FileFsFile res = FileFsFile.from("build/intermediates", "res", flavor, type);
+        FileFsFile res = FileFsFile.from("build/intermediates", "res/merged", flavor, type);
         FileFsFile assets = FileFsFile.from("build/intermediates", "assets", flavor, type);
         FileFsFile manifest;
 
@@ -73,5 +78,22 @@ public class TestRunner extends RobolectricTestRunner {
     @Override
     protected Properties getConfigProperties() {
         return TestUtil.getProperties();
+    }
+
+    @Override
+    protected DependencyResolver getJarResolver() {
+        if (dr == null) {
+            File cacheDir = new File(new File(System.getProperty("java.io.tmpdir")), "robolectric");
+            //noinspection ResultOfMethodCallIgnored
+            cacheDir.mkdir();
+
+            if (cacheDir.exists()) {
+                dr = new CachedDependencyResolver(new TestResolver(), cacheDir, 60 * 60 * 24 * 1000);
+            } else {
+                dr = new TestResolver();
+            }
+        }
+
+        return dr;
     }
 }
