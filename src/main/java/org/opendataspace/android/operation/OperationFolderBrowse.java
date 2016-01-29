@@ -68,7 +68,7 @@ public class OperationFolderBrowse extends OperationBase {
         session = view.setScope(account, repo, folder);
 
         if (folder == null) {
-            folder = new Node(session.getRoot(), repo);
+            folder = new Node(repo);
         }
 
         DaoMime mime = app.getDatabase().getMime();

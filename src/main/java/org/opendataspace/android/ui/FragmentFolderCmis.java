@@ -362,7 +362,11 @@ public class FragmentFolderCmis extends FragmentBaseList
 
     @SuppressWarnings({"UnusedParameters", "unused"})
     public void onEventMainThread(EventNodeUpdate event) {
-        browseFinished(true);
+        Node node = op.getFolder();
+
+        if (node != null && TextUtils.equals(node.getUuid(), event.getNodeUuid())) {
+            browseFinished(true);
+        }
     }
 
     @SuppressWarnings({"UnusedParameters", "unused"})

@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class TaskPool {
 
-    private static final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
+    private static final int NUMBER_OF_CORES = Math.min(6, Math.max(4, Runtime.getRuntime().availableProcessors()));
 
     private final ThreadPoolExecutor common =
             new ThreadPoolExecutor(NUMBER_OF_CORES, NUMBER_OF_CORES, 1, TimeUnit.MINUTES,

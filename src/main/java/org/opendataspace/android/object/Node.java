@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.text.format.Formatter;
+
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -85,6 +86,16 @@ public class Node extends ObjectBase {
             repoId = INVALID_ID;
             parentId = INVALID_ID;
         }
+    }
+
+    public Node(Repo repo) {
+        info = new NodeInfo();
+        parentId = INVALID_ID;
+        type = Type.FOLDER;
+        repoId = repo.getId();
+        info.uuid = repo.getRootFolderUuid();
+        info.path = "/";
+        info.permissions = NodeInfo.CAN_CREATE_DOCUMENT | NodeInfo.CAN_CREATE_FOLDER;
     }
 
     public boolean merge(CmisObject val) {

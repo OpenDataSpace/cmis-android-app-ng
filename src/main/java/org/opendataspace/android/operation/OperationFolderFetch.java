@@ -31,7 +31,12 @@ public class OperationFolderFetch extends OperationBaseFetch<Node, CmisObject> {
     @Override
     protected void doExecute(OperationStatus status) throws Exception {
         process(this, this);
-        OdsApp.bus.post(new EventNodeUpdate());
+
+        if (isCancel()) {
+            throw new InterruptedException();
+        }
+
+        OdsApp.bus.post(new EventNodeUpdate(folder.getUuid()));
         status.setOk();
     }
 
