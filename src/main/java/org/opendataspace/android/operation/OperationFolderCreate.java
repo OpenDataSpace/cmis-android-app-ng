@@ -25,9 +25,9 @@ public class OperationFolderCreate extends OperationBaseCmis {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
-        node = CmisOperations.createFolder(session, parent, name);
-        status.setOk();
+    protected void doExecute(OperationResult result) throws Exception {
+        node = CmisOperations.createFolder(session, parent, name, getStatus());
+        result.setOk();
     }
 
     public Node getNode() {

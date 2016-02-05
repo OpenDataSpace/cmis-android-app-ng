@@ -15,6 +15,7 @@ import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.cmis.CmisSession;
+import org.opendataspace.android.status.StatusContext;
 
 @DatabaseTable(tableName = "node")
 public class Node extends ObjectBase {
@@ -243,9 +244,9 @@ public class Node extends ObjectBase {
         info.name = name;
     }
 
-    public CmisObject getCmisObject(CmisSession session) {
+    public CmisObject getCmisObject(CmisSession session, StatusContext status) {
         if (cmis == null) {
-            update(session.getObjectById(getUuid()));
+            update(session.getObjectById(getUuid(), status));
         }
 
         return cmis;

@@ -24,12 +24,12 @@ public class OperationNodeDeleteTest {
         String name = "Test123";
         TestUtil.removeIfExists(session, name);
 
-        CmisObject obj = session.createFolder(new Node(session.getRoot(), session.getRepo()), name);
+        CmisObject obj = session.createFolder(new Node(session.getRoot(null), session.getRepo()), name, null);
         Node node = new Node(obj, session.getRepo());
         OdsApp.get().getDatabase().getNodes().create(node);
-        session.createFolder(node, name);
+        session.createFolder(node, name, null);
         OperationNodeDelete op = new OperationNodeDelete(node, session);
-        OperationStatus st = op.execute();
+        OperationResult st = op.execute();
         Assert.assertEquals(true, st.isOk());
 
         boolean found = false;

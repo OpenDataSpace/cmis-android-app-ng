@@ -9,22 +9,31 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
+
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.event.EventDaoNode;
 import org.opendataspace.android.object.Node;
-import org.opendataspace.android.operation.*;
+import org.opendataspace.android.operation.OperationLoader;
+import org.opendataspace.android.operation.OperationNodeDelete;
+import org.opendataspace.android.operation.OperationNodeInfo;
+import org.opendataspace.android.operation.OperationNodeRename;
+import org.opendataspace.android.operation.OperationResult;
 
 import java.lang.ref.WeakReference;
 
 @SuppressLint("ValidFragment")
-public class FragmentNodeInfo extends FragmentBase implements LoaderManager.LoaderCallbacks<OperationStatus> {
+public class FragmentNodeInfo extends FragmentBase implements LoaderManager.LoaderCallbacks<OperationResult> {
 
     private final static int LOADER_DELETE = 1;
     private final static int LOADER_RENAME = 2;
@@ -162,7 +171,7 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
     }
 
     @Override
-    public Loader<OperationStatus> onCreateLoader(int id, Bundle args) {
+    public Loader<OperationResult> onCreateLoader(int id, Bundle args) {
         switch (id) {
         case LOADER_DELETE:
             return new OperationLoader(new OperationNodeDelete(op.getNode(), op.getSession()), getActivity());
@@ -176,7 +185,7 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
     }
 
     @Override
-    public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus data) {
+    public void onLoadFinished(Loader<OperationResult> loader, OperationResult data) {
         ActivityMain ac = getMainActivity();
         ac.stopWait();
 
@@ -187,11 +196,11 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
     }
 
     @Override
-    public void onLoaderReset(Loader<OperationStatus> loader) {
+    public void onLoaderReset(Loader<OperationResult> loader) {
         getMainActivity().stopWait();
     }
 
-    @SuppressWarnings({"UnusedParameters", "unused"})
+    @SuppressWarnings("unused")
     public void onEventMainThread(EventDaoNode event) {
         for (EventDaoBase.Event<Node> cur : event.getEvents()) {
             if (cur.getObject().equals(op.getNode())) {

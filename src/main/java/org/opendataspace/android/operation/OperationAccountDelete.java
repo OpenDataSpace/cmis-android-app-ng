@@ -17,7 +17,7 @@ public class OperationAccountDelete extends OperationBase {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
+    protected void doExecute(OperationResult result) throws Exception {
         final OdsApp app = OdsApp.get();
         final DataBase db = app.getDatabase();
         DaoAccount accounts = db.getAccounts();
@@ -64,6 +64,6 @@ public class OperationAccountDelete extends OperationBase {
             }
         }
 
-        status.setOk();
+        result.setOk();
     }
 }

@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import de.greenrobot.event.EventBus;
 import io.fabric.sdk.android.Fabric;
+import org.opendataspace.android.status.StatusManager;
 import org.opendataspace.android.app.beta.BuildConfig;
 import org.opendataspace.android.cmis.CmisRenditionCache;
 import org.opendataspace.android.data.DataBase;
@@ -38,6 +39,7 @@ public class OdsApp extends Application {
     private CmisRenditionCache cmiscache;
     private NavigationInterface navigation;
     private CacheManager localcache;
+    private StatusManager sm;
 
     public static OdsApp get() {
         return instance;
@@ -68,6 +70,7 @@ public class OdsApp extends Application {
         database = OpenHelperManager.getHelper(this, DataBase.class);
         pool = new TaskPool();
         vm = new ViewManager();
+        sm = new StatusManager();
         cmiscache = new CmisRenditionCache(getApplicationContext(), pool.getCmisService());
         localcache = new CacheManager(getApplicationContext(), database.getCacheEntries());
     }
@@ -77,6 +80,7 @@ public class OdsApp extends Application {
         pool.stop();
         vm.dispose();
         cmiscache.dispose();
+        sm.dispose();
         OpenHelperManager.releaseHelper();
 
         instance = null;
@@ -86,6 +90,7 @@ public class OdsApp extends Application {
         vm = null;
         cmiscache = null;
         localcache = null;
+        sm = null;
 
         super.onTerminate();
     }
@@ -128,5 +133,9 @@ public class OdsApp extends Application {
 
     public CacheManager getCacheManager() {
         return localcache;
+    }
+
+    public StatusManager getStatusManager() {
+        return sm;
     }
 }

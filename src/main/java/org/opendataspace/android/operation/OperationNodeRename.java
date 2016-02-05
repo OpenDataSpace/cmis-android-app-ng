@@ -23,10 +23,10 @@ public class OperationNodeRename extends OperationBaseCmis {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
-        node.getCmisObject(session).rename(name);
+    protected void doExecute(OperationResult result) throws Exception {
+        node.getCmisObject(session, getStatus()).rename(name);
         node.setName(name);
         OdsApp.get().getDatabase().getNodes().update(node);
-        status.setOk();
+        result.setOk();
     }
 }

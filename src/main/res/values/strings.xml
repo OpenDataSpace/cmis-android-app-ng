@@ -54,6 +54,13 @@
     <string name="nav_localfolder">Local Files</string>
     <string name="nav_norepo">No repositories…</string>
 
+    <!-- status -->
+    <string name="status_syncrepo">Synchronizing account %1$s</string>
+    <string name="status_syncfolder">Synchronizing folder %1$s</string>
+    <string name="status_connect">Connecting to %1$s %2$s</string>
+    <string name="status_openfolder">Opening folder %1$s</string>
+    <string name="status_configacc">Configuring %1$s</string>
+
     <!-- about -->
     <string name="about_info">
 <![CDATA[<p>Version: <b>%1$s</b></p>

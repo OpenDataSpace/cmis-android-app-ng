@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.j256.ormlite.dao.CloseableIterator;
 import org.apache.chemistry.opencmis.client.api.Repository;
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.cmis.Cmis;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Repo;
@@ -25,14 +26,15 @@ public class OperationRepoFetch extends OperationBaseFetch<Repo, Repository> {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
+    protected void doExecute(OperationResult result) throws Exception {
+        getStatus().postMessage(R.string.status_syncrepo, account.getDisplayName());
         process(this, this);
 
         if (!isCancel() && shouldConfig) {
             OdsApp.get().getPool().execute(new OperationAccountConfig(account));
         }
 
-        status.setOk();
+        result.setOk();
     }
 
     @Override

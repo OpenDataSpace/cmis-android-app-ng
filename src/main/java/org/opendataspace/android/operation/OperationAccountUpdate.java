@@ -22,7 +22,7 @@ public class OperationAccountUpdate extends OperationBase {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
+    protected void doExecute(OperationResult result) throws Exception {
         final OdsApp app = OdsApp.get();
         final DataBase db = app.getDatabase();
 
@@ -43,7 +43,7 @@ public class OperationAccountUpdate extends OperationBase {
             app.getPool().execute(new OperationAccountSelect(account));
         }
 
-        status.setOk();
+        result.setOk();
     }
 
     public void setIsFirstAccount() {

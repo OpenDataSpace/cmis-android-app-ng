@@ -14,7 +14,7 @@ import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.ObjectBase;
 import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.operation.OperationRepoFetch;
-import org.opendataspace.android.operation.OperationStatus;
+import org.opendataspace.android.operation.OperationResult;
 import org.opendataspace.android.ui.ActivityMain;
 import org.opendataspace.android.ui.FragmentBase;
 import org.robolectric.Robolectric;
@@ -143,7 +143,7 @@ public class TestUtil {
 
         OperationRepoFetch op = new OperationRepoFetch(acc);
         op.withoutConfig();
-        OperationStatus st = op.execute();
+        OperationResult st = op.execute();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(true, app.getDatabase().getRepos().countOf() > 0);
 
@@ -157,10 +157,10 @@ public class TestUtil {
     }
 
     public static void removeIfExists(CmisSession session, String name) {
-        CmisObject obj = session.getObjectByPath(name);
+        CmisObject obj = session.getObjectByPath(name, null);
 
         if (obj != null) {
-            session.delete(new Node(obj, session.getRepo()));
+            session.delete(new Node(obj, session.getRepo()), null);
         }
     }
 

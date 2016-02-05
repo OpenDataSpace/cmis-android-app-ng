@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import org.opendataspace.android.app.beta.R;
 
-public class OperationStatus {
+public class OperationResult {
 
     private boolean ok;
     private String message;

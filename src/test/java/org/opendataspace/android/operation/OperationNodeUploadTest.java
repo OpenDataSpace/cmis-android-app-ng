@@ -1,6 +1,7 @@
 package org.opendataspace.android.operation;
 
 import android.os.Environment;
+
 import junit.framework.Assert;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
@@ -35,32 +36,32 @@ public class OperationNodeUploadTest {
         String name = "test.dat";
         TestUtil.removeIfExists(session, name);
 
-        byte[] local = new byte[]{0, 1, 2, 3};
+        byte[] local = new byte[] {0, 1, 2, 3};
         File f = new File(Environment.getExternalStorageDirectory(), name);
         Assert.assertEquals(true, f.createNewFile());
         FileOutputStream fs = new FileOutputStream(f);
         fs.write(local);
         fs.close();
 
-        OperationNodeUpload op = new OperationNodeUpload(session, new Node(session.getRoot(), session.getRepo()),
+        OperationNodeUpload op = new OperationNodeUpload(session, new Node(session.getRoot(null), session.getRepo()),
                 Collections.singletonList(new FileInfo(f, null)));
 
-        OperationStatus st = op.execute();
+        OperationResult st = op.execute();
         Assert.assertEquals(true, st.isOk());
-        CmisObject cmis = session.getObjectByPath(name);
+        CmisObject cmis = session.getObjectByPath(name, null);
         Assert.assertEquals(true, cmis != null);
         Node node = new Node(cmis, session.getRepo());
         Assert.assertEquals(local.length, node.getSize());
 
         byte[] content = new byte[local.length];
-        ContentStream cs = session.getStream(node);
+        ContentStream cs = session.getStream(node, null);
         //Assert.assertEquals(local.length, cs.getLength());
         InputStream is = cs.getStream();
         Assert.assertEquals(local.length, is.read(content));
         is.close();
         Assert.assertEquals(true, Arrays.equals(local, content));
 
-        session.delete(node);
+        session.delete(node, null);
         Assert.assertEquals(true, f.delete());
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_UNMOUNTED);
     }

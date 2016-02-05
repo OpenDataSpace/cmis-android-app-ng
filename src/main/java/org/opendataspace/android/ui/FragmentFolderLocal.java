@@ -28,7 +28,7 @@ import org.opendataspace.android.operation.OperationLocalCopyMove;
 import org.opendataspace.android.operation.OperationLocalInfo;
 import org.opendataspace.android.operation.OperationNodeDownload;
 import org.opendataspace.android.operation.OperationNodeUpload;
-import org.opendataspace.android.operation.OperationStatus;
+import org.opendataspace.android.operation.OperationResult;
 import org.opendataspace.android.storage.FileAdapter;
 import org.opendataspace.android.storage.FileInfo;
 
@@ -39,7 +39,7 @@ import java.util.List;
 
 @SuppressLint("ValidFragment")
 public class FragmentFolderLocal extends FragmentBaseList
-        implements LoaderManager.LoaderCallbacks<OperationStatus>, ActionMode.Callback {
+        implements LoaderManager.LoaderCallbacks<OperationResult>, ActionMode.Callback {
 
     private final static int LOADER_BROWSE = 1;
     private final static int LOADER_COPYMOVE = 2;
@@ -146,7 +146,7 @@ public class FragmentFolderLocal extends FragmentBaseList
     }
 
     @Override
-    public Loader<OperationStatus> onCreateLoader(int id, Bundle args) {
+    public Loader<OperationResult> onCreateLoader(int id, Bundle args) {
         switch (id) {
         case LOADER_BROWSE:
             return new OperationLoader(op, getActivity());
@@ -160,7 +160,7 @@ public class FragmentFolderLocal extends FragmentBaseList
     }
 
     @Override
-    public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus data) {
+    public void onLoadFinished(Loader<OperationResult> loader, OperationResult data) {
         if (loader.getId() == LOADER_BROWSE) {
             browseFinished();
         }
@@ -195,7 +195,7 @@ public class FragmentFolderLocal extends FragmentBaseList
     }
 
     @Override
-    public void onLoaderReset(Loader<OperationStatus> loader) {
+    public void onLoaderReset(Loader<OperationResult> loader) {
         if (loader.getId() == LOADER_BROWSE) {
             browseFinished();
         }

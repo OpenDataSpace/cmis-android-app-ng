@@ -32,7 +32,7 @@ public class OperationAccountConfigTest {
         Assert.assertEquals(true, d2 == null);
 
         OperationRepoFetch sync = new OperationRepoFetch(account);
-        OperationStatus st = sync.execute();
+        OperationResult st = sync.execute();
         Assert.assertEquals(true, st.isOk());
         TestUtil.waitRunnable();
 

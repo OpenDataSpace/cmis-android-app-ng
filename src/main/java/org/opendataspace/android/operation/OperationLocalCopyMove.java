@@ -21,7 +21,7 @@ public class OperationLocalCopyMove extends OperationBase {
     private File target;
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
+    protected void doExecute(OperationResult result) throws Exception {
         boolean res = true;
 
         for (FileInfo cur : nodes) {
@@ -36,7 +36,7 @@ public class OperationLocalCopyMove extends OperationBase {
                 }
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);
-                status.setError(ex);
+                result.setError(ex);
                 res = false;
             }
 
@@ -46,7 +46,7 @@ public class OperationLocalCopyMove extends OperationBase {
         }
 
         if (res) {
-            status.setOk();
+            result.setOk();
         }
     }
 

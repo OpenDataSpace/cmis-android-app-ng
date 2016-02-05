@@ -28,16 +28,16 @@ public class OperationNodeDownload extends OperationBaseCmis {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
+    protected void doExecute(OperationResult result) throws Exception {
         boolean res = true;
 
         for (Node cur : context) {
             try {
-                res = res && CmisOperations.download(session, cur, new File(folder, cur.getName()));
+                res = res && CmisOperations.download(session, cur, new File(folder, cur.getName()), getStatus());
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);
                 res = false;
-                status.setError(ex);
+                result.setError(ex);
             }
 
             if (isCancel()) {
@@ -46,7 +46,7 @@ public class OperationNodeDownload extends OperationBaseCmis {
         }
 
         if (res) {
-            status.setOk();
+            result.setOk();
         }
     }
 }

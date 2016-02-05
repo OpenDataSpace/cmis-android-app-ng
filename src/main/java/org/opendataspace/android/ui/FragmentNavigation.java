@@ -29,10 +29,10 @@ import org.opendataspace.android.operation.OperationAccountUpdate;
 import org.opendataspace.android.operation.OperationFolderBrowse;
 import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationLocalBrowse;
-import org.opendataspace.android.operation.OperationStatus;
+import org.opendataspace.android.operation.OperationResult;
 import org.opendataspace.android.view.ViewManager;
 
-public class FragmentNavigation extends FragmentBase implements LoaderManager.LoaderCallbacks<OperationStatus> {
+public class FragmentNavigation extends FragmentBase implements LoaderManager.LoaderCallbacks<OperationResult> {
 
     private AccountAdapter accounts;
     private RepoAdapter repos;
@@ -198,17 +198,17 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
     }
 
     @Override
-    public Loader<OperationStatus> onCreateLoader(int i, Bundle bundle) {
+    public Loader<OperationResult> onCreateLoader(int i, Bundle bundle) {
         return new OperationLoader(op, getActivity());
     }
 
     @Override
-    public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus operationStatus) {
+    public void onLoadFinished(Loader<OperationResult> loader, OperationResult result) {
         getMainActivity().stopWait();
     }
 
     @Override
-    public void onLoaderReset(Loader<OperationStatus> loader) {
+    public void onLoaderReset(Loader<OperationResult> loader) {
         getMainActivity().stopWait();
     }
 

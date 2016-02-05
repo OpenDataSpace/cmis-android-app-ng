@@ -35,7 +35,7 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
+    protected void doExecute(OperationResult result) throws Exception {
         if (isEmpty() || target == null) {
             return;
         }
@@ -47,7 +47,7 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
                 res = res && processNode(cur, target, true);
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);
-                status.setError(ex);
+                result.setError(ex);
                 res = false;
             }
 
@@ -57,7 +57,7 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
         }
 
         if (res) {
-            status.setOk();
+            result.setOk();
         }
     }
 
@@ -94,7 +94,7 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
             }
         }
 
-        Node folder = CmisOperations.createFolder(session, to, node.getName());
+        Node folder = CmisOperations.createFolder(session, to, node.getName(), getStatus());
         OperationFolderFetch.process(new OperationFolderFetch(session, node), this);
         CloseableIterator<Node> it = dao.forParent(session.getRepo(), node.getId());
 
@@ -109,14 +109,14 @@ public class OperationNodeCopyMove extends OperationBaseCmis {
         }
 
         if (!isCopy) {
-            CmisOperations.deleteNode(session, node);
+            CmisOperations.deleteNode(session, node, getStatus());
         }
 
         return true;
     }
 
     private void processDocument(Node node, Node to) throws SQLException {
-        Document doc = (Document) node.getCmisObject(session);
+        Document doc = (Document) node.getCmisObject(session, getStatus());
         DaoNode dao = OdsApp.get().getDatabase().getNodes();
 
         if (isCopy) {

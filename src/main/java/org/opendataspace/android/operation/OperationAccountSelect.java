@@ -18,7 +18,7 @@ public class OperationAccountSelect extends OperationBase {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
+    protected void doExecute(OperationResult result) throws Exception {
         OdsApp app = OdsApp.get();
         DataBase db = app.getDatabase();
         ViewManager vm = app.getViewManager();
@@ -46,7 +46,7 @@ public class OperationAccountSelect extends OperationBase {
         vm.getRepos().sync(db.getRepos());
         OdsApp.bus.post(new EventAccountSelect());
         app.getPool().execute(new OperationRepoFetch(account));
-        status.setOk();
+        result.setOk();
     }
 
     public void setAccount(Account account) {

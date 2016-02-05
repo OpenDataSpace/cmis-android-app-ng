@@ -1,9 +1,12 @@
 package org.opendataspace.android.operation;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.dao.CloseableIterator;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.data.DaoNode;
 import org.opendataspace.android.event.EventNodeUpdate;
@@ -29,7 +32,9 @@ public class OperationFolderFetch extends OperationBaseFetch<Node, CmisObject> {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
+    protected void doExecute(OperationResult result) throws Exception {
+        final String name = folder.getName();
+        getStatus().postMessage(R.string.status_syncfolder, TextUtils.isEmpty(name) ? "/" : name);
         process(this, this);
 
         if (isCancel()) {
@@ -37,7 +42,7 @@ public class OperationFolderFetch extends OperationBaseFetch<Node, CmisObject> {
         }
 
         OdsApp.bus.post(new EventNodeUpdate(folder.getUuid()));
-        status.setOk();
+        result.setOk();
     }
 
     @Override
@@ -47,7 +52,7 @@ public class OperationFolderFetch extends OperationBaseFetch<Node, CmisObject> {
 
     @Override
     protected List<CmisObject> fetch() {
-        return session.children(folder);
+        return session.children(folder, getStatus());
     }
 
     @Override

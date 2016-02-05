@@ -21,7 +21,7 @@ public class OperationFolderBrowseTest {
         OperationFolderBrowse op =
                 new OperationFolderBrowse(app.getDatabase().getAccounts().get(app.getPrefs().getLastAccountId()),
                         session.getRepo(), OperationFolderBrowse.Mode.DEFAULT);
-        OperationStatus st = op.execute();
+        OperationResult st = op.execute();
         TestUtil.waitRunnable();
         Assert.assertEquals(true, st.isOk());
     }

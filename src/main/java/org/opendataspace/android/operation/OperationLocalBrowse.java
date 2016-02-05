@@ -63,7 +63,7 @@ public class OperationLocalBrowse extends OperationBase {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
+    protected void doExecute(OperationResult result) throws Exception {
         data.clear();
 
         if (root != null) {
@@ -98,7 +98,7 @@ public class OperationLocalBrowse extends OperationBase {
             throw new InterruptedException();
         }
 
-        status.setOk();
+        result.setOk();
     }
 
     private void addSpecial(String type, int id) {

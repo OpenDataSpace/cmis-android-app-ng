@@ -17,8 +17,8 @@ public class OperationNodeInfo extends OperationBase {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
-        status.setOk();
+    protected void doExecute(OperationResult result) throws Exception {
+        result.setOk();
     }
 
     public Node getNode() {

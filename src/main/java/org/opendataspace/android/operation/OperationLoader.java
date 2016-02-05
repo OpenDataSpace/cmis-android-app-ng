@@ -4,10 +4,10 @@ import android.content.Context;
 
 import org.opendataspace.android.app.TaskLoader;
 
-public class OperationLoader extends TaskLoader<OperationStatus> {
+public class OperationLoader extends TaskLoader<OperationResult> {
 
     private final OperationBase op;
-    private OperationStatus status;
+    private OperationResult result;
 
     public OperationLoader(OperationBase op, Context context) {
         super(context);
@@ -15,7 +15,7 @@ public class OperationLoader extends TaskLoader<OperationStatus> {
     }
 
     @Override
-    public OperationStatus loadInBackground() throws Exception {
+    public OperationResult loadInBackground() throws Exception {
         return op.execute();
     }
 
@@ -25,24 +25,24 @@ public class OperationLoader extends TaskLoader<OperationStatus> {
     }
 
     @Override
-    public void deliverResult(OperationStatus status) {
+    public void deliverResult(OperationResult result) {
         if (isReset()) {
             return;
         }
 
-        this.status = status;
+        this.result = result;
 
         if (isStarted()) {
-            super.deliverResult(status);
+            super.deliverResult(result);
         }
     }
 
     @Override
     protected void onStartLoading() {
-        if (status != null) {
-            deliverResult(status);
+        if (result != null) {
+            deliverResult(result);
         }
-        if (takeContentChanged() || status == null) {
+        if (takeContentChanged() || result == null) {
             forceLoad();
         }
     }
@@ -51,7 +51,7 @@ public class OperationLoader extends TaskLoader<OperationStatus> {
     protected void onStopLoading() {
         op.setCancel(true);
         stopLoad();
-        status = null;
+        result = null;
     }
 
     @Override

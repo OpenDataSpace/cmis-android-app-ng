@@ -21,7 +21,7 @@ public class OperationAccountSelectTest {
         app.getPrefs().setLastAccountId(acc);
 
         OperationAccountSelect op = new OperationAccountSelect(null);
-        OperationStatus st = op.execute();
+        OperationResult st = op.execute();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(acc.getId(), app.getPrefs().getLastAccountId());
 

@@ -29,17 +29,17 @@ public class OperationNodeUpload extends OperationBaseCmis {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
+    protected void doExecute(OperationResult result) throws Exception {
         boolean res = true;
 
         for (FileInfo cur : context) {
             try {
-                CmisObject cmis = session.createDocument(folder, cur.getFile().getName(), cur);
+                CmisObject cmis = session.createDocument(folder, cur.getFile().getName(), cur, getStatus());
                 OdsApp.get().getDatabase().getNodes().create(new Node(cmis, folder));
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);
                 res = false;
-                status.setError(ex);
+                result.setError(ex);
             }
 
             if (isCancel()) {
@@ -49,7 +49,7 @@ public class OperationNodeUpload extends OperationBaseCmis {
 
 
         if (res) {
-            status.setOk();
+            result.setOk();
         }
     }
 }

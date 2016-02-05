@@ -21,7 +21,7 @@ public class OperationAccountUpdateTest {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         OperationAccountUpdate op = new OperationAccountUpdate(TestUtil.getDefaultAccount());
         op.getAccount().setUseJson(true);
-        OperationStatus st = op.execute();
+        OperationResult st = op.execute();
         Assert.assertEquals(true, st.isOk());
         TestUtil.waitRunnable();
         Assert.assertEquals(op.getAccount().getId(), app.getPrefs().getLastAccountId());
@@ -33,7 +33,7 @@ public class OperationAccountUpdateTest {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         OperationAccountUpdate op = new OperationAccountUpdate(TestUtil.getDefaultAccount());
         op.getAccount().setUseJson(false);
-        OperationStatus st = op.execute();
+        OperationResult st = op.execute();
         Assert.assertEquals(true, st.isOk());
         TestUtil.waitRunnable();
         Assert.assertEquals(op.getAccount().getId(), app.getPrefs().getLastAccountId());

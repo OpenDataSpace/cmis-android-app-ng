@@ -19,8 +19,8 @@ public class OperationFolderFetchTest {
     public void execute() throws Exception {
         OdsApp app = (OdsApp) RuntimeEnvironment.application;
         CmisSession session = TestUtil.setupSession(app, Repo.Type.PRIVATE);
-        OperationFolderFetch op = new OperationFolderFetch(session, new Node(session.getRoot(), session.getRepo()));
-        OperationStatus st = op.execute();
+        OperationFolderFetch op = new OperationFolderFetch(session, new Node(session.getRoot(null), session.getRepo()));
+        OperationResult st = op.execute();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(true, app.getDatabase().getNodes().countOf() > 0);
     }

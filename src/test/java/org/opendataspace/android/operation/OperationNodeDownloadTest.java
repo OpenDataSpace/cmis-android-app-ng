@@ -1,6 +1,7 @@
 package org.opendataspace.android.operation;
 
 import android.os.Environment;
+
 import junit.framework.Assert;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.junit.Test;
@@ -35,22 +36,23 @@ public class OperationNodeDownloadTest {
         String name = "test.dat";
         TestUtil.removeIfExists(session, name);
 
-        byte[] local = new byte[]{0, 1, 2, 3};
+        byte[] local = new byte[] {0, 1, 2, 3};
         File f = new File(Environment.getExternalStorageDirectory(), name);
         Assert.assertEquals(true, f.createNewFile());
         FileOutputStream fs = new FileOutputStream(f);
         fs.write(local);
         fs.close();
 
-        CmisObject cmis = session.createDocument(new Node(session.getRoot(), session.getRepo()), name,
-                new FileInfo(f, null));
+        CmisObject cmis =
+                session.createDocument(new Node(session.getRoot(null), session.getRepo()), name, new FileInfo(f, null),
+                        null);
         Assert.assertEquals(true, f.delete());
 
         Node node = new Node(cmis, session.getRepo());
         OperationNodeDownload op = new OperationNodeDownload(session, Environment.getExternalStorageDirectory(),
                 Collections.singletonList(node));
 
-        OperationStatus st = op.execute();
+        OperationResult st = op.execute();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(true, f.exists());
         Assert.assertEquals(local.length, f.length());
@@ -61,7 +63,7 @@ public class OperationNodeDownloadTest {
         is.close();
         Assert.assertEquals(true, Arrays.equals(local, content));
 
-        session.delete(node);
+        session.delete(node, null);
         Assert.assertEquals(true, f.delete());
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_UNMOUNTED);
     }

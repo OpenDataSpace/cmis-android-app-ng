@@ -26,7 +26,7 @@ public class OperationRepoFetchTest {
 
         OperationRepoFetch op = new OperationRepoFetch(acc);
         op.withoutConfig();
-        OperationStatus st = op.execute();
+        OperationResult st = op.execute();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(1, app.getDatabase().getAccounts().countOf());
         Assert.assertEquals(true, app.getDatabase().getRepos().countOf() > 0);

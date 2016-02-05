@@ -26,12 +26,12 @@ public class OperationNodeCopyMoveTest {
         String name2 = "456Test";
         String name3 = "Te789st";
         OperationNodeCopyMove op = new OperationNodeCopyMove(session);
-        OperationStatus st;
+        OperationResult st;
         TestUtil.removeIfExists(session, name1);
         TestUtil.removeIfExists(session, name2);
         TestUtil.removeIfExists(session, name3);
 
-        CmisObject obj1 = session.createFolder(new Node(session.getRoot(), session.getRepo()), name1);
+        CmisObject obj1 = session.createFolder(new Node(session.getRoot(null), session.getRepo()), name1, null);
         Node node1 = new Node(obj1, session.getRepo());
         OdsApp.get().getDatabase().getNodes().create(node1);
         op.setContext(Collections.singletonList(node1), true);
@@ -40,7 +40,7 @@ public class OperationNodeCopyMoveTest {
         st = op.execute();
         Assert.assertEquals(false, st.isOk());
 
-        CmisObject obj2 = session.createFolder(new Node(session.getRoot(), session.getRepo()), name2);
+        CmisObject obj2 = session.createFolder(new Node(session.getRoot(null), session.getRepo()), name2, null);
         Node node2 = new Node(obj2, session.getRepo());
         OdsApp.get().getDatabase().getNodes().create(node2);
         op.setTarget(node2);
@@ -50,7 +50,7 @@ public class OperationNodeCopyMoveTest {
         Assert.assertEquals(true, TestUtil.hasChild(app, session.getRepo(), null, name1, Node.Type.FOLDER));
         Assert.assertEquals(true, TestUtil.hasChild(app, session.getRepo(), node2, name1, Node.Type.FOLDER));
 
-        CmisObject obj3 = session.createFolder(new Node(session.getRoot(), session.getRepo()), name3);
+        CmisObject obj3 = session.createFolder(new Node(session.getRoot(null), session.getRepo()), name3, null);
         Node node3 = new Node(obj3, session.getRepo());
         OdsApp.get().getDatabase().getNodes().create(node3);
         op.setContext(Collections.singletonList(node3), false);
@@ -60,7 +60,7 @@ public class OperationNodeCopyMoveTest {
         Assert.assertEquals(false, TestUtil.hasChild(app, session.getRepo(), null, name3, Node.Type.FOLDER));
         Assert.assertEquals(true, TestUtil.hasChild(app, session.getRepo(), node2, name3, Node.Type.FOLDER));
 
-        session.delete(node1);
-        session.delete(node2);
+        session.delete(node1, null);
+        session.delete(node2, null);
     }
 }

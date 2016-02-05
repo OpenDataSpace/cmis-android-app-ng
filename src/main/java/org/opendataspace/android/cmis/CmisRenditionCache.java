@@ -38,7 +38,8 @@ public class CmisRenditionCache implements CompatDisposable {
             public Result load(Request request, int networkPolicy) throws IOException {
                 CmisSession session = sessions.get(request.uri);
                 return session != null ?
-                        new Result(session.getRendition(request.uri.getAuthority()), Picasso.LoadedFrom.NETWORK) : null;
+                        new Result(session.getRendition(request.uri.getAuthority(), null), Picasso.LoadedFrom.NETWORK) :
+                        null;
             }
         }).build();
 

@@ -16,13 +16,13 @@ import org.opendataspace.android.object.Account;
 import org.opendataspace.android.operation.OperationAccountDelete;
 import org.opendataspace.android.operation.OperationAccountUpdate;
 import org.opendataspace.android.operation.OperationLoader;
-import org.opendataspace.android.operation.OperationStatus;
+import org.opendataspace.android.operation.OperationResult;
 
 import java.sql.SQLException;
 
 @SuppressLint("ValidFragment")
 public class FragmentAccountDetails extends FragmentBaseInput
-        implements LoaderManager.LoaderCallbacks<OperationStatus> {
+        implements LoaderManager.LoaderCallbacks<OperationResult> {
 
     private final static int LOADER_APPLY = 1;
     private final static int LOADER_DELETE = 2;
@@ -95,7 +95,7 @@ public class FragmentAccountDetails extends FragmentBaseInput
     }
 
     @Override
-    public Loader<OperationStatus> onCreateLoader(int id, Bundle args) {
+    public Loader<OperationResult> onCreateLoader(int id, Bundle args) {
         switch (id) {
         case LOADER_APPLY:
             return new OperationLoader(op, getActivity());
@@ -109,7 +109,7 @@ public class FragmentAccountDetails extends FragmentBaseInput
     }
 
     @Override
-    public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus data) {
+    public void onLoadFinished(Loader<OperationResult> loader, OperationResult data) {
         ActivityMain ac = getMainActivity();
         ac.stopWait();
 
@@ -124,7 +124,7 @@ public class FragmentAccountDetails extends FragmentBaseInput
     }
 
     @Override
-    public void onLoaderReset(Loader<OperationStatus> loader) {
+    public void onLoaderReset(Loader<OperationResult> loader) {
         getMainActivity().stopWait();
     }
 

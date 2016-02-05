@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
+import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.cmis.CmisOperations;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.event.EventAccountConfig;
@@ -27,7 +28,8 @@ public class OperationAccountConfig extends OperationBase {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
+    protected void doExecute(OperationResult result) throws Exception {
+        getStatus().postMessage(R.string.status_configacc, account.getName());
         Repo repo = OdsApp.get().getDatabase().getRepos().getConfig(account);
 
         if (repo == null) {
@@ -42,7 +44,7 @@ public class OperationAccountConfig extends OperationBase {
             OdsApp.bus.post(new EventAccountConfig());
         }
 
-        status.setOk();
+        result.setOk();
     }
 
     private boolean checkFile(CmisSession session, String name) {
@@ -51,14 +53,14 @@ public class OperationAccountConfig extends OperationBase {
                 return false;
             }
 
-            CmisObject cmis = session.getObjectByPath("branding/android/res/drawable-xxhdpi/" + name);
+            CmisObject cmis = session.getObjectByPath("branding/android/res/drawable-xxhdpi/" + name, getStatus());
 
             if (cmis == null) {
-                cmis = session.getObjectByPath("branding/android/res/drawable-xhdpi/" + name);
+                cmis = session.getObjectByPath("branding/android/res/drawable-xhdpi/" + name, getStatus());
             }
 
             if (cmis == null) {
-                cmis = session.getObjectByPath("branding/android/res/drawable/" + name);
+                cmis = session.getObjectByPath("branding/android/res/drawable/" + name, getStatus());
             }
 
             if (cmis == null) {
@@ -82,7 +84,7 @@ public class OperationAccountConfig extends OperationBase {
                 return false;
             }
 
-            CmisOperations.download(session, new Node(cmis, session.getRepo()), f);
+            CmisOperations.download(session, new Node(cmis, session.getRepo()), f, getStatus());
             return true;
         } catch (Exception ex) {
             OdsLog.ex(getClass(), ex);

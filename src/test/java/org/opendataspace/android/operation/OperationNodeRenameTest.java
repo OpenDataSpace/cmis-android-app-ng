@@ -25,13 +25,13 @@ public class OperationNodeRenameTest {
         TestUtil.removeIfExists(session, oldName);
         TestUtil.removeIfExists(session, newName);
 
-        CmisObject obj = session.createFolder(new Node(session.getRoot(), session.getRepo()), oldName);
+        CmisObject obj = session.createFolder(new Node(session.getRoot(null), session.getRepo()), oldName, null);
         Node node = new Node(obj, session.getRepo());
         OdsApp.get().getDatabase().getNodes().create(node);
         OperationNodeRename op = new OperationNodeRename(session, node, newName);
-        OperationStatus st = op.execute();
+        OperationResult st = op.execute();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(true, TestUtil.hasChild(app, session.getRepo(), null, newName, Node.Type.FOLDER));
-        session.delete(node);
+        session.delete(node, null);
     }
 }

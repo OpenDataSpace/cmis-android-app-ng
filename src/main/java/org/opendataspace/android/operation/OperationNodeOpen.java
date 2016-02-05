@@ -24,8 +24,8 @@ public class OperationNodeOpen extends OperationBaseCmis {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
-        CmisObject cmis = node.getCmisObject(session);
+    protected void doExecute(OperationResult result) throws Exception {
+        CmisObject cmis = node.getCmisObject(session, getStatus());
         OdsApp app = OdsApp.get();
 
         if (node.merge(cmis)) {
@@ -36,8 +36,8 @@ public class OperationNodeOpen extends OperationBaseCmis {
             throw new InterruptedException();
         }
 
-        file = app.getCacheManager().download(session, node);
-        status.setOk();
+        file = app.getCacheManager().download(session, node, getStatus());
+        result.setOk();
     }
 
     public File getFile() {

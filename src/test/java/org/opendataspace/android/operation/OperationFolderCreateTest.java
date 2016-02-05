@@ -1,6 +1,7 @@
 package org.opendataspace.android.operation;
 
 import android.text.TextUtils;
+
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +26,8 @@ public class OperationFolderCreateTest {
         TestUtil.removeIfExists(session, name);
 
         OperationFolderCreate op =
-                new OperationFolderCreate(session, new Node(session.getRoot(), session.getRepo()), name);
-        OperationStatus st = op.execute();
+                new OperationFolderCreate(session, new Node(session.getRoot(null), session.getRepo()), name);
+        OperationResult st = op.execute();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(true, op.getNode() != null);
         Assert.assertEquals(false, TextUtils.isEmpty(op.getNode().getUuid()));
@@ -42,6 +43,6 @@ public class OperationFolderCreateTest {
         }
 
         Assert.assertEquals(true, found);
-        session.delete(op.getNode());
+        session.delete(op.getNode(), null);
     }
 }

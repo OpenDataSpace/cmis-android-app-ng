@@ -31,7 +31,7 @@ public class OperationLocalCopyMoveTest {
         OperationLocalCopyMove op = new OperationLocalCopyMove();
         op.setContext(Collections.singletonList(new FileInfo(dir1, null)), true);
         op.setTarget(dir3);
-        OperationStatus st = op.execute();
+        OperationResult st = op.execute();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(true, dir1.exists());
         Assert.assertEquals(true, new File(dir3, dir1.getName()).exists());

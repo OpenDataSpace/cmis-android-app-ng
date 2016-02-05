@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.Task;
 import org.opendataspace.android.app.TaskPool;
+import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.data.DaoMime;
 import org.opendataspace.android.data.DaoNode;
@@ -52,7 +53,7 @@ public class OperationFolderBrowse extends OperationBase {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
+    protected void doExecute(OperationResult result) throws Exception {
         OdsApp app = OdsApp.get();
         DaoNode dao = app.getDatabase().getNodes();
 
@@ -60,6 +61,8 @@ public class OperationFolderBrowse extends OperationBase {
             long id = folder.getParentId();
             folder = id != ObjectBase.INVALID_ID ? dao.get(id) : null;
         }
+
+        getStatus().postMessage(R.string.status_openfolder, folder != null ? folder.getName() : "/");
 
         if (isCancel()) {
             throw new InterruptedException();
@@ -90,7 +93,7 @@ public class OperationFolderBrowse extends OperationBase {
             lastTask = pool.execute(new OperationFolderFetch(session, folder));
         }
 
-        status.setOk();
+        result.setOk();
     }
 
     public void setFolder(Node folder) {

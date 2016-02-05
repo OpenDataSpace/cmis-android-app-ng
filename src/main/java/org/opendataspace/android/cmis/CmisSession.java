@@ -22,9 +22,13 @@ import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.spi.NavigationService;
 import org.apache.chemistry.opencmis.commons.spi.ObjectService;
+import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.app.OdsLog;
+import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.Repo;
+import org.opendataspace.android.status.StatusContext;
 import org.opendataspace.android.storage.FileInfo;
 import org.opendataspace.android.storage.LimitInputStream;
 
@@ -66,12 +70,12 @@ public class CmisSession {
         this.repo = repo;
     }
 
-    public CmisObject getObjectByPath(String path) {
-        Session session = getSession();
+    public CmisObject getObjectByPath(String path, StatusContext status) {
+        Session session = getSession(status);
         OperationContext context = session.getDefaultContext();
         ObjectService objectService = session.getBinding().getObjectService();
         ObjectFactory objectFactory = session.getObjectFactory();
-        String root = getRoot().getPath();
+        String root = getRoot(status).getPath();
 
         if (!root.endsWith("/")) {
             root += "/";
@@ -90,9 +94,9 @@ public class CmisSession {
         }
     }
 
-    public Folder getRoot() {
+    public Folder getRoot(StatusContext status) {
         if (root == null) {
-            root = getSession().getRootFolder();
+            root = getSession(status).getRootFolder();
         }
 
         return root;
@@ -102,8 +106,14 @@ public class CmisSession {
         return obj.<BigInteger>getPropertyValue(PropertyIds.CONTENT_STREAM_LENGTH).longValue();
     }
 
-    private Session getSession() {
+    private Session getSession(StatusContext status) {
         if (session == null) {
+            if (status != null) {
+                status.postMessage(R.string.status_connect, account.getDisplayName(), repo.getName());
+            } else if (OdsApp.get().isRealApp()) {
+                OdsLog.debug(getClass(), "Connecting without vaid context!");
+            }
+
             session = Cmis.factory.createSession(Cmis.createSessionSettings(account, repo));
         }
 
@@ -118,8 +128,8 @@ public class CmisSession {
         return repo;
     }
 
-    public List<CmisObject> children(Node folder) {
-        Session session = getSession();
+    public List<CmisObject> children(Node folder, StatusContext status) {
+        Session session = getSession(status);
         NavigationService ns = session.getBinding().getNavigationService();
         ObjectFactory objectFactory = session.getObjectFactory();
         OperationContext context = new OperationContextImpl(session.getDefaultContext());
@@ -149,8 +159,8 @@ public class CmisSession {
         return res;
     }
 
-    public InputStream getRendition(String nodeId) {
-        Session session = getSession();
+    public InputStream getRendition(String nodeId, StatusContext status) {
+        Session session = getSession(status);
         OperationContext context = session.createOperationContext();
         context.setRenditionFilterString("image/*");
 
@@ -166,8 +176,8 @@ public class CmisSession {
         return r != null ? r.getContentStream().getStream() : null;
     }
 
-    public CmisObject createFolder(Node parent, String name) {
-        Session session = getSession();
+    public CmisObject createFolder(Node parent, String name, StatusContext status) {
+        Session session = getSession(status);
         Map<String, Serializable> properties = new HashMap<>();
 
         properties.put(PropertyIds.OBJECT_TYPE_ID, BaseTypeId.CMIS_FOLDER.value());
@@ -176,33 +186,33 @@ public class CmisSession {
                 new ObjectIdImpl(parent != null ? parent.getUuid() : repo.getRootFolderUuid())));
     }
 
-    public void delete(Node node) {
+    public void delete(Node node, StatusContext status) {
         if (node.getType() == Node.Type.FOLDER) {
-            getSession().getBinding().getObjectService()
+            getSession(status).getBinding().getObjectService()
                     .deleteTree(repo.getUuid(), node.getUuid(), true, null, false, null);
         } else {
-            getSession().delete(new ObjectIdImpl(node.getUuid()));
+            getSession(status).delete(new ObjectIdImpl(node.getUuid()));
         }
     }
 
-    public CmisObject getObjectById(String uuid) {
-        return getSession().getObject(new ObjectIdImpl(uuid));
+    public CmisObject getObjectById(String uuid, StatusContext status) {
+        return getSession(status).getObject(new ObjectIdImpl(uuid));
     }
 
     public Account getAccount() {
         return account;
     }
 
-    public ContentStream getStream(Node node) {
-        return getSession().getBinding().getObjectService()
+    public ContentStream getStream(Node node, StatusContext status) {
+        return getSession(status).getBinding().getObjectService()
                 .getContentStream(repo.getUuid(), node.getUuid(), null, null, null, null);
     }
 
-    public CmisObject createDocument(Node folder, String name, FileInfo info) throws IOException {
+    public CmisObject createDocument(Node folder, String name, FileInfo info, StatusContext status) throws IOException {
         FileInputStream is = null;
 
         try {
-            Session session = getSession();
+            Session session = getSession(status);
             boolean hasPwc = session.getRepositoryInfo().getCapabilities().isPwcUpdatableSupported();
             Map<String, Serializable> properties = new HashMap<>();
             properties.put(PropertyIds.OBJECT_TYPE_ID, BaseTypeId.CMIS_DOCUMENT.value());

@@ -12,6 +12,7 @@ import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.CacheEntry;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.Repo;
+import org.opendataspace.android.status.StatusContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +66,7 @@ public class CacheManager {
         Storage.deleteTree(Storage.getAccountFolder(context, account));
     }
 
-    public File download(CmisSession session, Node node) throws Exception {
+    public File download(CmisSession session, Node node, StatusContext status) throws Exception {
         CacheEntry ce = dao.get(node.getCacheEntryId());
 
         File f = null;
@@ -89,7 +90,7 @@ public class CacheManager {
                 f = File.createTempFile("lo-", "", folder);
             }
 
-            if (!CmisOperations.download(session, node, f)) {
+            if (!CmisOperations.download(session, node, f, status)) {
                 throw new IOException();
             }
 

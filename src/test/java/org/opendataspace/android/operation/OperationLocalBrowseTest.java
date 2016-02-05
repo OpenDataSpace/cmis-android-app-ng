@@ -23,7 +23,7 @@ public class OperationLocalBrowseTest {
         Assert.assertEquals(true, res);
 
         OperationLocalBrowse op = new OperationLocalBrowse(null, OperationLocalBrowse.Mode.DEFAULT);
-        OperationStatus st = op.execute();
+        OperationResult st = op.execute();
         Assert.assertEquals(true, st.isOk());
         Assert.assertEquals(true, op.getData().size() > 0);
         Assert.assertEquals(true, op.getTop() == null);

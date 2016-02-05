@@ -36,7 +36,7 @@ import org.opendataspace.android.operation.OperationNodeDelete;
 import org.opendataspace.android.operation.OperationNodeDownload;
 import org.opendataspace.android.operation.OperationNodeInfo;
 import org.opendataspace.android.operation.OperationNodeUpload;
-import org.opendataspace.android.operation.OperationStatus;
+import org.opendataspace.android.operation.OperationResult;
 import org.opendataspace.android.storage.FileInfo;
 
 import java.util.Collections;
@@ -44,7 +44,7 @@ import java.util.List;
 
 @SuppressLint("ValidFragment")
 public class FragmentFolderCmis extends FragmentBaseList
-        implements LoaderManager.LoaderCallbacks<OperationStatus>, ActionMode.Callback {
+        implements LoaderManager.LoaderCallbacks<OperationResult>, ActionMode.Callback {
 
     private final static int LOADER_BROWSE = 1;
     private final static int LOADER_NEWFOLDER = 2;
@@ -108,7 +108,7 @@ public class FragmentFolderCmis extends FragmentBaseList
     }
 
     @Override
-    public Loader<OperationStatus> onCreateLoader(int id, Bundle args) {
+    public Loader<OperationResult> onCreateLoader(int id, Bundle args) {
         switch (id) {
         case LOADER_BROWSE:
             return new OperationLoader(op, getActivity());
@@ -128,7 +128,7 @@ public class FragmentFolderCmis extends FragmentBaseList
     }
 
     @Override
-    public void onLoadFinished(Loader<OperationStatus> loader, OperationStatus data) {
+    public void onLoadFinished(Loader<OperationResult> loader, OperationResult data) {
         if (!data.isOk()) {
             Activity ac = getActivity();
             new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
@@ -155,7 +155,7 @@ public class FragmentFolderCmis extends FragmentBaseList
     }
 
     @Override
-    public void onLoaderReset(Loader<OperationStatus> loader) {
+    public void onLoaderReset(Loader<OperationResult> loader) {
         if (loader.getId() == LOADER_BROWSE) {
             browseFinished(false);
         }

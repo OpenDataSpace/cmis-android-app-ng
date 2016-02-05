@@ -28,15 +28,15 @@ public class OperationNodeDelete extends OperationBaseCmis {
     }
 
     @Override
-    protected void doExecute(OperationStatus status) throws Exception {
+    protected void doExecute(OperationResult result) throws Exception {
         boolean res = true;
 
         for (Node cur : nodes) {
             try {
-                CmisOperations.deleteNode(session, cur);
+                CmisOperations.deleteNode(session, cur, getStatus());
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);
-                status.setError(ex);
+                result.setError(ex);
                 res = false;
             }
 
@@ -46,7 +46,7 @@ public class OperationNodeDelete extends OperationBaseCmis {
         }
 
         if (res) {
-            status.setOk();
+            result.setOk();
         }
     }
 }
