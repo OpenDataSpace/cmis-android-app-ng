@@ -36,6 +36,7 @@ public class OperationNodeUpload extends OperationBaseCmis {
             try {
                 CmisObject cmis = session.createDocument(folder, cur.getFile().getName(), cur);
                 OdsApp.get().getDatabase().getNodes().create(new Node(cmis, folder));
+                // TODO copy file to local cache
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);
                 res = false;

@@ -77,7 +77,7 @@ public class FragmentFolderLocal extends FragmentBaseList
         if (!info.isDirectory()) {
             switch (op.getMode()) {
             case DEFAULT:
-                getNavigation().openFile(FragmentNodeLocal.class, new OperationLocalInfo(info));
+                getNavigation().openFile(FragmentNodeLocal.class, new OperationLocalInfo(info, op.getAccount()));
                 break;
 
             case SEL_FILES:
@@ -258,7 +258,7 @@ public class FragmentFolderLocal extends FragmentBaseList
 
         case R.id.menu_folder_details:
             if (moreItem != null) {
-                getNavigation().openFile(FragmentNodeLocal.class, new OperationLocalInfo(moreItem));
+                getNavigation().openFile(FragmentNodeLocal.class, new OperationLocalInfo(moreItem, op.getAccount()));
             }
             break;
 
