@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
@@ -106,5 +107,18 @@ public class ActivityBase extends AppCompatActivity {
 
     public boolean isWaiting() {
         return waitDialog != null;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        OdsApp.get().getStatusManager()
+                .setSnack(Snackbar.make(findViewById(R.id.main_view_coordinator), "", Snackbar.LENGTH_INDEFINITE));
+    }
+
+    @Override
+    protected void onStop() {
+        OdsApp.get().getStatusManager().setSnack(null);
+        super.onStop();
     }
 }

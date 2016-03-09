@@ -8,6 +8,7 @@ public class StatusContext implements CompatDisposable {
 
     private final Class<?> cls;
     private final long idx;
+    private String lastMessage;
 
     public StatusContext(final Class<?> cls, long idx) {
         this.cls = cls;
@@ -29,5 +30,13 @@ public class StatusContext implements CompatDisposable {
     @Override
     public void dispose() {
         OdsApp.bus.post(new EventStatus(this));
+    }
+
+    public String getLastMessage() {
+        return lastMessage;
+    }
+
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
     }
 }

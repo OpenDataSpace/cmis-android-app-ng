@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-    android:id="@+id/main_view_root"
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/main_view_coordinator"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:auto="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,17 +8,23 @@
     android:layout_height="match_parent"
     tools:context="org.opendataspace.android.ui.ActivityMain">
 
-    <FrameLayout
-        android:id="@+id/main_view_frame"
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/main_view_root"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/main_view_drawer"
-        android:layout_width="@dimen/drawer"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        auto:cardCornerRadius="0dp"
-        auto:cardElevation="@dimen/pad"/>
+        <FrameLayout
+            android:id="@+id/main_view_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-</android.support.v4.widget.DrawerLayout>
+        <android.support.v7.widget.CardView
+            android:id="@+id/main_view_drawer"
+            android:layout_width="@dimen/drawer"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            auto:cardCornerRadius="0dp"
+            auto:cardElevation="@dimen/pad"/>
+
+    </android.support.v4.widget.DrawerLayout>
+</android.support.design.widget.CoordinatorLayout>
