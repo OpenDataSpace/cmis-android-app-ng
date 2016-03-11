@@ -1,6 +1,7 @@
 package org.opendataspace.android.ui;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.widget.ListView;
 
 import org.junit.Assert;
@@ -11,6 +12,8 @@ import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.navigation.NavigationState;
 import org.opendataspace.android.operation.OperationAccountUpdate;
+import org.opendataspace.android.operation.OperationBase;
+import org.opendataspace.android.status.StatusContext;
 import org.opendataspace.android.test.TestRunner;
 import org.opendataspace.android.test.TestUtil;
 import org.robolectric.Robolectric;
@@ -111,6 +114,29 @@ public class ActivityMainTest {
         ac = ActivityController.of(Robolectric.getShadowsAdapter(), ActivityMain.class).setup(bu).get();
         TestUtil.waitRunnable();
         Assert.assertEquals(FragmentAccountDetails.class, app.getNavigation().getTopFragment().getClass());
+        TestUtil.dismisActivity(ac);
+    }
+
+    @Test
+    public void checkSnackbar() throws Exception {
+        OdsApp app = (OdsApp) RuntimeEnvironment.application;
+        ActivityMain ac = TestUtil.setupActivity();
+        TestUtil.waitRunnable();
+
+        Snackbar bar = app.getStatusManager().getSnackbar();
+        Assert.assertNotEquals(null, bar);
+
+        StatusContext context = app.getStatusManager().createContext(OperationBase.class);
+        context.postMessage(R.string.common_ok);
+        TestUtil.waitRunnable();
+        Assert.assertEquals(app.getString(R.string.common_ok), context.getLastMessage());
+        Assert.assertEquals(true, bar.isShown());
+
+        context.dispose();
+        TestUtil.waitRunnable();
+        Assert.assertEquals(app.getString(R.string.common_ok), context.getLastMessage());
+        Assert.assertEquals(false, bar.isShown());
+
         TestUtil.dismisActivity(ac);
     }
 }

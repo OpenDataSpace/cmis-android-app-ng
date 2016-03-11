@@ -16,7 +16,7 @@ public class StatusManager implements CompatDisposable {
 
     private final List<StatusContext> data = new ArrayList<>();
     private long idx = 0;
-    private WeakReference<Snackbar> snack;
+    private WeakReference<Snackbar> snack = new WeakReference<>(null);
 
     public StatusManager() {
         OdsApp.bus.register(this, Event.PRIORITY_UI);
@@ -81,5 +81,9 @@ public class StatusManager implements CompatDisposable {
         }
 
         bar.setText(data.get(data.size() - 1).getLastMessage()).show();
+    }
+
+    public Snackbar getSnackbar() {
+        return snack.get();
     }
 }

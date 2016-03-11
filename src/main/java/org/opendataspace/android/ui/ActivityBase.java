@@ -24,6 +24,7 @@ public class ActivityBase extends AppCompatActivity {
 
     private Toast toast;
     private ProgressDialog waitDialog;
+    private Snackbar snack;
 
     @SuppressLint("ShowToast")
     @Override
@@ -112,8 +113,12 @@ public class ActivityBase extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        OdsApp.get().getStatusManager()
-                .setSnack(Snackbar.make(findViewById(R.id.main_view_coordinator), "", Snackbar.LENGTH_INDEFINITE));
+
+        if (snack == null) {
+            snack = Snackbar.make(findViewById(R.id.main_view_coordinator), "", Snackbar.LENGTH_INDEFINITE);
+        }
+
+        OdsApp.get().getStatusManager().setSnack(snack);
     }
 
     @Override
