@@ -46,7 +46,7 @@ public class DaoRepo extends DaoBaseView<Repo> {
 
     public Repo getConfig(Account account) throws SQLException {
         CloseableIterator<Repo> it =
-                iterate(queryBuilder().limit(1l).where().eq(Repo.FIELD_ACCID, account.getId()).and()
+                iterate(queryBuilder().limit(1L).where().eq(Repo.FIELD_ACCID, account.getId()).and()
                         .eq(Repo.FIELD_TYPE, Repo.Type.CONFIG).prepare());
 
         try {

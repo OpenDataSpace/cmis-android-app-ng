@@ -168,7 +168,7 @@ public class CmisHttpInvoker implements HttpInvoker {
                 //Not supported with All server.
                 //conn.setChunkedStreamingMode((64 * 1024) - 1);
 
-                OutputStream connOut = null;
+                OutputStream connOut;
 
                 Object clientCompression = session.get(SessionParameter.CLIENT_COMPRESSION);
                 if ((clientCompression != null) && Boolean.parseBoolean(clientCompression.toString())) {

@@ -1,5 +1,6 @@
 package org.opendataspace.android.cmis;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.util.Base64;
 
@@ -12,10 +13,6 @@ import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.OdsPreferences;
 import org.opendataspace.android.app.beta.BuildConfig;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -23,6 +20,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
 
 @SuppressWarnings("WeakerAccess")
 public class CmisAuthProvider extends AbstractAuthenticationProvider {
@@ -46,6 +48,7 @@ public class CmisAuthProvider extends AbstractAuthenticationProvider {
     public SSLSocketFactory getSSLSocketFactory() {
         if (factory == null) {
             try {
+                @SuppressLint("TrustAllX509TrustManager")
                 X509TrustManager customManager = new X509TrustManager() {
                     @Override
                     public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws
@@ -66,7 +69,7 @@ public class CmisAuthProvider extends AbstractAuthenticationProvider {
                 };
 
                 SSLContext context = SSLContext.getInstance("TLS");
-                context.init(null, new X509TrustManager[] {customManager}, new SecureRandom());
+                context.init(null, new X509TrustManager[]{customManager}, new SecureRandom());
                 factory = context.getSocketFactory();
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);

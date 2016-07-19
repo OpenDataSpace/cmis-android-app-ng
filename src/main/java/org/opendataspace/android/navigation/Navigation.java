@@ -6,10 +6,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.view.Gravity;
 
 import org.opendataspace.android.app.CompatKeyboard;
 import org.opendataspace.android.app.OdsApp;
@@ -50,8 +50,11 @@ public class Navigation implements NavigationInterface {
         toggle = new ActionBarDrawerToggle(activity, drawer, R.string.common_opendrawer, R.string.common_closedrawer);
 
         backstack.clear();
-        drawer.setDrawerShadow(null, 0);
-        drawer.setScrimColor(activity.getResources().getColor(android.R.color.transparent));
+
+        if (drawer != null) {
+            drawer.setDrawerShadow(null, GravityCompat.END);
+            drawer.setScrimColor(activity.getResources().getColor(android.R.color.transparent));
+        }
 
         if (state != null) {
             NavigationState[] ns = OdsApp.gson.fromJson(state.getString(ARG_BACKSTACK), NavigationState[].class);
@@ -145,8 +148,12 @@ public class Navigation implements NavigationInterface {
         toggle.syncState();
 
         DrawerLayout drawer = (DrawerLayout) ac.findViewById(R.id.main_view_root);
-        drawer.setDrawerLockMode(needDrawer ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
-                Gravity.START);
+
+        if (drawer != null) {
+            drawer.setDrawerLockMode(
+                    needDrawer ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+                    GravityCompat.START);
+        }
     }
 
     private void closeDrawer() {
@@ -157,7 +164,10 @@ public class Navigation implements NavigationInterface {
         }
 
         DrawerLayout drawer = (DrawerLayout) ac.findViewById(R.id.main_view_root);
-        drawer.closeDrawer(Gravity.START);
+
+        if (drawer != null) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
     }
 
     public static FragmentBase createFragment(NavigationState ns) {
@@ -279,7 +289,10 @@ public class Navigation implements NavigationInterface {
         }
 
         DrawerLayout drawer = (DrawerLayout) ac.findViewById(R.id.main_view_root);
-        drawer.openDrawer(Gravity.START);
+
+        if (drawer != null) {
+            drawer.openDrawer(GravityCompat.START);
+        }
     }
 
     @Override

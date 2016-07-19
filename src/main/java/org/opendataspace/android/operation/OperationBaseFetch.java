@@ -79,5 +79,6 @@ abstract class OperationBaseFetch<T extends ObjectBase, U> extends OperationBase
 
     protected abstract void delete(T obj) throws SQLException;
 
+    @SuppressWarnings("RedundantThrows")
     protected abstract void cleanup(List<T> ls) throws SQLException;
 }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Toast;
 
 import org.opendataspace.android.app.OdsApp;
@@ -115,7 +116,11 @@ public class ActivityBase extends AppCompatActivity {
         super.onStart();
 
         if (snack == null) {
-            snack = Snackbar.make(findViewById(R.id.main_view_coordinator), "", Snackbar.LENGTH_INDEFINITE);
+            final View view = findViewById(R.id.main_view_coordinator);
+
+            if (view != null) {
+                snack = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
+            }
         }
 
         OdsApp.get().getStatusManager().setSnack(snack);

@@ -10,6 +10,7 @@ import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -236,6 +237,7 @@ public class Node extends ObjectBase {
         return (info.permissions & NodeInfo.CAN_DELETE) != 0;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean canEdit() {
         return (info.permissions & NodeInfo.CAN_EDIT) != 0;
     }

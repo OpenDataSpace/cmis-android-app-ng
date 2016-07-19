@@ -20,7 +20,7 @@ public class DaoBaseSimple<T extends ObjectBase> extends DaoBase<T> {
         super(source, cache, dataClass);
     }
 
-    public void create(T val) throws SQLException {
+    void create(T val) throws SQLException {
         if (creator == null) {
             creator = MappedCreate.build(type, info);
         }
@@ -34,7 +34,7 @@ public class DaoBaseSimple<T extends ObjectBase> extends DaoBase<T> {
         }
     }
 
-    public void update(T val) throws SQLException {
+    private void update(T val) throws SQLException {
         if (updater == null) {
             updater = MappedUpdate.build(type, info);
         }

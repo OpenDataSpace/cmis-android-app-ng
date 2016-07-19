@@ -10,7 +10,7 @@ public class OperationResult {
     private boolean ok;
     private String message;
 
-    public void setError(String message) {
+    private void setError(String message) {
         ok = false;
         this.message = message;
     }

@@ -34,6 +34,7 @@ public class CacheEntry extends ObjectBase {
         return info.path;
     }
 
+    @SuppressWarnings("unused")
     public long getSize() {
         return info.size;
     }

@@ -2,8 +2,13 @@ package org.opendataspace.android.operation;
 
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.dao.CloseableIterator;
+
 import org.opendataspace.android.app.OdsApp;
-import org.opendataspace.android.data.*;
+import org.opendataspace.android.data.DaoAccount;
+import org.opendataspace.android.data.DaoCacheEntry;
+import org.opendataspace.android.data.DaoNode;
+import org.opendataspace.android.data.DaoRepo;
+import org.opendataspace.android.data.DataBase;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Repo;
 
@@ -55,7 +60,7 @@ public class OperationAccountDelete extends OperationBase {
         OdsApp.get().getCacheManager().accountDeleted(account);
 
         if (app.getPrefs().getLastAccountId() == account.getId()) {
-            CloseableIterator<Account> ita = accounts.iterate(accounts.queryBuilder().limit(1l).prepare());
+            CloseableIterator<Account> ita = accounts.iterate(accounts.queryBuilder().limit(1L).prepare());
 
             try {
                 app.getPool().execute(new OperationAccountSelect(ita.hasNext() ? ita.nextThrow() : null));
