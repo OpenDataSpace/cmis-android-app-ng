@@ -1,6 +1,7 @@
 package org.opendataspace.android.operation;
 
 import com.google.gson.annotations.Expose;
+
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
@@ -23,6 +24,8 @@ public class OperationAccountConfig extends OperationBase {
     @Expose
     private final Account account;
 
+    private boolean foundIcons;
+
     public OperationAccountConfig(Account account) {
         this.account = account;
     }
@@ -37,10 +40,10 @@ public class OperationAccountConfig extends OperationBase {
         }
 
         CmisSession session = new CmisSession(account, repo);
-        boolean res = checkFile(session, BRAND_ICON);
-        res = checkFile(session, BRAND_LARGE) || res;
+        foundIcons = checkFile(session, BRAND_ICON);
+        foundIcons = checkFile(session, BRAND_LARGE) || foundIcons;
 
-        if (res) {
+        if (foundIcons) {
             OdsApp.bus.post(new EventAccountConfig());
         }
 
@@ -91,5 +94,9 @@ public class OperationAccountConfig extends OperationBase {
         }
 
         return false;
+    }
+
+    public boolean isFoundIcons() {
+        return foundIcons;
     }
 }

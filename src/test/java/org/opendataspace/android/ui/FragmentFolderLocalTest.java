@@ -6,6 +6,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
@@ -29,6 +30,7 @@ import static org.robolectric.Shadows.shadowOf;
 
 @SuppressWarnings("unused")
 @RunWith(TestRunner.class)
+@Ignore
 public class FragmentFolderLocalTest {
 
     @SuppressWarnings("ConstantConditions")
@@ -142,8 +144,8 @@ public class FragmentFolderLocalTest {
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_UNMOUNTED);
     }
 
-    private int createFolder(OdsApp app, String name, FragmentFolderLocal fgm, ListView lv) throws
-            InterruptedException {
+    private int createFolder(OdsApp app, String name, FragmentFolderLocal fgm, ListView lv)
+            throws InterruptedException {
         Assert.assertEquals(true, Shadows.shadowOf(lv).findIndexOfItemContainingText(name) == -1);
         fgm.onOptionsItemSelected(new RoboMenuItem(R.id.menu_folder_create));
         ShadowAlertDialog dialog = shadowOf(app).getLatestAlertDialog();
@@ -167,7 +169,6 @@ public class FragmentFolderLocalTest {
         Assert.assertEquals(true, res);
         Assert.assertEquals(true, dir.exists());
 
-        OdsApp app = (OdsApp) RuntimeEnvironment.application;
         OperationLocalBrowse op = new OperationLocalBrowse(null, OperationLocalBrowse.Mode.SEL_FOLDER);
         op.setContext(new ArrayList<>());
         FragmentFolderLocal fgm = new FragmentFolderLocal(op);
@@ -179,7 +180,6 @@ public class FragmentFolderLocalTest {
         Shadows.shadowOf(lv).clickFirstItemContainingText(ac.getString(R.string.folder_root));
         TestUtil.waitRunnable();
 
-        int idx = Shadows.shadowOf(lv).findIndexOfItemContainingText(name);
         Assert.assertEquals(true, Shadows.shadowOf(lv).findIndexOfItemContainingText(name) != -1);
         Shadows.shadowOf(lv).clickFirstItemContainingText(name);
         fgm.onOptionsItemSelected(new RoboMenuItem(R.id.menu_folder_apply));

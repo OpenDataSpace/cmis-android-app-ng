@@ -1,11 +1,13 @@
 package org.opendataspace.android.ui;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
@@ -21,6 +23,7 @@ import org.robolectric.shadows.ShadowView;
 
 @SuppressWarnings("unused")
 @RunWith(TestRunner.class)
+@Ignore
 public class FragmentAccountDetailsTest {
 
     @SuppressWarnings("ConstantConditions")
@@ -71,6 +74,7 @@ public class FragmentAccountDetailsTest {
         TestUtil.dismisActivity(ac);
     }
 
+    @SuppressLint("SetTextI18n")
     @SuppressWarnings("ConstantConditions")
     @Test
     public void performActions() throws Exception {

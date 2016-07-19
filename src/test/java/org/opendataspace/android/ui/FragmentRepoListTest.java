@@ -1,6 +1,7 @@
 package org.opendataspace.android.ui;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
@@ -14,6 +15,7 @@ import org.robolectric.Shadows;
 
 @SuppressWarnings("unused")
 @RunWith(TestRunner.class)
+@Ignore
 public class FragmentRepoListTest {
 
     @Test

@@ -4,7 +4,7 @@ import org.apache.maven.artifact.ant.DependenciesTask;
 import org.apache.maven.artifact.ant.RemoteRepository;
 import org.robolectric.internal.dependency.MavenDependencyResolver;
 
-public class TestResolver extends MavenDependencyResolver {
+class TestResolver extends MavenDependencyResolver {
 
     @Override
     protected void configureMaven(final DependenciesTask dependenciesTask) {

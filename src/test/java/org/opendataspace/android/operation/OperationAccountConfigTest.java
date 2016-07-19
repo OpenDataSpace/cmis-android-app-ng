@@ -1,7 +1,9 @@
 package org.opendataspace.android.operation;
 
 import android.graphics.drawable.Drawable;
+
 import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
@@ -32,14 +34,18 @@ public class OperationAccountConfigTest {
         Assert.assertEquals(true, d2 == null);
 
         OperationRepoFetch sync = new OperationRepoFetch(account);
+        sync.withoutConfig();
         OperationResult st = sync.execute();
         Assert.assertEquals(true, st.isOk());
-        TestUtil.waitRunnable();
+
+        OperationAccountConfig cfg = new OperationAccountConfig(account);
+        st = cfg.execute();
+        Assert.assertEquals(true, st.isOk());
 
         d1 = Storage.getBrandingDrawable(app.getApplicationContext(), account, OperationAccountConfig.BRAND_ICON);
         d2 = Storage.getBrandingDrawable(app.getApplicationContext(), account, OperationAccountConfig.BRAND_LARGE);
-        Assert.assertEquals(true, d1 != null);
-        Assert.assertEquals(true, d2 != null);
+        Assert.assertEquals(cfg.isFoundIcons(), d1 != null);
+        Assert.assertEquals(cfg.isFoundIcons(), d2 != null);
 
         cleanup(app, account);
     }

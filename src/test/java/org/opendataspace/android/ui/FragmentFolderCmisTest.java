@@ -5,6 +5,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
@@ -27,6 +28,7 @@ import static org.robolectric.Shadows.shadowOf;
 
 @SuppressWarnings("unused")
 @RunWith(TestRunner.class)
+@Ignore
 public class FragmentFolderCmisTest {
 
     @Test
@@ -156,7 +158,6 @@ public class FragmentFolderCmisTest {
 
         //noinspection ConstantConditions
         ListView lv = (ListView) fgm.getView().findViewById(android.R.id.list);
-        int idx = Shadows.shadowOf(lv).findIndexOfItemContainingText("GDS");
         Assert.assertEquals(true, Shadows.shadowOf(lv).findIndexOfItemContainingText("GDS") != -1);
         Shadows.shadowOf(lv).clickFirstItemContainingText("GDS");
         fgm.onOptionsItemSelected(new RoboMenuItem(R.id.menu_folder_apply));
