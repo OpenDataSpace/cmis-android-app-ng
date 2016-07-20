@@ -5,19 +5,12 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
-        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
-        classpath 'net.orfjackal.retrolambda:retrolambda:2.3.0'
+        classpath 'com.android.tools.build:gradle:2.2.0-alpha6'
         classpath 'io.fabric.tools:gradle:1.21.6'
-        classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
-        classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.12.+'
     }
-    configurations.classpath.exclude group: 'com.android.tools.external.lombok'
 }
 
-apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'io.fabric'
 
 def applyProperty(Properties p, String id, String var, String defValue) {
@@ -66,17 +59,12 @@ def getBuildProperties() {
     applyProperty(p, 'ods.repo.user', pRepoUser, '');
     applyProperty(p, 'ods.repo.password', pRepoPwd, '');
     applyProperty(p, 'ods.app.version', pAppVersion, '');
-    applyProperty(p, 'ods.build.tools', pBuildTools, '24.0.0');
+    applyProperty(p, 'ods.build.tools', pBuildTools, '24.0.1');
 
     return p;
 }
 
 def Properties props = getBuildProperties();
-
-retrolambda {
-    javaVersion JavaVersion.VERSION_1_7
-    jvmArgs '-noverify'
-}
 
 android {
     compileSdkVersion 'android-23'
@@ -111,6 +99,10 @@ android {
         resConfigs 'en', 'de', 'fr'
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         manifestPlaceholders = ['ods.key.fabric': props['ods.key.fabric']]
+
+        jackOptions {
+            enabled true
+        }
     }
 
     packagingOptions {
@@ -167,10 +159,10 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:24.0.0'
-    compile 'com.android.support:appcompat-v7:24.0.0'
-    compile 'com.android.support:cardview-v7:24.0.0'
-    compile 'com.android.support:design:24.0.0'
+    compile 'com.android.support:support-v4:24.1.0'
+    compile 'com.android.support:appcompat-v7:24.1.0'
+    compile 'com.android.support:cardview-v7:24.1.0'
+    compile 'com.android.support:design:24.1.0'
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'org.slf4j:slf4j-android:1.7.7'
