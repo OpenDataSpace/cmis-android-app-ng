@@ -3,6 +3,7 @@
 <lint>
     <issue id="IconMissingDensityFolder" severity="ignore"/>
     <issue id="UnusedResources" severity="ignore"/>
+	<issue id="OldTargetApi" severity="ignore"/>
     <issue id="InvalidPackage">
         <ignore regexp="chemistry-opencmis-android-client-.*\.jar"/>
         <ignore regexp="okio-.*\.jar"/>

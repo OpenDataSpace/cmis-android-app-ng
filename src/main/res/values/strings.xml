@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- common -->
     <string name="common_opendrawer">Open navigation</string>
@@ -62,9 +62,9 @@
     <string name="status_configacc">Configuring %1$s</string>
 
     <!-- about -->
-    <string name="about_info">
+    <string name="about_info" tools:ignore="PluralsCandidate">
 <![CDATA[<p>Version: <b>%1$s</b></p>
-<p>&copy; 2013-%2$s The Open DataSpace project. <a href="mailto:%3$s>%3$s</a></p>
+<p>&copy; 2013-%2$d The Open DataSpace project. <a href="mailto:%3$s>%3$s</a></p>
 <p>This software is licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, version 2.0</a>.</p>
 <p>Icons by <a href="http://www.iconsmind.com/">IconMind</a>.</p>]]>
     </string>
