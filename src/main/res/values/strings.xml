@@ -144,5 +144,8 @@
     <string name="node_rename">Rename</string>
     <string name="node_renamehint">Type new name here…</string>
     <string name="node_size">Size</string>
+    <string name="node_upload">Upload…</string>
+    <string name="node_download">Download…</string>
+    <string name="node_open">Open…</string>
 
 </resources>

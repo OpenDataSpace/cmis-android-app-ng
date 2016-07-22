@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.Formatter;
@@ -14,12 +16,15 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.Task;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.operation.OperationFolderBrowse;
 import org.opendataspace.android.operation.OperationLocalInfo;
 import org.opendataspace.android.storage.FileInfo;
 
 import java.io.File;
+import java.util.Collections;
 
 @SuppressLint("ValidFragment")
 public class FragmentNodeLocal extends FragmentBase {
@@ -75,6 +80,14 @@ public class FragmentNodeLocal extends FragmentBase {
 
         case R.id.menu_node_rename:
             actionRename();
+            break;
+
+        case R.id.menu_node_open:
+            actionOpen();
+            break;
+
+        case R.id.menu_node_upload:
+            actionUpload();
             break;
 
         default:
@@ -170,5 +183,21 @@ public class FragmentNodeLocal extends FragmentBase {
                 }
             }
         }, false);
+    }
+
+    private void actionOpen() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(op.getFileInfo().getFile()), op.getFileInfo().getMimeType());
+            startActivity(intent);
+        } catch (Exception ex) {
+            OdsLog.ex(getClass(), ex);
+        }
+    }
+
+    private void actionUpload() {
+        OperationFolderBrowse browse = new OperationFolderBrowse(op.getAccount(), null, OperationFolderBrowse.Mode.SEL_FOLDER);
+        browse.setContext(Collections.singletonList(op.getFileInfo()));
+        getNavigation().openDialog(FragmentRepoList.class, browse);
     }
 }
