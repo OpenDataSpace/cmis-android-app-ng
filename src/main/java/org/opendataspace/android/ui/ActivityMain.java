@@ -1,6 +1,7 @@
 package org.opendataspace.android.ui;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import org.opendataspace.android.app.OdsApp;
@@ -13,11 +14,10 @@ public class ActivityMain extends ActivityBase {
     private NavigationInterface nav;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    protected void onInit(final Bundle savedInstanceState) {
         OdsApp app = OdsApp.get();
         setContentView(app.getPrefs().isTablet() ? R.layout.activity_main_tablet : R.layout.activity_main_phone);
+        setSupportActionBar((Toolbar) findViewById(R.id.main_view_toolbar));
 
         nav = createNavigation(savedInstanceState);
         app.setNavigation(nav);

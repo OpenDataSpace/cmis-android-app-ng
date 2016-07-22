@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:descendantFocusability="blocksDescendants"
               android:minHeight="?attr/listPreferredItemHeight"
               android:orientation="horizontal"
-              android:padding="@dimen/pad"
-              android:descendantFocusability="blocksDescendants">
+              android:padding="@dimen/pad">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -35,6 +35,7 @@
         android:layout_gravity="center"
         android:layout_marginLeft="@dimen/pad"
         android:layout_marginStart="@dimen/pad"
-        android:src="@drawable/ic_prop"
-        android:contentDescription="@string/folder_actions"/>
+        android:contentDescription="@string/folder_actions"
+        android:scaleType="center"
+        android:src="@drawable/ic_prop"/>
 </LinearLayout>

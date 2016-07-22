@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.opendataspace.android.app.OdsApp;
@@ -30,21 +31,32 @@ public class ActivityBase extends AppCompatActivity {
     @SuppressLint("ShowToast")
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        try {
+            super.onCreate(savedInstanceState);
 
-        toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
-        OdsApp.bus.register(this);
+            toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
+            OdsApp.bus.register(this);
 
-        ActionBar bar = getSupportActionBar();
+            setRequestedOrientation(OdsApp.get().getPrefs().isTablet() ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        if (bar != null) {
-            bar.setDisplayShowHomeEnabled(true);
-            bar.setElevation(getResources().getDimensionPixelSize(R.dimen.pad) / 2);
+            onInit(savedInstanceState);
+
+            ActionBar bar = getSupportActionBar();
+
+            if (bar != null) {
+                bar.setDisplayShowHomeEnabled(true);
+                bar.setElevation(getResources().getDimensionPixelSize(R.dimen.pad) / 2);
+            }
+
+            updateBranding();
+        } catch (Exception ex) {
+            OdsLog.ex(getClass(), ex);
+            finish();
         }
+    }
 
-        updateBranding();
-        setRequestedOrientation(OdsApp.get().getPrefs().isTablet() ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    protected void onInit(final Bundle savedInstanceState) {
     }
 
     @Override

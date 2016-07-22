@@ -51,11 +51,6 @@ public class Navigation implements NavigationInterface {
 
         backstack.clear();
 
-        if (drawer != null) {
-            drawer.setDrawerShadow(null, GravityCompat.END);
-            drawer.setScrimColor(activity.getResources().getColor(android.R.color.transparent));
-        }
-
         if (state != null) {
             NavigationState[] ns = OdsApp.gson.fromJson(state.getString(ARG_BACKSTACK), NavigationState[].class);
 
@@ -222,12 +217,13 @@ public class Navigation implements NavigationInterface {
         }
 
         FragmentBase fgm = getTopFragment();
+        CompatKeyboard.hide(ac);
+        closeDrawer();
 
         if (fgm != null && fgm.backPressed()) {
             return true;
         }
 
-        CompatKeyboard.hide(ac);
         NavigationState state = backstack.pop();
 
         if (isTablet && state.getNavigationScope() == NavigationScope.DETAILS) {
@@ -328,7 +324,7 @@ public class Navigation implements NavigationInterface {
     }
 
     private void navigate(Class<? extends FragmentBase> cls, OperationBase op, NavigationScope scope,
-                          boolean needHome) {
+            boolean needHome) {
         ActivityMain ac = context.get();
 
         if (ac == null) {

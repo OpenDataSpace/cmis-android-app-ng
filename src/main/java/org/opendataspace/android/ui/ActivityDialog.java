@@ -3,8 +3,8 @@ package org.opendataspace.android.ui;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+
 import org.opendataspace.android.app.OdsApp;
-import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.Navigation;
 import org.opendataspace.android.navigation.NavigationState;
@@ -15,24 +15,17 @@ public class ActivityDialog extends ActivityBase {
     private static final String TAG_CONTENT = "content";
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onInit(final Bundle savedInstanceState) {
         setContentView(R.layout.activity_dialog);
 
-        try {
-            NavigationState state =
-                    OdsApp.gson.fromJson(getIntent().getStringExtra(ARG_NAV_STATE), NavigationState.class);
-            FragmentBase fgm = Navigation.createFragment(state);
+        NavigationState state = OdsApp.gson.fromJson(getIntent().getStringExtra(ARG_NAV_STATE), NavigationState.class);
+        FragmentBase fgm = Navigation.createFragment(state);
 
-            if (fgm == null) {
-                throw new IllegalArgumentException();
-            }
-
-            applyFragmment(fgm);
-        } catch (Exception ex) {
-            OdsLog.ex(getClass(), ex);
-            finish();
+        if (fgm == null) {
+            throw new IllegalArgumentException();
         }
+
+        applyFragmment(fgm);
     }
 
     @Override

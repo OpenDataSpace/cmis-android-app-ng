@@ -12,6 +12,8 @@
 
     <style name="OdsApp" parent="@style/Theme.AppCompat.Light">
         <item name="actionBarStyle">@style/OdsActionBar</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="OdsDialog" parent="@style/Theme.AppCompat.Light.DialogWhenLarge">
