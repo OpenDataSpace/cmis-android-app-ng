@@ -1,9 +1,11 @@
 package org.opendataspace.android.object;
 
 import junit.framework.Assert;
+
 import org.apache.chemistry.opencmis.client.api.Repository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.opendataspace.android.app.CompatObjects;
 import org.opendataspace.android.cmis.Cmis;
 import org.opendataspace.android.test.TestRunner;
@@ -19,14 +21,24 @@ public class RepoTest {
     public void checkType() throws Exception {
         List<Repository> ls = Cmis.factory.getRepositories(Cmis.createSessionSettings(TestUtil.getDefaultAccount()));
 
-        checkRepo(ls, Repo.Type.PRIVATE, "my");
-        checkRepo(ls, Repo.Type.SHARED, "shared");
-        checkRepo(ls, Repo.Type.GLOBAL, "global");
-        checkRepo(ls, Repo.Type.CONFIG, "config");
+        checkRepo(ls, Repo.Type.PRIVATE, "my", false);
+        checkRepo(ls, Repo.Type.SHARED, "shared", false);
+        checkRepo(ls, Repo.Type.GLOBAL, "global", false);
+        checkRepo(ls, Repo.Type.CONFIG, "config", true);
+        checkRepo(ls, Repo.Type.PROJECTS, "projects", true);
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void checkRepo(List<Repository> ls, Repo.Type type, String name) {
+    private void checkRepo(final List<Repository> ls, final Repo.Type type, final String name,
+            final boolean isOprional) {
+        Repo repo = new Repo();
+        Assert.assertEquals(Repo.Type.DEFAULT, repo.getType());
+
+        final Repository mock = Mockito.mock(Repository.class);
+        Mockito.when(mock.getName()).thenReturn(name);
+        Assert.assertEquals(true, repo.merge(mock));
+        Assert.assertEquals(type, repo.getType());
+
         Repository cmis = null;
 
         for (Repository cur : ls) {
@@ -36,12 +48,13 @@ public class RepoTest {
             }
         }
 
-        Assert.assertEquals(true, cmis != null);
-        Repo repo = new Repo();
-        Assert.assertEquals(Repo.Type.DEFAULT, repo.getType());
+        if (isOprional && cmis == null) {
+            return;
+        }
 
-        boolean res = repo.merge(cmis);
-        Assert.assertEquals(true, res);
+        repo = new Repo();
+        Assert.assertEquals(true, cmis != null);
+        Assert.assertEquals(true, repo.merge(cmis));
         Assert.assertEquals(type, repo.getType());
         Assert.assertEquals(cmis.getRootFolderId(), repo.getRootFolderUuid());
         Assert.assertEquals(cmis.getName(), repo.getName());

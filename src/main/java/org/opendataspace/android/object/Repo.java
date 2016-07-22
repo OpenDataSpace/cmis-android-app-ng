@@ -1,10 +1,13 @@
 package org.opendataspace.android.object;
 
 import android.content.Context;
+import android.text.TextUtils;
+
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
 import org.apache.chemistry.opencmis.client.api.Repository;
 import org.opendataspace.android.app.beta.R;
 
@@ -14,14 +17,14 @@ public class Repo extends ObjectBase {
     public static final String FIELD_ACCID = "aid";
     public static final String FIELD_TYPE = "t";
 
-    public enum Type {DEFAULT, PRIVATE, SHARED, GLOBAL, CONFIG}
+    public enum Type {PRIVATE, SHARED, GLOBAL, PROJECTS, DEFAULT, CONFIG}
 
     @Expose
     @DatabaseField(index = true, columnName = FIELD_ACCID, canBeNull = false)
     private final long accountId;
 
     @Expose
-    @DatabaseField(columnName = FIELD_TYPE, canBeNull = false, dataType = DataType.ENUM_INTEGER,
+    @DatabaseField(columnName = FIELD_TYPE, canBeNull = false, dataType = DataType.ENUM_STRING,
             unknownEnumName = "DEFAULT")
     private Type type;
 
@@ -74,7 +77,7 @@ public class Repo extends ObjectBase {
     public boolean merge(Repository repo) {
         if (cmis == null) {
             cmis = repo;
-        } else if (!cmis.getId().equals(repo.getId())) {
+        } else if (!TextUtils.equals(cmis.getId(), repo.getId())) {
             return false;
         }
 
@@ -102,6 +105,9 @@ public class Repo extends ObjectBase {
         case GLOBAL:
             return context.getString(R.string.nav_global);
 
+        case PROJECTS:
+            return context.getString(R.string.nav_projects);
+
         default:
             return info.name;
         }
@@ -114,6 +120,9 @@ public class Repo extends ObjectBase {
 
         case GLOBAL:
             return R.drawable.ic_global;
+
+        case PROJECTS:
+            return R.drawable.ic_projects;
 
         default:
             return R.drawable.ic_shared;
@@ -140,6 +149,10 @@ public class Repo extends ObjectBase {
 
         case "config":
             type = Type.CONFIG;
+            break;
+
+        case "projects":
+            type = Type.PROJECTS;
             break;
 
         default:

@@ -34,7 +34,7 @@ public class RepoAdapter extends ViewAdapter<Repo> {
     protected void sort(List<Repo> data) {
         Collections.sort(data, (r1, r2) -> {
             int res = Integer.valueOf(r1.getType().ordinal()).compareTo(r2.getType().ordinal());
-            return res != 0 ? res : r1.getName().compareTo(r2.getName());
+            return res != 0 ? res : r1.getName().compareToIgnoreCase(r2.getName());
         });
     }
 }

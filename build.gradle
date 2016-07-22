@@ -6,8 +6,8 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.0-alpha6'
-		
-		//noinspection GradleDynamicVersion
+
+        //noinspection GradleDynamicVersion
         classpath 'io.fabric.tools:gradle:1.+'
     }
 }
@@ -176,6 +176,7 @@ dependencies {
     compile 'org.apache.chemistry.opencmis:chemistry-opencmis-android-client:+'
 
     testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.9.5'
     testCompile 'org.apache.maven:maven-ant-tasks:2.1.3'
     testCompile 'org.robolectric:robolectric:3.1.1'
 }
