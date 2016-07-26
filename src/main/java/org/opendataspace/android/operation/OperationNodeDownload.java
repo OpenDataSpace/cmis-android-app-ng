@@ -1,10 +1,13 @@
 package org.opendataspace.android.operation;
 
 import com.google.gson.annotations.Expose;
+
+import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.cmis.CmisOperations;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.object.Node;
+import org.opendataspace.android.storage.Storage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,7 +36,14 @@ public class OperationNodeDownload extends OperationBaseCmis {
 
         for (Node cur : context) {
             try {
-                res = res && CmisOperations.download(session, cur, new File(folder, cur.getName()), getStatus());
+                final File src = OdsApp.get().getCacheManager().getLocal(cur);
+                final File dest = new File(folder, cur.getName());
+
+                if (src != null) {
+                    res = res && Storage.copyFile(src, dest);
+                } else {
+                    res = res && CmisOperations.download(session, cur, dest, getStatus());
+                }
             } catch (Exception ex) {
                 OdsLog.ex(getClass(), ex);
                 res = false;

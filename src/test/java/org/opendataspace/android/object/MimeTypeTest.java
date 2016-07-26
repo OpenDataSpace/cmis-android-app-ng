@@ -3,6 +3,7 @@ package org.opendataspace.android.object;
 import android.text.TextUtils;
 
 import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendataspace.android.app.OdsApp;
@@ -33,9 +34,10 @@ public class MimeTypeTest {
         Assert.assertEquals(false, ls.isEmpty());
 
         for (MimeType cur : ls) {
-            Assert.assertEquals(cur.getExtenstion(), false, cur.getIcon(app.getApplicationContext()) == 0);
-            Assert.assertEquals(cur.getExtenstion(), false,
+            Assert.assertEquals(cur.getExtension(), false, cur.getIcon(app.getApplicationContext()) == 0);
+            Assert.assertEquals(cur.getExtension(), false,
                     TextUtils.isEmpty(cur.getDescription(app.getApplicationContext())));
+            Assert.assertEquals(cur.getExtension(), true, cur.getType().contains("/"));
         }
     }
 }

@@ -39,6 +39,7 @@
     <string name="mime_raw">RAW Image</string>
     <string name="mime_source">Source File</string>
     <string name="mime_video">Video</string>
+    <string name="mime_unknown">Unknown</string>
 
     <!-- navigation -->
     <string name="nav_accounts">Accounts</string>
@@ -52,13 +53,14 @@
     <string name="nav_shared">Shared</string>
     <string name="nav_global">Global</string>
     <string name="nav_projects">Projects</string>
+    <string name="nav_config">Configuration</string>
     <string name="nav_localfolder">Local Files</string>
     <string name="nav_norepo">No repositories…</string>
 
     <!-- status -->
     <string name="status_syncrepo">Synchronizing account %1$s</string>
     <string name="status_syncfolder">Synchronizing folder %1$s</string>
-    <string name="status_connect">Connecting to %1$s %2$s</string>
+    <string name="status_connect">Connecting to %1$s/%2$s</string>
     <string name="status_openfolder">Opening folder %1$s</string>
     <string name="status_configacc">Configuring %1$s</string>
 

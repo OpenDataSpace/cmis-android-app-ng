@@ -1,6 +1,7 @@
 package org.opendataspace.android.operation;
 
 import com.google.gson.annotations.Expose;
+
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.cmis.CmisSession;

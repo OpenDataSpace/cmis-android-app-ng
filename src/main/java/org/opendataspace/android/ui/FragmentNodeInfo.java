@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventDaoBase;
@@ -27,9 +30,11 @@ import org.opendataspace.android.object.Node;
 import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationNodeDelete;
 import org.opendataspace.android.operation.OperationNodeInfo;
+import org.opendataspace.android.operation.OperationNodeOpen;
 import org.opendataspace.android.operation.OperationNodeRename;
 import org.opendataspace.android.operation.OperationResult;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 
 @SuppressLint("ValidFragment")
@@ -37,9 +42,11 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
 
     private final static int LOADER_DELETE = 1;
     private final static int LOADER_RENAME = 2;
+    private final static int LOADER_OPEN = 3;
 
     private final OperationNodeInfo op;
     private OperationNodeRename rename;
+    private OperationNodeOpen open;
 
     public FragmentNodeInfo(OperationNodeInfo op) {
         this.op = op;
@@ -127,6 +134,10 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
             actionRename();
             break;
 
+        case R.id.menu_node_open:
+            actionOpen();
+            break;
+
         default:
             return super.onOptionsItemSelected(item);
         }
@@ -179,6 +190,9 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
         case LOADER_RENAME:
             return new OperationLoader(rename, getActivity());
 
+        case LOADER_OPEN:
+            return new OperationLoader(open, getActivity());
+
         default:
             return null;
         }
@@ -192,6 +206,22 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
         if (!data.isOk()) {
             new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
                     .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> dialogInterface.cancel()).show();
+
+            return;
+        }
+
+        if (loader.getId() == LOADER_OPEN) {
+            final File f = open.getFile();
+
+            if (f != null && f.exists()) {
+                try {
+                    final Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(f), op.getNode().getMimeType().getType());
+                    startActivity(intent);
+                } catch (Exception ex) {
+                    OdsLog.ex(getClass(), ex);
+                }
+            }
         }
     }
 
@@ -242,5 +272,10 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
 
         rename = new OperationNodeRename(op.getSession(), node, name);
         startLoader(LOADER_RENAME);
+    }
+
+    private void actionOpen() {
+        open = new OperationNodeOpen(op.getSession(), op.getNode());
+        startLoader(LOADER_OPEN);
     }
 }

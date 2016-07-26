@@ -1,6 +1,7 @@
 package org.opendataspace.android.cmis;
 
 import com.google.gson.annotations.Expose;
+
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -109,7 +110,8 @@ public class CmisSession {
     private Session getSession(StatusContext status) {
         if (session == null) {
             if (status != null) {
-                status.postMessage(R.string.status_connect, account.getDisplayName(), repo.getName());
+                status.postMessage(R.string.status_connect, account.getDisplayName(),
+                        repo.getDisplayName(OdsApp.get().getApplicationContext()));
             } else if (OdsApp.get().isRealApp()) {
                 OdsLog.debug(getClass(), "Connecting without vaid context!");
             }

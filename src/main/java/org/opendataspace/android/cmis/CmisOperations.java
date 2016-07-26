@@ -16,8 +16,8 @@ import java.sql.SQLException;
 
 public class CmisOperations {
 
-    public static Node createFolder(CmisSession session, Node parent, String name, StatusContext status) throws
-            SQLException {
+    public static Node createFolder(CmisSession session, Node parent, String name, StatusContext status)
+            throws SQLException {
         Node node = new Node(session.createFolder(parent, name, status), parent);
         OdsApp.get().getDatabase().getNodes().create(node);
         return node;

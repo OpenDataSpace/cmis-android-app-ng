@@ -1,7 +1,10 @@
 package org.opendataspace.android.storage;
 
 import android.content.Context;
+import android.text.TextUtils;
+
 import com.j256.ormlite.dao.CloseableIterator;
+
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.cmis.CmisOperations;
@@ -66,17 +69,17 @@ public class CacheManager {
         Storage.deleteTree(Storage.getAccountFolder(context, account));
     }
 
+    public File getLocal(Node node) throws Exception {
+        CacheEntry ce = dao.get(node.getCacheEntryId());
+        return ce != null ? ce.getFile(node) : null;
+    }
+
     public File download(CmisSession session, Node node, StatusContext status) throws Exception {
         CacheEntry ce = dao.get(node.getCacheEntryId());
+        File f = ce != null ? ce.getFile(node) : null;
 
-        File f = null;
-
-        if (ce != null) {
-            f = new File(ce.getPath());
-
-            if (ce.getTimestamp() >= node.getModifiedTs() && f.exists()) {
-                return f;
-            }
+        if (f != null) {
+            return f;
         }
 
         File folder = Storage.getLocalFolder(context, session.getAccount(), session.getRepo(), Storage.CATEGORY_CACHE);
@@ -86,8 +89,10 @@ public class CacheManager {
         }
 
         try {
-            if (f == null) {
+            if (ce == null || TextUtils.isEmpty(ce.getPath())) {
                 f = File.createTempFile("lo-", "", folder);
+            } else {
+                f = new File(ce.getPath());
             }
 
             if (!CmisOperations.download(session, node, f, status)) {

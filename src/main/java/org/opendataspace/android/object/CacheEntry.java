@@ -46,4 +46,10 @@ public class CacheEntry extends ObjectBase {
     public void update(File f) {
         info.update(f);
     }
+
+    public File getFile(final Node node) {
+        final File f = new File(info.path);
+        return (f.exists() && f.isFile() && getTimestamp() >= node.getModifiedTs() && f.length() == node.getSize()) ?
+                f : null;
+    }
 }

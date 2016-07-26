@@ -108,6 +108,9 @@ public class Repo extends ObjectBase {
         case PROJECTS:
             return context.getString(R.string.nav_projects);
 
+        case CONFIG:
+            return context.getString(R.string.nav_config);
+
         default:
             return info.name;
         }
