@@ -21,4 +21,9 @@ public class CompatLambda {
         @SuppressWarnings("BooleanMethodIsAlwaysInverted")
         boolean test();
     }
+
+    public interface BiConsumer<T, U> {
+        @SuppressWarnings("RedundantThrows")
+        void accept(T t, U u) throws Exception;
+    }
 }

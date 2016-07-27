@@ -2,8 +2,6 @@ package org.opendataspace.android.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +12,8 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import org.opendataspace.android.app.OdsApp;
+import org.opendataspace.android.app.TaskOperation;
+import org.opendataspace.android.app.WeakCallback;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.data.DataAdapterMerge;
 import org.opendataspace.android.event.Event;
@@ -27,12 +27,10 @@ import org.opendataspace.android.object.RepoAdapter;
 import org.opendataspace.android.operation.OperationAccountSelect;
 import org.opendataspace.android.operation.OperationAccountUpdate;
 import org.opendataspace.android.operation.OperationFolderBrowse;
-import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationLocalBrowse;
-import org.opendataspace.android.operation.OperationResult;
 import org.opendataspace.android.view.ViewManager;
 
-public class FragmentNavigation extends FragmentBase implements LoaderManager.LoaderCallbacks<OperationResult> {
+public class FragmentNavigation extends FragmentBase {
 
     private AccountAdapter accounts;
     private RepoAdapter repos;
@@ -40,27 +38,28 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
     private boolean isMain = true;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+            final Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_navigation, container, false);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Activity ac = getActivity();
-        ViewManager vm = OdsApp.get().getViewManager();
-        ListView lva = widget(R.id.list_nav_accounts);
-        ListView lvf = widget(R.id.list_nav_folders);
+        final Activity ac = getActivity();
+        final ViewManager vm = OdsApp.get().getViewManager();
+        final ListView lva = widget(R.id.list_nav_accounts);
+        final ListView lvf = widget(R.id.list_nav_folders);
 
-        DataAdapterMerge adpa = new DataAdapterMerge();
+        final DataAdapterMerge adpa = new DataAdapterMerge();
         adpa.addAdapter(accounts = new AccountAdapter(vm.getAccounts(), ac));
         adpa.addAdapter(new ActionAdapter(ac, Action.listOf(ac, R.id.action_nav_addaccount, R.id.action_nav_manage),
                 R.layout.delegate_list_item2));
         lva.setAdapter(adpa);
         lva.setOnItemClickListener((adapterView, view1, i, l) -> selectItem(adapterView, i));
 
-        DataAdapterMerge adpf = new DataAdapterMerge();
+        final DataAdapterMerge adpf = new DataAdapterMerge();
         adpf.addAdapter(repos = new RepoAdapter(vm.getRepos(), ac));
         adpf.addAdapter(
                 new ActionAdapter(ac, Action.listOf(ac, R.id.action_nav_localfolder), R.layout.delegate_list_item1));
@@ -91,8 +90,8 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        ActivityMain ac = getMainActivity();
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        final ActivityMain ac = getMainActivity();
 
         if (ac == null) {
             return super.onOptionsItemSelected(item);
@@ -119,14 +118,15 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
     }
 
     @SuppressWarnings({"UnusedParameters", "unused"})
-    public void onEventMainThread(EventAccountSelect val) {
+    public void onEventMainThread(final EventAccountSelect val) {
         updateCurrentAccount();
     }
 
     private void updateCurrentAccount() {
-        TextView tva = widget(R.id.action_nav_account);
-        TextView tvd = widget(R.id.action_nav_accdesc);
-        Account acc = OdsApp.get().getViewManager().getCurrentAccount();
+        final TextView tva = widget(R.id.action_nav_account);
+        final TextView tvd = widget(R.id.action_nav_accdesc);
+        final Account acc = OdsApp.get().getViewManager().getCurrentAccount();
+
         accounts.exclude(acc);
         tva.setText(acc == null ? getString(R.string.nav_noaccount) : acc.getDisplayName());
         tvd.setText(acc == null ? "" : acc.getDescription());
@@ -140,8 +140,8 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
                 vs.getDisplayedChild() == 1 ? R.drawable.ic_arrow_up : R.drawable.ic_arrow_down, 0);
     }
 
-    private void selectItem(AdapterView<?> view, int idx) {
-        Object obj = view.getAdapter().getItem(idx);
+    private void selectItem(final AdapterView<?> view, final int idx) {
+        final Object obj = view.getAdapter().getItem(idx);
 
         if (obj instanceof Account) {
             selectAccount((Account) obj);
@@ -151,8 +151,8 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
         }
     }
 
-    private void selectAccount(Account account) {
-        ActivityMain ac = getMainActivity();
+    private void selectAccount(final Account account) {
+        final ActivityMain ac = getMainActivity();
 
         if (ac.isWaiting()) {
             return;
@@ -160,10 +160,15 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
 
         ac.startWaitDialog(getTile(ac), getString(R.string.common_pleasewait), null);
         op.setAccount(account);
-        getLoaderManager().restartLoader(1, null, this);
+        new TaskOperation<>(op, new WeakCallback<>(this, FragmentNavigation::operationDone)).start();
     }
 
-    private void executeAction(Action action) {
+    @SuppressWarnings("UnusedParameters")
+    private void operationDone(final OperationAccountSelect op) {
+        getMainActivity().stopWait();
+    }
+
+    private void executeAction(final Action action) {
         switch (action.getId()) {
         case R.id.action_nav_manage:
             getNavigation().openRootFolder(FragmentAccountList.class, null);
@@ -185,8 +190,8 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
         }
     }
 
-    private void selectFolder(AdapterView<?> view, int idx) {
-        Object obj = view.getAdapter().getItem(idx);
+    private void selectFolder(final AdapterView<?> view, final int idx) {
+        final Object obj = view.getAdapter().getItem(idx);
 
         if (obj instanceof Repo) {
             getNavigation().openRootFolder(FragmentFolderCmis.class,
@@ -195,21 +200,6 @@ public class FragmentNavigation extends FragmentBase implements LoaderManager.Lo
         } else if (obj instanceof Action) {
             executeAction((Action) obj);
         }
-    }
-
-    @Override
-    public Loader<OperationResult> onCreateLoader(int i, Bundle bundle) {
-        return new OperationLoader(op, getActivity());
-    }
-
-    @Override
-    public void onLoadFinished(Loader<OperationResult> loader, OperationResult result) {
-        getMainActivity().stopWait();
-    }
-
-    @Override
-    public void onLoaderReset(Loader<OperationResult> loader) {
-        getMainActivity().stopWait();
     }
 
     public void setNonMain() {

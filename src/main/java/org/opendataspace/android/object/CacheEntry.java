@@ -39,7 +39,7 @@ public class CacheEntry extends ObjectBase {
         return info.size;
     }
 
-    public long getTimestamp() {
+    private long getTimestamp() {
         return info.ts;
     }
 

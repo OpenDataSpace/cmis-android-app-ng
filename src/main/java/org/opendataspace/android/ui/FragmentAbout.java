@@ -2,13 +2,13 @@ package org.opendataspace.android.ui;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.opendataspace.android.app.CompatDeprecated;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.BuildConfig;
@@ -35,8 +35,9 @@ public class FragmentAbout extends FragmentBase {
         tva.setMovementMethod(new LinkMovementMethod());
 
         try {
-            tva.setText(Html.fromHtml(String.format(getString(R.string.about_info), BuildConfig.VERSION_NAME,
-                    Calendar.getInstance().get(Calendar.YEAR), getString(R.string.app_mailto))));
+            tva.setText(CompatDeprecated.fromHtml(
+                    String.format(getString(R.string.about_info), BuildConfig.VERSION_NAME,
+                            Calendar.getInstance().get(Calendar.YEAR), getString(R.string.app_mailto))));
         } catch (Exception ex) {
             OdsLog.ex(getClass(), ex);
         }

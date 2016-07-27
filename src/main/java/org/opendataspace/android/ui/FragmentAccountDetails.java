@@ -4,33 +4,33 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.text.TextUtils;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.URLUtil;
+
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
+import org.opendataspace.android.app.TaskOperation;
+import org.opendataspace.android.app.WeakCallback;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.operation.OperationAccountDelete;
 import org.opendataspace.android.operation.OperationAccountUpdate;
-import org.opendataspace.android.operation.OperationLoader;
-import org.opendataspace.android.operation.OperationResult;
+import org.opendataspace.android.operation.OperationBase;
 
 import java.sql.SQLException;
 
 @SuppressLint("ValidFragment")
-public class FragmentAccountDetails extends FragmentBaseInput
-        implements LoaderManager.LoaderCallbacks<OperationResult> {
-
-    private final static int LOADER_APPLY = 1;
-    private final static int LOADER_DELETE = 2;
+public class FragmentAccountDetails extends FragmentBaseInput {
 
     private final OperationAccountUpdate op;
 
-    public FragmentAccountDetails(OperationAccountUpdate op) {
-        Account account = op.getAccount();
+    public FragmentAccountDetails(final OperationAccountUpdate op) {
+        final Account account = op.getAccount();
         this.op = op;
 
         addText(R.id.edit_account_host, account::getDisplayUri, account::setUri,
@@ -42,12 +42,13 @@ public class FragmentAccountDetails extends FragmentBaseInput
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+            final Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_account, container, false);
     }
 
     @Override
-    public String getTile(Context context) {
+    public String getTile(final Context context) {
         return context.getString(R.string.account_title);
     }
 
@@ -57,7 +58,7 @@ public class FragmentAccountDetails extends FragmentBaseInput
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
         case R.id.menu_account_apply:
             actionApply();
@@ -79,7 +80,7 @@ public class FragmentAccountDetails extends FragmentBaseInput
     }
 
     private boolean actionApply() {
-        ActivityMain ac = getMainActivity();
+        final ActivityMain ac = getMainActivity();
 
         if (ac.isWaiting() || !readAndValidate()) {
             return false;
@@ -90,42 +91,18 @@ public class FragmentAccountDetails extends FragmentBaseInput
             return true;
         }
 
-        startLoader(LOADER_APPLY);
+        ac.startWaitDialog(getTile(ac), getString(R.string.common_pleasewait), dialogInterface -> op.setCancel(true));
+        new TaskOperation<>(op, new WeakCallback<>(this, FragmentAccountDetails::operationDone)).start();
         return true;
     }
 
-    @Override
-    public Loader<OperationResult> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-        case LOADER_APPLY:
-            return new OperationLoader(op, getActivity());
-
-        case LOADER_DELETE:
-            return new OperationLoader(new OperationAccountDelete(op.getAccount()), getActivity());
-
-        default:
-            return null;
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<OperationResult> loader, OperationResult data) {
-        ActivityMain ac = getMainActivity();
+    private void operationDone(final OperationBase op) {
+        final ActivityMain ac = getMainActivity();
         ac.stopWait();
 
-        if (data.isOk()) {
+        if (!op.reportError(ac)) {
             getNavigation().backPressed();
-        } else {
-            new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
-                    .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> {
-                        dialogInterface.cancel();
-                    }).show();
         }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<OperationResult> loader) {
-        getMainActivity().stopWait();
     }
 
     private void actionDelete() {
@@ -137,21 +114,8 @@ public class FragmentAccountDetails extends FragmentBaseInput
 
         new AlertDialog.Builder(ac)
                 .setMessage(String.format(getString(R.string.common_delete), op.getAccount().getName()))
-                .setCancelable(true).setPositiveButton(R.string.common_ok, (di, i) -> startLoader(LOADER_DELETE))
+                .setCancelable(true).setPositiveButton(R.string.common_ok, (di, i) -> doDelete())
                 .setNegativeButton(R.string.common_cancel, (di, i) -> di.cancel()).show();
-    }
-
-    private void startLoader(int id) {
-        ActivityMain ac = getMainActivity();
-
-        if (ac.isWaiting()) {
-            return;
-        }
-
-        ac.startWaitDialog(getTile(ac), getString(R.string.common_pleasewait),
-                di -> getLoaderManager().destroyLoader(id));
-
-        getLoaderManager().restartLoader(id, null, this);
     }
 
     @Override
@@ -180,5 +144,12 @@ public class FragmentAccountDetails extends FragmentBaseInput
     @Override
     public boolean needDrawer() {
         return !op.isFirstAccount();
+    }
+
+    private void doDelete() {
+        final ActivityMain ac = getMainActivity();
+        final OperationAccountDelete op = new OperationAccountDelete(this.op.getAccount());
+        ac.startWaitDialog(getTile(ac), getString(R.string.common_pleasewait), dialogInterface -> op.setCancel(true));
+        new TaskOperation<>(op, new WeakCallback<>(this, FragmentAccountDetails::operationDone)).start();
     }
 }

@@ -69,7 +69,7 @@ public class MimeType extends ObjectBase {
 
     public int getIcon(Context context) {
         return TextUtils.isEmpty(icon) ? R.drawable.ic_file :
-                context.getResources().getIdentifier("file_" + icon, "drawable", R.class.getPackage().getName());
+                context.getResources().getIdentifier("mime_" + icon, "drawable", R.class.getPackage().getName());
     }
 
     public String getType() {

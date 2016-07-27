@@ -10,6 +10,7 @@ public abstract class Task implements Runnable {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private AtomicInteger decrement;
 
+    @SuppressWarnings("RedundantThrows")
     public abstract void onExecute() throws Exception;
 
     @SuppressWarnings("RedundantThrows")

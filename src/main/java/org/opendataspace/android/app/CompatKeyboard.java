@@ -8,6 +8,9 @@ import android.widget.EditText;
 
 public class CompatKeyboard {
 
+    private CompatKeyboard() {
+    }
+
     public static void hide(Activity activity) {
         final View vw = activity.getCurrentFocus();
 

@@ -6,8 +6,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.PopupMenu;
 import android.view.Menu;
@@ -18,17 +16,17 @@ import android.widget.EditText;
 
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.Task;
+import org.opendataspace.android.app.TaskOperation;
+import org.opendataspace.android.app.WeakCallback;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.navigation.NavigationInterface;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.operation.OperationFolderBrowse;
-import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationLocalBrowse;
 import org.opendataspace.android.operation.OperationLocalCopyMove;
 import org.opendataspace.android.operation.OperationLocalInfo;
 import org.opendataspace.android.operation.OperationNodeDownload;
 import org.opendataspace.android.operation.OperationNodeUpload;
-import org.opendataspace.android.operation.OperationResult;
 import org.opendataspace.android.storage.FileAdapter;
 import org.opendataspace.android.storage.FileInfo;
 
@@ -38,11 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressLint("ValidFragment")
-public class FragmentFolderLocal extends FragmentBaseList
-        implements LoaderManager.LoaderCallbacks<OperationResult>, ActionMode.Callback {
-
-    private final static int LOADER_BROWSE = 1;
-    private final static int LOADER_COPYMOVE = 2;
+public class FragmentFolderLocal extends FragmentBaseList implements ActionMode.Callback {
 
     private final OperationLocalBrowse op;
     private FileAdapter adapter;
@@ -50,12 +44,12 @@ public class FragmentFolderLocal extends FragmentBaseList
     private FileInfo moreItem;
     private OperationLocalCopyMove copymove;
 
-    public FragmentFolderLocal(OperationLocalBrowse op) {
+    public FragmentFolderLocal(final OperationLocalBrowse op) {
         this.op = op;
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         adapter = new FileAdapter(getActivity(),
                 op.getMode() == OperationLocalBrowse.Mode.DEFAULT ? this::showPopup : null);
@@ -66,13 +60,13 @@ public class FragmentFolderLocal extends FragmentBaseList
     }
 
     @Override
-    void onListItemClick(int position) {
+    void onListItemClick(final int position) {
         if (selection != null) {
             adapter.select(position);
             return;
         }
 
-        FileInfo info = (FileInfo) adapter.getItem(position);
+        final FileInfo info = (FileInfo) adapter.getItem(position);
 
         if (!info.isDirectory()) {
             switch (op.getMode()) {
@@ -91,27 +85,33 @@ public class FragmentFolderLocal extends FragmentBaseList
         selectFile(info.getFile());
     }
 
-    private void selectFile(File file) {
+    private void selectFile(final File file) {
         if (file != null && !file.isDirectory()) {
             return;
         }
 
         op.setFolder(file);
         setListShown(false, false);
-        getLoaderManager().restartLoader(LOADER_BROWSE, null, this);
+        new TaskOperation<>(op, new WeakCallback<>(this, FragmentFolderLocal::browseDone)).start();
+    }
+
+    private void browseDone(final OperationLocalBrowse op) {
+        browseFinished();
+        op.reportError(getActivity());
+        adapter.update(op.getData());
     }
 
     @Override
-    public String getTile(Context context) {
+    public String getTile(final Context context) {
         switch (op.getMode()) {
         case DEFAULT: {
-            File file = op.getFolder();
+            final File file = op.getFolder();
 
             if (file == null) {
                 return context.getString(R.string.folder_libraries);
             }
 
-            File root = Environment.getExternalStorageDirectory();
+            final File root = Environment.getExternalStorageDirectory();
             return file.equals(root) ? context.getString(R.string.folder_slash) :
                     file.getAbsolutePath().replaceFirst(root.getAbsolutePath(), "");
         }
@@ -145,64 +145,19 @@ public class FragmentFolderLocal extends FragmentBaseList
         return true;
     }
 
-    @Override
-    public Loader<OperationResult> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-        case LOADER_BROWSE:
-            return new OperationLoader(op, getActivity());
-
-        case LOADER_COPYMOVE:
-            return new OperationLoader(copymove, getActivity());
-
-        default:
-            return null;
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<OperationResult> loader, OperationResult data) {
-        if (loader.getId() == LOADER_BROWSE) {
-            browseFinished();
-        }
-
-        if (!data.isOk()) {
-            Activity ac = getActivity();
-            new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
-                    .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> dialogInterface.cancel()).show();
-            return;
-        }
-
-        switch (loader.getId()) {
-        case LOADER_BROWSE:
-            adapter.update(op.getData());
-            break;
-
-        case LOADER_COPYMOVE:
-            selectFile(op.getFolder());
-            break;
-        }
-    }
-
     private void browseFinished() {
         if (getView() == null) {
             return;
         }
 
-        NavigationInterface nav = getNavigation();
+        final NavigationInterface nav = getNavigation();
         nav.updateMenu();
         nav.updateTitle();
         setListShown(true, false);
     }
 
     @Override
-    public void onLoaderReset(Loader<OperationResult> loader) {
-        if (loader.getId() == LOADER_BROWSE) {
-            browseFinished();
-        }
-    }
-
-    @Override
-    protected boolean onListItemLongClick(int position) {
+    protected boolean onListItemLongClick(final int position) {
         if (selection != null || op.getMode() != OperationLocalBrowse.Mode.DEFAULT) {
             return false;
         }
@@ -213,25 +168,25 @@ public class FragmentFolderLocal extends FragmentBaseList
     }
 
     @Override
-    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+    public boolean onCreateActionMode(final ActionMode actionMode, final Menu menu) {
         MenuInflater inflater = actionMode.getMenuInflater();
         inflater.inflate(R.menu.menu_local_select, menu);
         return true;
     }
 
     @Override
-    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+    public boolean onPrepareActionMode(final ActionMode actionMode, final Menu menu) {
         onPrepareOptionsMenu(menu);
         return true;
     }
 
     @Override
-    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+    public boolean onActionItemClicked(final ActionMode actionMode, final MenuItem menuItem) {
         return onOptionsItemSelected(menuItem);
     }
 
     @Override
-    public void onDestroyActionMode(ActionMode actionMode) {
+    public void onDestroyActionMode(final ActionMode actionMode) {
         selection = null;
         adapter.clearSelection();
     }
@@ -242,7 +197,7 @@ public class FragmentFolderLocal extends FragmentBaseList
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
         case R.id.menu_folder_create:
             actionCreateFolder();
@@ -294,16 +249,17 @@ public class FragmentFolderLocal extends FragmentBaseList
         return true;
     }
 
-    private void showPopup(View view) {
+    private void showPopup(final View view) {
         moreItem = adapter.resolve(view.getParent());
 
         if (moreItem == null) {
             return;
         }
 
-        Activity ac = getActivity();
-        PopupMenu popup = new PopupMenu(ac, view);
+        final Activity ac = getActivity();
+        final PopupMenu popup = new PopupMenu(ac, view);
         ac.getMenuInflater().inflate(R.menu.menu_local_more, popup.getMenu());
+
         onPrepareOptionsMenu(popup.getMenu());
         popup.setOnDismissListener(menu -> moreItem = null);
         popup.setOnMenuItemClickListener(this::onOptionsItemSelected);
@@ -312,8 +268,8 @@ public class FragmentFolderLocal extends FragmentBaseList
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        boolean isDefault = op.getMode() == OperationLocalBrowse.Mode.DEFAULT;
-        boolean hasContext = op.getFolder() != null;
+        final boolean isDefault = op.getMode() == OperationLocalBrowse.Mode.DEFAULT;
+        final boolean hasContext = op.getFolder() != null;
 
         setMenuVisibility(menu, R.id.menu_folder_create, isDefault && hasContext);
         setMenuVisibility(menu, R.id.menu_folder_paste, isDefault && hasContext);
@@ -325,10 +281,11 @@ public class FragmentFolderLocal extends FragmentBaseList
         setMenuVisibility(menu, R.id.menu_folder_copy, isDefault && hasContext);
     }
 
+    @SuppressLint("InflateParams")
     private void actionCreateFolder() {
-        Activity ac = getActivity();
-        @SuppressLint("InflateParams") View view = ac.getLayoutInflater().inflate(R.layout.dialog_folder_create, null);
-        EditText et = (EditText) view.findViewById(R.id.edit_dialog_name);
+        final Activity ac = getActivity();
+        final View view = ac.getLayoutInflater().inflate(R.layout.dialog_folder_create, null);
+        final EditText et = (EditText) view.findViewById(R.id.edit_dialog_name);
 
         new AlertDialog.Builder(ac).setTitle(R.string.folder_createdlg).setView(view).setCancelable(true)
                 .setPositiveButton(R.string.common_ok, (di, i) -> createFolder(et.getText().toString().trim()))
@@ -336,7 +293,7 @@ public class FragmentFolderLocal extends FragmentBaseList
     }
 
     private void createFolder(String name) {
-        File root = op.getFolder();
+        final File root = op.getFolder();
 
         if (root == null) {
             return;
@@ -348,7 +305,7 @@ public class FragmentFolderLocal extends FragmentBaseList
 
             @Override
             public void onExecute() throws Exception {
-                File folder = new File(root, name);
+                final File folder = new File(root, name);
 
                 if (!folder.mkdir()) {
                     return;
@@ -365,13 +322,11 @@ public class FragmentFolderLocal extends FragmentBaseList
     }
 
     private void actionDelete() {
-        List<FileInfo> ls = getSelection();
+        final List<FileInfo> ls = getSelection();
 
         if (ls == null || ls.isEmpty()) {
             return;
         }
-
-        final List<FileInfo> finalLs = ls;
 
         OdsApp.get().getPool().execute(new Task() {
 
@@ -379,7 +334,7 @@ public class FragmentFolderLocal extends FragmentBaseList
 
             @Override
             public void onExecute() throws Exception {
-                for (FileInfo cur : finalLs) {
+                for (FileInfo cur : ls) {
                     if (cur.getFile().delete()) {
                         toRemove.add(cur);
                     }
@@ -394,7 +349,7 @@ public class FragmentFolderLocal extends FragmentBaseList
     }
 
     private void actionCopyCut(boolean isCopy) {
-        List<FileInfo> ls = getSelection();
+        final List<FileInfo> ls = getSelection();
 
         if (ls.isEmpty()) {
             return;
@@ -405,19 +360,24 @@ public class FragmentFolderLocal extends FragmentBaseList
     }
 
     private void actionPaste() {
-        File node = op.getFolder();
+        final File node = op.getFolder();
 
         if (copymove == null || copymove.isEmpty()) {
             return;
         }
 
         copymove.setTarget(node);
-        getLoaderManager().restartLoader(LOADER_COPYMOVE, null, this);
+        new TaskOperation<>(copymove, new WeakCallback<>(this, FragmentFolderLocal::copymoveDone)).start();
+    }
+
+    private void copymoveDone(final OperationLocalCopyMove op) {
+        op.reportError(getActivity());
+        selectFile(this.op.getFolder());
     }
 
     private List<FileInfo> getSelection() {
         if (selection != null) {
-            List<FileInfo> ls = adapter.getSelected();
+            final List<FileInfo> ls = adapter.getSelected();
             selection.finish();
             return ls;
         } else if (moreItem != null) {
@@ -437,8 +397,8 @@ public class FragmentFolderLocal extends FragmentBaseList
             break;
 
         case SEL_FILES: {
-            List<FileInfo> ls = getSelection();
-            List<Node> context = op.getContext();
+            final List<FileInfo> ls = getSelection();
+            final List<Node> context = op.getContext();
 
             if (!ls.isEmpty() && context != null && !context.isEmpty()) {
                 OdsApp.get().getPool().execute(new OperationNodeUpload(op.getSession(), context.get(0), ls));
@@ -451,7 +411,7 @@ public class FragmentFolderLocal extends FragmentBaseList
     }
 
     private void actionUpload() {
-        List<FileInfo> ls = getSelection();
+        final List<FileInfo> ls = getSelection();
 
         if (ls.isEmpty()) {
             return;
@@ -464,7 +424,7 @@ public class FragmentFolderLocal extends FragmentBaseList
     }
 
     private void actionDownload() {
-        File folder = op.getFolder();
+        final File folder = op.getFolder();
 
         if (folder == null) {
             return;

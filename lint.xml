@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--suppress XmlUnboundNsPrefix, XmlHighlighting -->
+<?xml version="1.0" encoding="UTF-8"?><!--suppress XmlUnboundNsPrefix, XmlHighlighting -->
 <lint>
     <issue id="IconMissingDensityFolder" severity="ignore"/>
-    <issue id="UnusedResources" severity="ignore"/>
+    <issue id="UnusedResources">
+        <ignore regexp="mime_"/>
+    </issue>
     <issue id="InvalidPackage">
         <ignore regexp="chemistry-opencmis-android-client-.*\.jar"/>
         <ignore regexp="okio-.*\.jar"/>

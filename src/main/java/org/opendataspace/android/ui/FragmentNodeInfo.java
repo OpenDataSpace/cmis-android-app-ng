@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
@@ -22,64 +20,59 @@ import android.widget.ViewSwitcher;
 
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
+import org.opendataspace.android.app.TaskOperation;
+import org.opendataspace.android.app.WeakCallback;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.event.EventDaoNode;
 import org.opendataspace.android.object.Node;
-import org.opendataspace.android.operation.OperationLoader;
 import org.opendataspace.android.operation.OperationNodeDelete;
 import org.opendataspace.android.operation.OperationNodeInfo;
 import org.opendataspace.android.operation.OperationNodeOpen;
 import org.opendataspace.android.operation.OperationNodeRename;
-import org.opendataspace.android.operation.OperationResult;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 
 @SuppressLint("ValidFragment")
-public class FragmentNodeInfo extends FragmentBase implements LoaderManager.LoaderCallbacks<OperationResult> {
-
-    private final static int LOADER_DELETE = 1;
-    private final static int LOADER_RENAME = 2;
-    private final static int LOADER_OPEN = 3;
+public class FragmentNodeInfo extends FragmentBase {
 
     private final OperationNodeInfo op;
-    private OperationNodeRename rename;
-    private OperationNodeOpen open;
 
-    public FragmentNodeInfo(OperationNodeInfo op) {
+    public FragmentNodeInfo(final OperationNodeInfo op) {
         this.op = op;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+            final Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_nodeinfo, container, false);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         OdsApp.bus.register(this, Event.PRIORITY_UI);
         updateInfo();
 
-        WeakReference<FragmentNodeInfo> weak = new WeakReference<>(this);
+        final WeakReference<FragmentNodeInfo> weak = new WeakReference<>(this);
 
         OdsApp.get().getCmisCache().load(op.getNode(), op.getSession(), widget(R.id.image_node_preview), result -> {
-            FragmentNodeInfo fgm = weak.get();
+            final FragmentNodeInfo fgm = weak.get();
 
             if (fgm == null) {
                 return;
             }
 
             if (result) {
-                ViewSwitcher vs = fgm.widget(R.id.view_node_preview);
+                final ViewSwitcher vs = fgm.widget(R.id.view_node_preview);
 
                 if (vs != null) {
                     vs.showNext();
                 }
             } else {
-                TextView tve = fgm.widget(R.id.text_node_preview);
+                final TextView tve = fgm.widget(R.id.text_node_preview);
 
                 if (tve != null) {
                     tve.setText(R.string.node_nopreview);
@@ -89,9 +82,9 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
     }
 
     private void updateInfo() {
-        Node node = op.getNode();
-        Activity ac = getActivity();
-        TextView tvt = widget(R.id.text_node_title);
+        final Node node = op.getNode();
+        final Activity ac = getActivity();
+        final TextView tvt = widget(R.id.text_node_title);
 
         tvt.setText(node.getName());
         tvt.setCompoundDrawablesWithIntrinsicBounds(node.getIcon(ac), 0, 0, 0);
@@ -107,7 +100,7 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
     }
 
     @Override
-    public String getTile(Context context) {
+    public String getTile(final Context context) {
         return context.getString(R.string.node_title);
     }
 
@@ -124,7 +117,7 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
         case R.id.menu_node_delete:
             actionDelete();
@@ -146,7 +139,7 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
     }
 
     private void actionDelete() {
-        Node node = op.getNode();
+        final Node node = op.getNode();
 
         if (node == null || !node.canDelete()) {
             return;
@@ -154,84 +147,39 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
 
         new AlertDialog.Builder(getActivity())
                 .setMessage(String.format(getString(R.string.common_delete), node.getName())).setCancelable(true)
-                .setPositiveButton(R.string.common_ok, (di, i) -> startLoader(LOADER_DELETE))
+                .setPositiveButton(R.string.common_ok, (di, i) -> doDelete())
                 .setNegativeButton(R.string.common_cancel, (di, i) -> di.cancel()).show();
     }
 
-    private void startLoader(int id) {
-        ActivityMain ac = getMainActivity();
+    private void doDelete() {
+        final ActivityMain ac = getMainActivity();
+        final OperationNodeDelete op = new OperationNodeDelete(this.op.getNode(), this.op.getSession());
 
-        if (ac.isWaiting()) {
-            return;
+        ac.startWaitDialog(getTile(ac), getString(R.string.common_pleasewait), di -> op.setCancel(true));
+        new TaskOperation<>(op, new WeakCallback<>(this, FragmentNodeInfo::deleteDone)).start();
+    }
+
+    private void deleteDone(final OperationNodeDelete op) {
+        final ActivityMain ac = getMainActivity();
+        ac.stopWait();
+
+        if (!op.reportError(ac)) {
+            getNavigation().backPressed();
         }
-
-        ac.startWaitDialog(getTile(ac), getString(R.string.common_pleasewait),
-                di -> getLoaderManager().destroyLoader(id));
-
-        getLoaderManager().restartLoader(id, null, this);
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem mi = menu.findItem(R.id.menu_node_delete);
+    public void onPrepareOptionsMenu(final Menu menu) {
+        final MenuItem mi = menu.findItem(R.id.menu_node_delete);
 
         if (mi != null) {
-            Node node = op.getNode();
+            final Node node = op.getNode();
             mi.setVisible(node != null && node.canDelete());
         }
     }
 
-    @Override
-    public Loader<OperationResult> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-        case LOADER_DELETE:
-            return new OperationLoader(new OperationNodeDelete(op.getNode(), op.getSession()), getActivity());
-
-        case LOADER_RENAME:
-            return new OperationLoader(rename, getActivity());
-
-        case LOADER_OPEN:
-            return new OperationLoader(open, getActivity());
-
-        default:
-            return null;
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<OperationResult> loader, OperationResult data) {
-        ActivityMain ac = getMainActivity();
-        ac.stopWait();
-
-        if (!data.isOk()) {
-            new AlertDialog.Builder(ac).setMessage(data.getMessage(ac)).setCancelable(true)
-                    .setPositiveButton(R.string.common_ok, (dialogInterface, i) -> dialogInterface.cancel()).show();
-
-            return;
-        }
-
-        if (loader.getId() == LOADER_OPEN) {
-            final File f = open.getFile();
-
-            if (f != null && f.exists()) {
-                try {
-                    final Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.fromFile(f), op.getNode().getMimeType().getType());
-                    startActivity(intent);
-                } catch (Exception ex) {
-                    OdsLog.ex(getClass(), ex);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<OperationResult> loader) {
-        getMainActivity().stopWait();
-    }
-
     @SuppressWarnings("unused")
-    public void onEventMainThread(EventDaoNode event) {
+    public void onEventMainThread(final EventDaoNode event) {
         for (EventDaoBase.Event<Node> cur : event.getEvents()) {
             if (cur.getObject().equals(op.getNode())) {
                 if (cur.getOperation() == EventDaoBase.Operation.DELETE) {
@@ -248,16 +196,17 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
         }
     }
 
+    @SuppressLint("InflateParams")
     private void actionRename() {
-        Node node = op.getNode();
+        final Node node = op.getNode();
 
         if (node == null || !node.canEdit()) {
             return;
         }
 
-        Activity ac = getActivity();
-        @SuppressLint("InflateParams") View view = ac.getLayoutInflater().inflate(R.layout.dialog_node_rename, null);
-        EditText et = (EditText) view.findViewById(R.id.edit_dialog_name);
+        final Activity ac = getActivity();
+        final View view = ac.getLayoutInflater().inflate(R.layout.dialog_node_rename, null);
+        final EditText et = (EditText) view.findViewById(R.id.edit_dialog_name);
         et.setText(node.getName());
 
         new AlertDialog.Builder(ac).setTitle(R.string.node_rename).setView(view).setCancelable(true)
@@ -265,17 +214,48 @@ public class FragmentNodeInfo extends FragmentBase implements LoaderManager.Load
                 .setNegativeButton(R.string.common_cancel, (di, i) -> di.dismiss()).show();
     }
 
-    private void renameNode(Node node, String name) {
+    private void renameNode(final Node node, final String name) {
         if (TextUtils.isEmpty(name) || node == null || !node.canEdit()) {
             return;
         }
 
-        rename = new OperationNodeRename(op.getSession(), node, name);
-        startLoader(LOADER_RENAME);
+        final ActivityMain ac = getMainActivity();
+        final OperationNodeRename op = new OperationNodeRename(this.op.getSession(), node, name);
+
+        ac.startWaitDialog(getTile(ac), getString(R.string.common_pleasewait), di -> op.setCancel(true));
+        new TaskOperation<>(op, new WeakCallback<>(this, FragmentNodeInfo::renameDone)).start();
+    }
+
+    private void renameDone(final OperationNodeRename op) {
+        final ActivityMain ac = getMainActivity();
+        ac.stopWait();
+        op.reportError(ac);
     }
 
     private void actionOpen() {
-        open = new OperationNodeOpen(op.getSession(), op.getNode());
-        startLoader(LOADER_OPEN);
+        final ActivityMain ac = getMainActivity();
+        final OperationNodeOpen op = new OperationNodeOpen(this.op.getSession(), this.op.getNode());
+
+        ac.startWaitDialog(getTile(ac), getString(R.string.common_pleasewait), di -> op.setCancel(true));
+        new TaskOperation<>(op, new WeakCallback<>(this, FragmentNodeInfo::openDone)).start();
+    }
+
+    private void openDone(final OperationNodeOpen op) {
+        final ActivityMain ac = getMainActivity();
+        ac.stopWait();
+
+        if (!op.reportError(ac)) {
+            final File f = op.getFile();
+
+            if (f != null && f.exists()) {
+                try {
+                    final Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(f), this.op.getNode().getMimeType().getType());
+                    startActivity(intent);
+                } catch (Exception ex) {
+                    OdsLog.ex(getClass(), ex);
+                }
+            }
+        }
     }
 }
