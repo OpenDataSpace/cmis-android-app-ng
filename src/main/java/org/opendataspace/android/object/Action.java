@@ -23,11 +23,6 @@ public class Action {
             iconId = R.drawable.ic_gear;
             break;
 
-        case R.id.action_nav_settings:
-            name = context.getString(R.string.nav_settings);
-            iconId = R.drawable.ic_settings;
-            break;
-
         case R.id.action_nav_addaccount:
             name = context.getString(R.string.nav_addaccount);
             iconId = R.drawable.ic_add;

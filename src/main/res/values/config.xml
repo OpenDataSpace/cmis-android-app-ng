@@ -13,7 +13,6 @@
     <item name="internal_more" type="id"/>
 
     <item name="action_nav_manage" type="id"/>
-    <item name="action_nav_settings" type="id"/>
     <item name="action_nav_addaccount" type="id"/>
     <item name="action_nav_localfolder" type="id"/>
 

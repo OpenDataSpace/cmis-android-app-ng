@@ -122,13 +122,14 @@ public class Repo extends ObjectBase {
             return R.drawable.ic_favorite;
 
         case GLOBAL:
-            return R.drawable.ic_global;
+        case SHARED:
+            return R.drawable.ic_shared;
 
         case PROJECTS:
             return R.drawable.ic_projects;
 
         default:
-            return R.drawable.ic_shared;
+            return R.drawable.ic_folder;
         }
     }
 

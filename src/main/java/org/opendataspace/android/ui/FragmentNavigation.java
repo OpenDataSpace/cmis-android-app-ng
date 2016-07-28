@@ -174,10 +174,6 @@ public class FragmentNavigation extends FragmentBase {
             getNavigation().openRootFolder(FragmentAccountList.class, null);
             break;
 
-        case R.id.action_nav_settings:
-            actionSettings();
-            break;
-
         case R.id.action_nav_addaccount:
             getNavigation().openFile(FragmentAccountDetails.class, new OperationAccountUpdate(new Account()));
             break;
