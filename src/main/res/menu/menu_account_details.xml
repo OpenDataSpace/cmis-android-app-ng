@@ -5,12 +5,12 @@
         android:id="@+id/menu_account_apply"
         android:icon="@drawable/ic_apply"
         android:title="@string/common_apply"
-        auto:showAsAction="always"/>
+        auto:showAsAction="always|withText"/>
     <item
         android:id="@+id/menu_account_cancel"
         android:icon="@drawable/ic_close"
         android:title="@string/common_cancel"
-        auto:showAsAction="ifRoom"/>
+        auto:showAsAction="ifRoom|withText"/>
     <item
         android:id="@+id/menu_account_delete"
         android:title="@string/account_delete"/>

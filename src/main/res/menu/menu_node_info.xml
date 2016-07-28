@@ -2,23 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:auto="http://schemas.android.com/apk/res-auto">
     <item
-            android:id="@+id/menu_node_open"
-            android:title="@string/node_open"
-            android:icon="@drawable/ic_open"
-            auto:showAsAction="ifRoom|withText"/>
+        android:id="@+id/menu_node_open"
+        android:icon="@drawable/ic_open"
+        android:title="@string/node_open"
+        auto:showAsAction="ifRoom|withText"/>
     <item
-            android:id="@+id/menu_node_download"
-            android:title="@string/node_download"
-            android:icon="@drawable/ic_download"
-            auto:showAsAction="ifRoom|withText"/>
+        android:id="@+id/menu_node_download"
+        android:icon="@drawable/ic_download"
+        android:title="@string/node_download"
+        auto:showAsAction="ifRoom"/>
     <item
-            android:id="@+id/menu_node_rename"
-            android:title="@string/node_rename"
-            android:icon="@drawable/ic_rename"
-            auto:showAsAction="ifRoom"/>
+        android:id="@+id/menu_node_rename"
+        android:icon="@drawable/ic_rename"
+        android:title="@string/node_rename"
+        auto:showAsAction="ifRoom"/>
     <item
-            android:id="@+id/menu_node_delete"
-            android:title="@string/node_delete"
-            android:icon="@drawable/ic_remove"
-            auto:showAsAction="ifRoom"/>
+        android:id="@+id/menu_node_delete"
+        android:icon="@drawable/ic_remove"
+        android:title="@string/node_delete"
+        auto:showAsAction="ifRoom"/>
 </menu>

@@ -7,6 +7,8 @@
 
     <color name="selected">#C1E8F7</color>
 
+    <integer name="editor_maxsize">204800</integer>
+
     <item name="internal_empty" type="id"/>
     <item name="internal_progress" type="id"/>
     <item name="internal_listcontainer" type="id"/>

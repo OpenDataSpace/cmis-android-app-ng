@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
+
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Repo;
 import org.opendataspace.android.operation.OperationAccountConfig;

@@ -229,7 +229,6 @@ public class FragmentFolderLocal extends FragmentBaseList implements ActionMode.
             actionPaste();
             break;
 
-
         case R.id.menu_folder_apply:
             actionApply();
             break;

@@ -3,6 +3,7 @@ package org.opendataspace.android.ui;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;
@@ -17,6 +18,7 @@ public class ActivityDialog extends ActivityBase {
     @Override
     protected void onInit(final Bundle savedInstanceState) {
         setContentView(R.layout.activity_dialog);
+        setSupportActionBar((Toolbar) findViewById(R.id.dialog_view_toolbar));
 
         NavigationState state = OdsApp.gson.fromJson(getIntent().getStringExtra(ARG_NAV_STATE), NavigationState.class);
         FragmentBase fgm = Navigation.createFragment(state);

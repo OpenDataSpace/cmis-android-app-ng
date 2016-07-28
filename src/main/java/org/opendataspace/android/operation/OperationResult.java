@@ -10,7 +10,7 @@ public class OperationResult {
     private boolean ok;
     private String message;
 
-    private void setError(String message) {
+    public void setError(final String message) {
         ok = false;
         this.message = message;
     }
@@ -24,15 +24,15 @@ public class OperationResult {
         return ok;
     }
 
-    public String getMessage(Context context) {
+    public String getMessage(final Context context) {
         return TextUtils.isEmpty(message) ? context.getString(R.string.common_error) : message;
     }
 
-    public void setError(Exception ex) {
+    public void setError(final Exception ex) {
         Throwable cause = ex;
 
         while (cause != null) {
-            Throwable parent = cause.getCause();
+            final Throwable parent = cause.getCause();
 
             if (parent == null) {
                 break;

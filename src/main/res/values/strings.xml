@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- app -->
+    <string name="app_editor_text" translatable="false">ODS Text Editor</string>
+
     <!-- common -->
     <string name="common_opendrawer">Open navigation</string>
     <string name="common_closedrawer">Close navigation</string>
@@ -148,5 +151,13 @@
     <string name="node_upload">Upload…</string>
     <string name="node_download">Download…</string>
     <string name="node_open">Open…</string>
+
+    <!-- editors -->
+    <string name="editor_save">Save</string>
+    <string name="editor_speech">Speech to Text</string>
+    <string name="editor_encoding">Encoding…</string>
+    <string name="editor_textsize">Text size…</string>
+    <string name="editor_notfound">File not found.</string>
+    <string name="editor_toobig">This file exceeds the size limit to be opened with the ODS Text Editor.</string>
 
 </resources>

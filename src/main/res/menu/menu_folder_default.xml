@@ -3,18 +3,18 @@
       xmlns:auto="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_folder_apply"
-        android:title="@string/folder_apply"
         android:icon="@drawable/ic_apply"
-        auto:showAsAction="ifRoom"/>
+        android:title="@string/folder_apply"
+        auto:showAsAction="ifRoom|withText"/>
     <item
         android:id="@+id/menu_folder_create"
-        android:title="@string/folder_createact"
         android:icon="@drawable/ic_newfolder"
+        android:title="@string/folder_createact"
         auto:showAsAction="ifRoom"/>
     <item
         android:id="@+id/menu_folder_upload"
-        android:title="@string/folder_upload"
         android:icon="@drawable/ic_upload"
+        android:title="@string/folder_upload"
         auto:showAsAction="ifRoom"/>
     <item
         android:id="@+id/menu_folder_paste"
