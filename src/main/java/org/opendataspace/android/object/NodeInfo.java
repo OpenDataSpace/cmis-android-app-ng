@@ -3,6 +3,7 @@ package org.opendataspace.android.object;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
+
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Property;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
