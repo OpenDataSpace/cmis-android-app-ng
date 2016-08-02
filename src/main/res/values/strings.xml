@@ -159,5 +159,9 @@
     <string name="editor_textsize">Text size…</string>
     <string name="editor_notfound">File not found.</string>
     <string name="editor_toobig">This file exceeds the size limit to be opened with the ODS Text Editor.</string>
+    <string name="editor_modified">The file has been modified.</string>
+    <string name="editor_quit"><![CDATA[Do you want to quit without saving?<br/>Any unsaved changes will be lost.]]></string>
+    <string name="editor_discard">Discard</string>
+    <string name="editor_reload">Reload</string>
 
 </resources>
