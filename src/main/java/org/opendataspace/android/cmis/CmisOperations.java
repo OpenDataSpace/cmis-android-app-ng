@@ -4,6 +4,7 @@ import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.data.DaoNode;
 import org.opendataspace.android.data.DataBase;
+import org.opendataspace.android.event.EventProgress;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.status.StatusContext;
 import org.opendataspace.android.storage.CacheRemoveTransaction;
@@ -16,14 +17,15 @@ import java.sql.SQLException;
 
 public class CmisOperations {
 
-    public static Node createFolder(CmisSession session, Node parent, String name, StatusContext status)
-            throws SQLException {
+    public static Node createFolder(final CmisSession session, final Node parent, final String name,
+            final StatusContext status) throws SQLException {
         Node node = new Node(session.createFolder(parent, name, status), parent);
         OdsApp.get().getDatabase().getNodes().create(node);
         return node;
     }
 
-    public static void deleteNode(CmisSession session, Node node, StatusContext status) throws SQLException {
+    public static void deleteNode(final CmisSession session, final Node node, final StatusContext status)
+            throws SQLException {
         session.delete(node, status);
         OdsApp app = OdsApp.get();
         DataBase db = app.getDatabase();
@@ -39,7 +41,8 @@ public class CmisOperations {
         t.commit();
     }
 
-    public static boolean download(CmisSession session, Node node, File file, StatusContext status) throws IOException {
+    public static boolean download(final CmisSession session, final Node node, final File file,
+            final StatusContext status) throws IOException {
         if (!file.exists() && !file.createNewFile()) {
             return false;
         }
@@ -55,7 +58,24 @@ public class CmisOperations {
 
         //noinspection TryFinallyCanBeTryWithResources
         try {
-            fs.getChannel().transferFrom(Channels.newChannel(stream.getStream()), 0, size);
+            long pos = 0;
+            final long chunk = 8192;
+
+            while (true) {
+                final long len = Math.min(chunk, size - pos);
+                fs.getChannel().transferFrom(Channels.newChannel(stream.getStream()), pos, len);
+                pos += len;
+
+                if (pos == size) {
+                    if (size > chunk) {
+                        OdsApp.bus.post(new EventProgress(node, size, size));
+                    }
+                    break;
+                } else {
+                    OdsApp.bus.post(new EventProgress(node, pos, size));
+                }
+            }
+
         } finally {
             fs.close();
         }
