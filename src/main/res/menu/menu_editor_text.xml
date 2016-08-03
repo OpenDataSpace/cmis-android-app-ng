@@ -12,12 +12,6 @@
         android:title="@string/editor_speech"
         auto:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/menu_editor_encoding"
-        android:title="@string/editor_encoding"/>
-    <item
-        android:id="@+id/menu_editor_textsize"
-        android:title="@string/editor_textsize"/>
-    <item
         android:id="@+id/menu_editor_reload"
         android:title="@string/editor_reload"/>
 </menu>

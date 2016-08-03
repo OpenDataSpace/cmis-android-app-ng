@@ -155,8 +155,6 @@
     <!-- editors -->
     <string name="editor_save">Save</string>
     <string name="editor_speech">Speech to Text</string>
-    <string name="editor_encoding">Encoding…</string>
-    <string name="editor_textsize">Text size…</string>
     <string name="editor_notfound">File not found.</string>
     <string name="editor_toobig">This file exceeds the size limit to be opened with the ODS Text Editor.</string>
     <string name="editor_modified">The file has been modified.</string>
