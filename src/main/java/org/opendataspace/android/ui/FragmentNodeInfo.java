@@ -18,6 +18,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.TaskOperation;
@@ -53,7 +55,7 @@ public class FragmentNodeInfo extends FragmentBase {
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        OdsApp.bus.register(this, Event.PRIORITY_UI);
+        OdsApp.bus.register(this);
         updateInfo();
 
         final WeakReference<FragmentNodeInfo> weak = new WeakReference<>(this);
@@ -178,8 +180,8 @@ public class FragmentNodeInfo extends FragmentBase {
         }
     }
 
-    @SuppressWarnings("unused")
-    public void onEventMainThread(final EventDaoNode event) {
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = Event.PRIORITY_UI)
+    public void onEvent(final EventDaoNode event) {
         for (EventDaoBase.Event<Node> cur : event.getEvents()) {
             if (cur.getObject().equals(op.getNode())) {
                 if (cur.getOperation() == EventDaoBase.Operation.DELETE) {

@@ -1,10 +1,10 @@
 package org.opendataspace.android.view;
 
 import com.j256.ormlite.dao.CloseableIterator;
+
 import org.opendataspace.android.app.CompatDisposable;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.data.DaoBase;
-import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.object.ObjectBase;
 
@@ -18,7 +18,7 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
     private final List<T> data = new ArrayList<>();
 
     ViewBase() {
-        OdsApp.bus.register(this, Event.PRIORITY_VIEW);
+        OdsApp.bus.register(this);
     }
 
     void processEvent(EventDaoBase<T> event) {

@@ -4,7 +4,10 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventDaoRepo;
 import org.opendataspace.android.view.ViewAdapter;
 import org.opendataspace.android.view.ViewBase;
@@ -25,8 +28,9 @@ public class RepoAdapter extends ViewAdapter<Repo> {
         tw1.setCompoundDrawablesWithIntrinsicBounds(item.getIcon(), 0, 0, 0);
     }
 
-    @SuppressWarnings({"UnusedParameters", "unused"})
-    public void onEventMainThread(EventDaoRepo event) {
+    @SuppressWarnings("UnusedParameters")
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = Event.PRIORITY_ADAPTER)
+    public void onEventMainThread(final EventDaoRepo event) {
         invalidate();
     }
 

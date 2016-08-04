@@ -6,17 +6,19 @@ import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import de.greenrobot.event.EventBus;
-import io.fabric.sdk.android.Fabric;
-import org.opendataspace.android.status.StatusManager;
+
+import org.greenrobot.eventbus.EventBus;
 import org.opendataspace.android.app.beta.BuildConfig;
 import org.opendataspace.android.cmis.CmisRenditionCache;
 import org.opendataspace.android.data.DataBase;
 import org.opendataspace.android.navigation.NavigationInterface;
+import org.opendataspace.android.status.StatusManager;
 import org.opendataspace.android.storage.CacheManager;
 import org.opendataspace.android.view.ViewManager;
 
 import java.io.File;
+
+import io.fabric.sdk.android.Fabric;
 
 public class OdsApp extends Application {
 

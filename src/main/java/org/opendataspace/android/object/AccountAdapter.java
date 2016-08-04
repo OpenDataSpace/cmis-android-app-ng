@@ -3,6 +3,9 @@ package org.opendataspace.android.object;
 import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.event.EventDaoAccount;
 import org.opendataspace.android.view.ViewAdapter;
@@ -27,8 +30,9 @@ public class AccountAdapter extends ViewAdapter<Account> {
         tw2.setText(item.getDescription());
     }
 
-    @SuppressWarnings({"UnusedParameters", "unused"})
-    public void onEventMainThread(EventDaoAccount event) {
+    @SuppressWarnings("UnusedParameters")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(EventDaoAccount event) {
         invalidate();
     }
 

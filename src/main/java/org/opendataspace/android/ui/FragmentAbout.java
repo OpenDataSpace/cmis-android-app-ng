@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.opendataspace.android.app.CompatDeprecated;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
@@ -56,8 +58,9 @@ public class FragmentAbout extends FragmentBase {
         super.onDestroyView();
     }
 
-    @SuppressWarnings({"UnusedParameters", "unused"})
-    public void onEventMainThread(EventAccountConfig val) {
+    @SuppressWarnings("UnusedParameters")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(final EventAccountConfig val) {
         updateBranding();
     }
 

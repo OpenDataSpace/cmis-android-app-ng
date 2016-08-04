@@ -1,10 +1,14 @@
 package org.opendataspace.android.view;
 
 import com.j256.ormlite.dao.CloseableIterator;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.cmis.CmisSession;
 import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.data.DaoNode;
+import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventDaoNode;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Node;
@@ -23,8 +27,8 @@ public class ViewNode extends ViewBase<Node> {
         super();
     }
 
-    @SuppressWarnings("unused")
-    public void onEventMainThread(EventDaoNode event) {
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = Event.PRIORITY_VIEW)
+    public void onEvent(EventDaoNode event) {
         processEvent(event);
     }
 

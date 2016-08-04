@@ -1,9 +1,13 @@
 package org.opendataspace.android.view;
 
 import com.j256.ormlite.dao.CloseableIterator;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.data.DaoRepo;
+import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventDaoRepo;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.ObjectBase;
@@ -19,8 +23,8 @@ public class ViewRepo extends ViewBase<Repo> {
         super();
     }
 
-    @SuppressWarnings("unused")
-    public void onEventMainThread(EventDaoRepo event) {
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = Event.PRIORITY_VIEW)
+    public void onEvent(final EventDaoRepo event) {
         processEvent(event);
     }
 

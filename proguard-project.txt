@@ -9,8 +9,8 @@
     public <init>(...);
 }
 
--keepclassmembers class ** {
-    public void onEvent*(**);
+-keepclassmembers class * {
+    @de.greenrobot.event.Subscribe <methods>;
 }
 
 -keepclassmembers class org.opendataspace.android.data.DataBase {

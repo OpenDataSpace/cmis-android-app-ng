@@ -5,7 +5,6 @@ import android.content.Context;
 import org.opendataspace.android.app.CompatDisposable;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.data.DataAdapterList;
-import org.opendataspace.android.event.Event;
 import org.opendataspace.android.object.ObjectBase;
 
 public abstract class ViewAdapter<T extends ObjectBase> extends DataAdapterList<T> implements CompatDisposable {
@@ -16,7 +15,7 @@ public abstract class ViewAdapter<T extends ObjectBase> extends DataAdapterList<
         super(context, resId);
         this.view = view;
         assign(view.getObjects());
-        OdsApp.bus.register(this, Event.PRIORITY_ADAPTER);
+        OdsApp.bus.register(this);
     }
 
     @Override

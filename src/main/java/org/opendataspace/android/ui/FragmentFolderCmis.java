@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.TaskOperation;
 import org.opendataspace.android.app.WeakCallback;
@@ -61,7 +63,7 @@ public class FragmentFolderCmis extends FragmentBaseList implements ActionMode.C
 
         setListAdapter(adapter);
         setEmptyText(getString(R.string.folder_empty));
-        OdsApp.bus.register(this, Event.PRIORITY_UI);
+        OdsApp.bus.register(this);
         selectNode(op.getFolder(), false);
     }
 
@@ -316,8 +318,8 @@ public class FragmentFolderCmis extends FragmentBaseList implements ActionMode.C
                 new WeakCallback<>(this, FragmentFolderCmis::operationDone)).start();
     }
 
-    @SuppressWarnings({"UnusedParameters", "unused"})
-    public void onEventMainThread(final EventNodeUpdate event) {
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = Event.PRIORITY_UI)
+    public void onEvent(final EventNodeUpdate event) {
         final Node node = op.getFolder();
 
         if (node != null && TextUtils.equals(node.getUuid(), event.getNodeUuid())) {
@@ -325,8 +327,8 @@ public class FragmentFolderCmis extends FragmentBaseList implements ActionMode.C
         }
     }
 
-    @SuppressWarnings({"UnusedParameters", "unused"})
-    public void onEventMainThread(final EventDaoNode event) {
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = Event.PRIORITY_UI)
+    public void onEvent(final EventDaoNode event) {
         for (EventDaoBase.Event<Node> cur : event.getEvents()) {
             if (cur.getObject().equals(op.getFolder())) {
                 if (cur.getOperation() == EventDaoBase.Operation.DELETE) {

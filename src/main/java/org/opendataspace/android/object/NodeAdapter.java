@@ -5,7 +5,11 @@ import android.view.View;
 import android.view.ViewParent;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventDaoNode;
 import org.opendataspace.android.view.ViewAdapter;
 import org.opendataspace.android.view.ViewBase;
@@ -36,8 +40,9 @@ public class NodeAdapter extends ViewAdapter<Node> {
         ib.setOnClickListener(more);
     }
 
-    @SuppressWarnings({"UnusedParameters", "unused"})
-    public void onEventMainThread(EventDaoNode event) {
+    @SuppressWarnings("UnusedParameters")
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = Event.PRIORITY_ADAPTER)
+    public void onEvent(final EventDaoNode event) {
         invalidate();
     }
 

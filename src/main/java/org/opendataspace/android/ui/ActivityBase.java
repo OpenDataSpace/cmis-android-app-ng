@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
@@ -79,8 +81,9 @@ public class ActivityBase extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @SuppressWarnings({"UnusedParameters", "unused"})
-    public void onEventMainThread(EventAccountConfig val) {
+    @SuppressWarnings("UnusedParameters")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(final EventAccountConfig val) {
         updateBranding();
     }
 

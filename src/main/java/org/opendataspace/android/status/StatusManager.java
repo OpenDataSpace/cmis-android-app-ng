@@ -2,6 +2,8 @@ package org.opendataspace.android.status;
 
 import android.support.design.widget.Snackbar;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.opendataspace.android.app.CompatDisposable;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
@@ -19,7 +21,7 @@ public class StatusManager implements CompatDisposable {
     private WeakReference<Snackbar> snack = new WeakReference<>(null);
 
     public StatusManager() {
-        OdsApp.bus.register(this, Event.PRIORITY_UI);
+        OdsApp.bus.register(this);
     }
 
     @Override
@@ -34,8 +36,8 @@ public class StatusManager implements CompatDisposable {
         updateSnack();
     }
 
-    @SuppressWarnings("unused")
-    public void onEventMainThread(EventStatus event) {
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = Event.PRIORITY_UI)
+    public void onEvent(final EventStatus event) {
         final StatusContext context = event.getStatusContext();
 
         if (event.isShouldDismiss()) {

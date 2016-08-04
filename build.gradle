@@ -169,7 +169,7 @@ dependencies {
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'org.slf4j:slf4j-android:1.7.7'
     compile 'com.crashlytics.sdk.android:crashlytics:2.6.1'
-    compile 'de.greenrobot:eventbus:2.4.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
 
     //noinspection GradleDynamicVersion

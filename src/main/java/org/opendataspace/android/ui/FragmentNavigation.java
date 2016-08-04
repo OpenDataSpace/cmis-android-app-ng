@@ -11,6 +11,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.TaskOperation;
 import org.opendataspace.android.app.WeakCallback;
@@ -68,7 +70,7 @@ public class FragmentNavigation extends FragmentBase {
 
         widget(R.id.action_nav_account).setOnClickListener(view -> toggleView());
         widget(R.id.action_nav_accdesc).setOnClickListener(view -> toggleView());
-        OdsApp.bus.register(this, Event.PRIORITY_UI);
+        OdsApp.bus.register(this);
         updateCurrentAccount();
 
         if (isMain && OdsApp.get().getViewManager().getCurrentAccount() == null) {
@@ -117,8 +119,9 @@ public class FragmentNavigation extends FragmentBase {
         getNavigation().openDialog(FragmentSettings.class, null);
     }
 
-    @SuppressWarnings({"UnusedParameters", "unused"})
-    public void onEventMainThread(final EventAccountSelect val) {
+    @SuppressWarnings("UnusedParameters")
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = Event.PRIORITY_UI)
+    public void onEvent(final EventAccountSelect val) {
         updateCurrentAccount();
     }
 
