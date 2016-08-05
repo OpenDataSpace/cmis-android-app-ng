@@ -21,8 +21,8 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
         OdsApp.bus.register(this);
     }
 
-    void processEvent(EventDaoBase<T> event) {
-        for (EventDaoBase.Event<T> cur : event.getEvents()) {
+    void processEvent(final EventDaoBase<T> event) {
+        for (final EventDaoBase.Event<T> cur : event.getEvents()) {
             final T object = cur.getObject();
 
             if (object == null) {
@@ -101,7 +101,7 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
         OdsApp.bus.unregister(this);
     }
 
-    CloseableIterator<T> iterate(DaoBase<T> dao) throws SQLException {
+    CloseableIterator<T> iterate(final DaoBase<T> dao) throws SQLException {
         return dao.iterate();
     }
 
@@ -113,9 +113,14 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
         return true;
     }
 
-    boolean shouldReset(long extra) {
+    boolean shouldReset(final long extra) {
         return true;
     }
 
     protected abstract void notifyAdapters();
+
+    protected T find(final T value) {
+        final int idx = data.indexOf(value);
+        return idx == -1 ? null : data.get(idx);
+    }
 }

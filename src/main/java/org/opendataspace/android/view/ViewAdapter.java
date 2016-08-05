@@ -11,7 +11,7 @@ public abstract class ViewAdapter<T extends ObjectBase> extends DataAdapterList<
 
     private final ViewBase<T> view;
 
-    protected ViewAdapter(ViewBase<T> view, Context context, int resId) {
+    protected ViewAdapter(final ViewBase<T> view, final Context context, final int resId) {
         super(context, resId);
         this.view = view;
         assign(view.getObjects());
@@ -27,5 +27,9 @@ public abstract class ViewAdapter<T extends ObjectBase> extends DataAdapterList<
     public void invalidate() {
         assign(view.getObjects());
         super.invalidate();
+    }
+
+    protected boolean isValid(final T value) {
+        return view.isValid(value);
     }
 }

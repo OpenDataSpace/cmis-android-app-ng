@@ -25,6 +25,14 @@
             style="@style/OdsTextSecondary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+        <ProgressBar
+            android:id="@+id/view_listitem_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <ImageButton

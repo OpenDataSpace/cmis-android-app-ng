@@ -46,6 +46,7 @@ public class Node extends ObjectBase {
 
     private transient CmisObject cmis;
     private transient MimeType mime;
+    private transient int progress = 100;
 
     public Node() {
         info = new NodeInfo();
@@ -268,5 +269,13 @@ public class Node extends ObjectBase {
 
     public void setCacheEntry(CacheEntry ce) {
         info.local = ce.getId();
+    }
+
+    public void setProgress(final int value) {
+        progress = value;
+    }
+
+    public int getProgress() {
+        return progress;
     }
 }

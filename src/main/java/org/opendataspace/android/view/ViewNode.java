@@ -10,6 +10,7 @@ import org.opendataspace.android.data.DaoBase;
 import org.opendataspace.android.data.DaoNode;
 import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventDaoNode;
+import org.opendataspace.android.event.EventProgress;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.ObjectBase;
@@ -28,8 +29,27 @@ public class ViewNode extends ViewBase<Node> {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, priority = Event.PRIORITY_VIEW)
-    public void onEvent(EventDaoNode event) {
+    public void onEvent(final EventDaoNode event) {
         processEvent(event);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = Event.PRIORITY_VIEW)
+    public void onEvent(final EventProgress event) {
+        final Node node = event.getNode();
+
+        if (isValid(node)) {
+            return;
+        }
+
+        final long pos = event.getPos();
+        final long max = event.getMax();
+        final int progress = pos == max ? 100 : (int) (100 * pos / max);
+        final Node local = find(node);
+        node.setProgress(progress);
+
+        if (local != node) {
+            local.setProgress(progress);
+        }
     }
 
     @Override
@@ -38,17 +58,17 @@ public class ViewNode extends ViewBase<Node> {
     }
 
     @Override
-    protected CloseableIterator<Node> iterate(DaoBase<Node> dao) throws SQLException {
+    protected CloseableIterator<Node> iterate(final DaoBase<Node> dao) throws SQLException {
         DaoNode rep = (DaoNode) dao;
         return rep.forParent(repo, parentId);
     }
 
     @Override
-    protected boolean isValid(Node val) {
+    protected boolean isValid(final Node val) {
         return repo != null && val.getParentId() == parentId && val.getRepoId() == repo.getId();
     }
 
-    public CmisSession setScope(Account account, Repo repo, Node parent) {
+    public CmisSession setScope(final Account account, final Repo repo, final Node parent) {
         this.repo = repo;
         parentId = parent != null ? parent.getId() : ObjectBase.INVALID_ID;
 
@@ -60,7 +80,7 @@ public class ViewNode extends ViewBase<Node> {
     }
 
     @Override
-    boolean shouldReset(long extra) {
+    boolean shouldReset(final long extra) {
         return repo != null && repo.getId() == extra;
     }
 }
