@@ -3,6 +3,7 @@ package org.opendataspace.android.operation;
 import android.os.Environment;
 
 import junit.framework.Assert;
+
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +46,7 @@ public class OperationNodeDownloadTest {
 
         CmisObject cmis =
                 session.createDocument(new Node(session.getRoot(null), session.getRepo()), name, new FileInfo(f, null),
-                        null);
+                        null, null);
         Assert.assertEquals(true, f.delete());
 
         Node node = new Node(cmis, session.getRepo());

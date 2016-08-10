@@ -26,6 +26,7 @@ import org.apache.chemistry.opencmis.commons.spi.ObjectService;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.OdsLog;
 import org.opendataspace.android.app.beta.R;
+import org.opendataspace.android.event.EventProgress;
 import org.opendataspace.android.object.Account;
 import org.opendataspace.android.object.Node;
 import org.opendataspace.android.object.Repo;
@@ -210,7 +211,8 @@ public class CmisSession {
                 .getContentStream(repo.getUuid(), node.getUuid(), null, null, null, null);
     }
 
-    public CmisObject createDocument(Node folder, String name, FileInfo info, StatusContext status) throws IOException {
+    public CmisObject createDocument(Node folder, String name, FileInfo info, StatusContext status, final Node node)
+            throws IOException {
         FileInputStream is = null;
 
         try {
@@ -249,6 +251,14 @@ public class CmisSession {
                         }
 
                         doc.appendContentStream(c, pos < total, true);
+
+                        if (node != null) {
+                            OdsApp.bus.post(new EventProgress(node, pos, total));
+                        }
+                    }
+
+                    if (node != null) {
+                        OdsApp.bus.post(new EventProgress(node, total, total));
                     }
                 } catch (Exception ex) {
                     if (doc != null) {
