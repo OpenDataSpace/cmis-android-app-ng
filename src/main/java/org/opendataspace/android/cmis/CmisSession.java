@@ -7,6 +7,7 @@ import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.ObjectFactory;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
+import org.apache.chemistry.opencmis.client.api.Relationship;
 import org.apache.chemistry.opencmis.client.api.Rendition;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
@@ -293,5 +294,14 @@ public class CmisSession {
                 is.close();
             }
         }
+    }
+
+    public List<Relationship> getRelations(final Node node, StatusContext status) {
+        final Session session = getSession(status);
+        final OperationContext context = session.createOperationContext();
+        context.setIncludeAllowableActions(false);
+        context.setIncludePathSegments(false);
+        context.setIncludeRelationships(IncludeRelationships.TARGET);
+        return session.getObject(node.getUuid(), context).getRelationships();
     }
 }

@@ -64,6 +64,7 @@
     <string name="status_connect">Connecting to %1$s/%2$s</string>
     <string name="status_openfolder">Opening folder %1$s</string>
     <string name="status_configacc">Configuring %1$s</string>
+    <string name="status_synclink">Synchronizing links %1$s</string>
 
     <!-- about -->
     <string name="about_info" tools:ignore="PluralsCandidate">

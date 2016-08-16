@@ -24,7 +24,7 @@ public class DaoLink extends DaoBaseView<Link> {
         return new EventDaoLink();
     }
 
-    public CloseableIterator<Link> getLinksByNode(final String id, final Link.Type type) throws SQLException {
+    public CloseableIterator<Link> getLinksByNode(final long id, final Link.Type type) throws SQLException {
         QueryBuilder<Link, Long> queryBuilder = queryBuilder();
         queryBuilder.where().eq(Link.NODE_ID_FIELD, id).and().eq(Link.TYPE_FIELD, type);
         return iterate(queryBuilder.prepare());

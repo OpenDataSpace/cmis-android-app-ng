@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.dao.CloseableIterator;
+
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.opendataspace.android.app.OdsApp;
 import org.opendataspace.android.app.beta.R;

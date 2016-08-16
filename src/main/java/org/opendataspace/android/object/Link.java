@@ -24,7 +24,7 @@ public class Link extends ObjectBase {
     private final LinkInfo info = new LinkInfo();
 
     @DatabaseField(columnName = NODE_ID_FIELD, index = true)
-    private String nodeId;
+    private long nodeId;
 
     @DatabaseField(index = true, dataType = DataType.ENUM_INTEGER, unknownEnumName = "DOWNLOAD",
             columnName = TYPE_FIELD)
@@ -102,11 +102,11 @@ public class Link extends ObjectBase {
         return !TextUtils.isEmpty(info.name) && !TextUtils.isEmpty(info.message) && info.expires != null;
     }
 
-    public String getNodeId() {
+    public long getNodeId() {
         return nodeId;
     }
 
-    public void setNodeId(String val) {
+    public void setNodeId(long val) {
         nodeId = val;
     }
 
@@ -124,5 +124,14 @@ public class Link extends ObjectBase {
 
     public void setRelationId(String relationId) {
         this.relationId = relationId;
+    }
+
+    public boolean merge(final Link val) {
+        return match(val) && info.update(val);
+    }
+
+    public boolean match(final Link val) {
+        return getNodeId() == val.getNodeId() && TextUtils.equals(getObjectId(), val.getObjectId()) &&
+                getType() == val.getType();
     }
 }
