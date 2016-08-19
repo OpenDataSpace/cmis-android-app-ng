@@ -6,6 +6,7 @@ import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.ObjectFactory;
+import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Relationship;
 import org.apache.chemistry.opencmis.client.api.Rendition;
@@ -199,6 +200,10 @@ public class CmisSession {
         }
     }
 
+    public void delete(String objectId, StatusContext status) {
+        getSession(status).delete(new ObjectIdImpl(objectId));
+    }
+
     public CmisObject getObjectById(String uuid, StatusContext status) {
         return getSession(status).getObject(new ObjectIdImpl(uuid));
     }
@@ -296,12 +301,28 @@ public class CmisSession {
         }
     }
 
-    public List<Relationship> getRelations(final Node node, StatusContext status) {
+    public List<Relationship> getRelations(final Node node, final StatusContext status) {
         final Session session = getSession(status);
         final OperationContext context = session.createOperationContext();
         context.setIncludeAllowableActions(false);
         context.setIncludePathSegments(false);
         context.setIncludeRelationships(IncludeRelationships.TARGET);
         return session.getObject(node.getUuid(), context).getRelationships();
+    }
+
+    public CmisObject createItem(final Map<String, Object> properties, final String fodlerId,
+            final StatusContext status) {
+        final Session session = getSession(status);
+        final ObjectId id = session.createItem(properties, new ObjectIdImpl(fodlerId));
+        return session.getObject(id);
+    }
+
+    public String createRelationship(final String sourceId, final String targetId, final StatusContext status) {
+        final Session session = getSession(status);
+        final Map<String, Object> rel = new HashMap<>();
+        rel.put(PropertyIds.OBJECT_TYPE_ID, BaseTypeId.CMIS_RELATIONSHIP.value());
+        rel.put(PropertyIds.SOURCE_ID, new ObjectIdImpl(sourceId));
+        rel.put(PropertyIds.TARGET_ID, new ObjectIdImpl(targetId));
+        return session.createRelationship(rel).getId();
     }
 }

@@ -11,5 +11,5 @@ public class CmisDefinitions {
     public static String EMAIL_PROP_ID = "gds:emailAddress";
     public static String URL_PROP_ID = "gds:url";
     public static String LTYPE_PROP_ID = "gds:linkType";
-    public static String LEGACY_OBIDS_ID = "gds:objectIds";
+    public static String PASSWORD_PROP_ID = "gds:password";
 }
