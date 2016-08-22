@@ -163,4 +163,12 @@
     <string name="editor_discard">Discard</string>
     <string name="editor_reload">Reload</string>
 
+    <!-- links -->
+    <string name="link_upload">Upload links for %1$s</string>
+    <string name="link_download">Download links for %1$s</string>
+    <string name="link_createact">Create Link…</string>
+    <string name="link_delete">Delete</string>
+    <string name="link_details">Edit…</string>
+    <string name="link_copyurl">Copy Url</string>
+
 </resources>

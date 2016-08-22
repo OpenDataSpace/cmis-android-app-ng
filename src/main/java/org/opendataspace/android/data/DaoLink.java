@@ -10,6 +10,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.event.EventDaoLink;
 import org.opendataspace.android.object.Link;
+import org.opendataspace.android.object.Node;
 
 import java.sql.SQLException;
 
@@ -24,9 +25,9 @@ public class DaoLink extends DaoBaseView<Link> {
         return new EventDaoLink();
     }
 
-    public CloseableIterator<Link> getLinksByNode(final long id, final Link.Type type) throws SQLException {
+    public CloseableIterator<Link> getLinksByNode(final Node node, final Link.Type type) throws SQLException {
         QueryBuilder<Link, Long> queryBuilder = queryBuilder();
-        queryBuilder.where().eq(Link.NODE_ID_FIELD, id).and().eq(Link.TYPE_FIELD, type);
+        queryBuilder.where().eq(Link.NODE_ID_FIELD, node.getId()).and().eq(Link.TYPE_FIELD, type);
         return iterate(queryBuilder.prepare());
     }
 

@@ -51,13 +51,13 @@ public class OperationLinkFetch extends OperationBaseFetch<Link, Link> {
             throw new InterruptedException();
         }
 
-        OdsApp.bus.post(new EventLinkUpdate(folder.getUuid()));
+        OdsApp.bus.post(new EventLinkUpdate(folder.getUuid(), type));
         result.setOk();
     }
 
     @Override
     protected CloseableIterator<Link> localObjects() throws SQLException {
-        return OdsApp.get().getDatabase().getLinks().getLinksByNode(folder.getId(), type);
+        return OdsApp.get().getDatabase().getLinks().getLinksByNode(folder, type);
     }
 
     @Override

@@ -27,6 +27,10 @@ public class ViewManager implements CompatDisposable {
         return new ViewNode();
     }
 
+    public ViewLink createLinkView() {
+        return new ViewLink();
+    }
+
     @Override
     public void dispose() {
         accounts.dispose();

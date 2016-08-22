@@ -64,7 +64,7 @@ public class ViewNode extends ViewBase<Node> {
     }
 
     @Override
-    protected boolean isValid(final Node val) {
+    boolean isValid(final Node val) {
         return repo != null && val.getParentId() == parentId && val.getRepoId() == repo.getId();
     }
 

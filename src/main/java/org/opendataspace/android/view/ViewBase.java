@@ -119,7 +119,7 @@ public abstract class ViewBase<T extends ObjectBase> implements CompatDisposable
 
     protected abstract void notifyAdapters();
 
-    protected T find(final T value) {
+    T find(final T value) {
         final int idx = data.indexOf(value);
         return idx == -1 ? null : data.get(idx);
     }

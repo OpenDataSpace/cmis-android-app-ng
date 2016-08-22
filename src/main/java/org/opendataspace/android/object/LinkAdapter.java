@@ -2,6 +2,7 @@ package org.opendataspace.android.object;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -13,7 +14,7 @@ public class LinkAdapter extends ViewAdapter<Link> {
 
     private final View.OnClickListener more;
 
-    protected LinkAdapter(final ViewBase<Link> view, final Context context, final View.OnClickListener more) {
+    public LinkAdapter(final ViewBase<Link> view, final Context context, final View.OnClickListener more) {
         super(view, context, R.layout.delegate_link);
         this.more = more;
     }
@@ -28,5 +29,14 @@ public class LinkAdapter extends ViewAdapter<Link> {
         tw1.setText(item.getName());
         tw2.setText(item.getUrl());
         ib.setOnClickListener(more);
+    }
+
+    public Link resolve(final ViewParent view) {
+        if (!(view instanceof View)) {
+            return null;
+        }
+
+        final Object res = ((View) view).getTag(R.id.internal_more);
+        return res instanceof Link ? (Link) res : null;
     }
 }
