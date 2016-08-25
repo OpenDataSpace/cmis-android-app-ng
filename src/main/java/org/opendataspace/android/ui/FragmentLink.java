@@ -2,10 +2,14 @@ package org.opendataspace.android.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -21,7 +25,11 @@ import org.opendataspace.android.event.EventLinkUpdate;
 import org.opendataspace.android.object.Link;
 import org.opendataspace.android.object.LinkAdapter;
 import org.opendataspace.android.object.Node;
+import org.opendataspace.android.operation.OperationBase;
 import org.opendataspace.android.operation.OperationLinkBrowse;
+import org.opendataspace.android.operation.OperationLinkCreate;
+import org.opendataspace.android.operation.OperationLinkDelete;
+import org.opendataspace.android.operation.OperationLinkUpdate;
 
 @SuppressLint("ValidFragment")
 public class FragmentLink extends FragmentBaseList {
@@ -125,5 +133,74 @@ public class FragmentLink extends FragmentBaseList {
                 break;
             }
         }
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menu_link_create:
+            actionCreate();
+            break;
+
+        case R.id.menu_link_delete:
+            actionDelete();
+            break;
+
+        case R.id.menu_link_details:
+            actionEdit();
+            break;
+
+        case R.id.menu_link_copyurl:
+            actionCopyUrl();
+            break;
+
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+
+        return true;
+    }
+
+    private void actionCopyUrl() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && moreItem != null) {
+            final ClipboardManager clipboard =
+                    (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+
+            clipboard.setPrimaryClip(ClipData.newPlainText("url", moreItem.getUrl()));
+        }
+    }
+
+    private void actionDelete() {
+        if (moreItem == null) {
+            return;
+        }
+
+        new TaskOperation<>(new OperationLinkDelete(moreItem, op.getSession()),
+                new WeakCallback<>(this, FragmentLink::operationDone)).start();
+    }
+
+    private void operationDone(final OperationBase op) {
+        op.reportError(getActivity());
+    }
+
+    private void actionCreate() {
+        final Link link = new Link();
+
+        new DialogLink(link, false, () -> {
+            new TaskOperation<>(new OperationLinkCreate(link, op.getSession()),
+                    new WeakCallback<>(this, FragmentLink::operationDone)).start();
+        }).show(getFragmentManager(), "DLG");
+    }
+
+    private void actionEdit() {
+        if (moreItem == null) {
+            return;
+        }
+
+        new DialogLink(moreItem, false, () -> {
+            new TaskOperation<>(new OperationLinkUpdate(moreItem, op.getSession()),
+                    new WeakCallback<>(this, FragmentLink::operationDone)).start();
+        }).show(getFragmentManager(), "DLG");
     }
 }

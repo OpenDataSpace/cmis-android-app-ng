@@ -51,4 +51,8 @@ public class OperationLinkBrowse extends OperationBase {
     public Node getNode() {
         return node;
     }
+
+    public CmisSession getSession() {
+        return session;
+    }
 }

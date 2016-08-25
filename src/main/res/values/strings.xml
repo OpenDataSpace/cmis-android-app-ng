@@ -170,5 +170,10 @@
     <string name="link_delete">Delete</string>
     <string name="link_details">Edit…</string>
     <string name="link_copyurl">Copy Url</string>
+    <string name="link_name">Name:</string>
+    <string name="link_expires">Expires:</string>
+    <string name="link_email">Email:</string>
+    <string name="link_password">Password:</string>
+    <string name="link_message">Message:</string>
 
 </resources>
