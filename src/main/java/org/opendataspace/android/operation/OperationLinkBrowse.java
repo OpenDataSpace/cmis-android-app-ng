@@ -19,7 +19,7 @@ public class OperationLinkBrowse extends OperationBase {
     @Expose
     private final CmisSession session;
 
-    private transient ViewLink view;
+    private final transient ViewLink view;
 
     public OperationLinkBrowse(final CmisSession session, final Node node, final Link.Type type) {
         this.node = node;
@@ -31,6 +31,7 @@ public class OperationLinkBrowse extends OperationBase {
     @Override
     protected void doExecute(final OperationResult result) throws Exception {
         final OdsApp app = OdsApp.get();
+        view.setScope(node, type);
         view.sync(app.getDatabase().getLinks());
 
         if (!isCancel()) {

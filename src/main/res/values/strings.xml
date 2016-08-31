@@ -152,6 +152,7 @@
     <string name="node_upload">Upload…</string>
     <string name="node_download">Download…</string>
     <string name="node_open">Open…</string>
+    <string name="node_links">Links…</string>
 
     <!-- editors -->
     <string name="editor_save">Save</string>

@@ -34,7 +34,7 @@ import org.opendataspace.android.operation.OperationLinkUpdate;
 @SuppressLint("ValidFragment")
 public class FragmentLink extends FragmentBaseList {
 
-    private OperationLinkBrowse op;
+    private final OperationLinkBrowse op;
     private LinkAdapter adapter;
     private Link moreItem;
 
@@ -187,10 +187,8 @@ public class FragmentLink extends FragmentBaseList {
     private void actionCreate() {
         final Link link = new Link();
 
-        new DialogLink(link, false, () -> {
-            new TaskOperation<>(new OperationLinkCreate(link, op.getSession()),
-                    new WeakCallback<>(this, FragmentLink::operationDone)).start();
-        }).show(getFragmentManager(), "DLG");
+        new DialogLink(link, false, () -> new TaskOperation<>(new OperationLinkCreate(link, op.getSession()),
+                new WeakCallback<>(this, FragmentLink::operationDone)).start()).show(getFragmentManager(), "DLG");
     }
 
     private void actionEdit() {
@@ -198,9 +196,7 @@ public class FragmentLink extends FragmentBaseList {
             return;
         }
 
-        new DialogLink(moreItem, false, () -> {
-            new TaskOperation<>(new OperationLinkUpdate(moreItem, op.getSession()),
-                    new WeakCallback<>(this, FragmentLink::operationDone)).start();
-        }).show(getFragmentManager(), "DLG");
+        new DialogLink(moreItem, false, () -> new TaskOperation<>(new OperationLinkUpdate(moreItem, op.getSession()),
+                new WeakCallback<>(this, FragmentLink::operationDone)).start()).show(getFragmentManager(), "DLG");
     }
 }

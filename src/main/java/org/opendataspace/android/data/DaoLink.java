@@ -1,7 +1,5 @@
 package org.opendataspace.android.data;
 
-import android.text.TextUtils;
-
 import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.ObjectCache;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -29,17 +27,5 @@ public class DaoLink extends DaoBaseView<Link> {
         QueryBuilder<Link, Long> queryBuilder = queryBuilder();
         queryBuilder.where().eq(Link.NODE_ID_FIELD, node.getId()).and().eq(Link.TYPE_FIELD, type);
         return iterate(queryBuilder.prepare());
-    }
-
-    public void process(final Link link) throws Exception {
-        if (TextUtils.isEmpty(link.getObjectId())) {
-            if (link.getId() != -1) {
-                delete(link);
-            }
-
-            return;
-        }
-
-        createOrUpdate(link);
     }
 }

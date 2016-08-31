@@ -21,4 +21,8 @@
         android:icon="@drawable/ic_remove"
         android:title="@string/node_delete"
         auto:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/menu_node_links"
+        android:title="@string/node_links"
+        auto:showAsAction="never"/>
 </menu>

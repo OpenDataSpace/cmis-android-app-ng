@@ -28,7 +28,9 @@ import org.opendataspace.android.app.beta.R;
 import org.opendataspace.android.event.Event;
 import org.opendataspace.android.event.EventDaoBase;
 import org.opendataspace.android.event.EventDaoNode;
+import org.opendataspace.android.object.Link;
 import org.opendataspace.android.object.Node;
+import org.opendataspace.android.operation.OperationLinkBrowse;
 import org.opendataspace.android.operation.OperationNodeDelete;
 import org.opendataspace.android.operation.OperationNodeInfo;
 import org.opendataspace.android.operation.OperationNodeOpen;
@@ -131,6 +133,10 @@ public class FragmentNodeInfo extends FragmentBase {
 
         case R.id.menu_node_open:
             actionOpen();
+            break;
+
+        case R.id.menu_node_links:
+            actionLinks();
             break;
 
         default:
@@ -259,5 +265,10 @@ public class FragmentNodeInfo extends FragmentBase {
                 }
             }
         }
+    }
+
+    private void actionLinks() {
+        getNavigation().openFile(FragmentLink.class, new OperationLinkBrowse(op.getSession(), op.getNode(),
+                op.getNode().getType() == Node.Type.FOLDER ? Link.Type.UPLOAD : Link.Type.DOWNLOAD));
     }
 }
